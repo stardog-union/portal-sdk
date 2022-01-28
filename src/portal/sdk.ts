@@ -278,6 +278,17 @@ export type ListConnectionsQuery = (
   )>>> }
 );
 
+export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProfileQuery = (
+  { __typename?: 'Query' }
+  & { profile?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username' | 'email' | 'first_name' | 'last_name' | 'company' | 'use_case' | 'is_authenticated' | 'is_superuser'>
+  )> }
+);
+
 
 export const ListConnectionsDocument = `
     query listConnections {
@@ -294,6 +305,21 @@ export const ListConnectionsDocument = `
   }
 }
     `;
+export const ProfileDocument = `
+    query profile {
+  profile {
+    id
+    username
+    email
+    first_name
+    last_name
+    company
+    use_case
+    is_authenticated
+    is_superuser
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string) => Promise<T>;
 
@@ -304,6 +330,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     listConnections(variables?: ListConnectionsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ListConnectionsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ListConnectionsQuery>(ListConnectionsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'listConnections');
+    },
+    profile(variables?: ProfileQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ProfileQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ProfileQuery>(ProfileDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'profile');
     }
   };
 }

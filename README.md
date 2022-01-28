@@ -24,3 +24,48 @@ yarn generate
 ```
 
 Fix any errors and commit your changes
+
+
+## Example usage
+
+First you need to get a `GraphQL-Client` object and configure it for the correct url then use that client in the `getSDK` call:
+
+```javascript
+import { GraphQLClient } from 'graphql-request';
+import { getSdk } from './src/portal/sdk';
+
+const defaultEndpoint = 'https://apps.stardog.com/api/graphql';
+
+async function main() {
+  const client = new GraphQLClient(defaultEndpoint);
+  const sdk = getSdk(client);
+  const { listConnections } = await sdk.listConnections();
+  const { profile } = await sdk.profile();
+
+  console.log(`GraphQL Connections:`, listConnections);
+  console.log(`GraphQL Profile:`, profile);
+}
+
+main();
+```
+
+You can test this out locally with `yarn test`:
+
+```bash
+⚡  yarn test
+yarn run v1.22.10
+$ ts-node ./example.ts
+GraphQL Connections: []
+GraphQL Profile: {
+  id: null,
+  username: '',
+  email: null,
+  first_name: null,
+  last_name: null,
+  company: null,
+  use_case: null,
+  is_authenticated: false,
+  is_superuser: false
+}
+✨  Done in 2.34s.
+```
