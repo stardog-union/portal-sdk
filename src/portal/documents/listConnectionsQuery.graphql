@@ -1,0 +1,13 @@
+query listConnections {
+  listConnections {
+    id
+    name
+    username
+    endpoint
+    token
+    isStardogCloud
+    isStardogFree
+    isAllocating
+    useSSO
+  }
+}
