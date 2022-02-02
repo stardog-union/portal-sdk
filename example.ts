@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { getSdk } from './src/portal/sdk';
+import { getSdk } from '.';
 
 const defaultEndpoint = 'https://apps.stardog.com/api/graphql';
 

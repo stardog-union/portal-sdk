@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Portal SDK for front end applications",
   "private": true,
+  "main": "index.ts",
   "scripts": {
     "generate": "graphql-codegen --config codegen.yml",
     "test": "ts-node ./example.ts"

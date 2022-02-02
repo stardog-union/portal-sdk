@@ -1,8 +1,8 @@
 overwrite: true
 schema: "https://apps.stardog.com/api/graphql"
-documents: "src/portal/**/*.graphql"
+documents: "src/**/*.graphql"
 generates:
-  src/portal/sdk.ts:
+  index.ts:
     plugins:
       - typescript
       - typescript-operations
