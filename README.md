@@ -17,7 +17,7 @@ yarn install
 
 ## Generating SDK
 
-We use GraphQL for all the data communication between the applications and the backend. Right now there is a limited set of things we expose but that can grow as needed. For now if we want to expose a query or mutation we simply add a `document` in `src/portal/documents/` then run the generate command:
+We use GraphQL for all the data communication between the applications and the backend. Right now there is a limited set of things we expose but that can grow as needed. For now if we want to expose a query or mutation we simply add a `document` in `src/documents/` then run the generate command:
 
 ```
 yarn generate
@@ -32,7 +32,7 @@ First you need to get a `GraphQL-Client` object and configure it for the correct
 
 ```javascript
 import { GraphQLClient } from 'graphql-request';
-import { getSdk } from './src/portal/sdk';
+import { getSdk } from '.';
 
 const defaultEndpoint = 'https://apps.stardog.com/api/graphql';
 
