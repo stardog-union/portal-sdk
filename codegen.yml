@@ -7,5 +7,7 @@ generates:
       - typescript
       - typescript-operations
       - typescript-graphql-request
+      - add
     config:
+      content: "export * from './src/cookieConsent';"
       documentMode: string
