@@ -31,12 +31,14 @@ export const decodeAnalyticsCookie = (rawCookie: string): AnalyticsConsent => {
       identity
     }
   } catch (e) {
-    console.warn(e);
     return defaultConsent;
   }
 };
 
-export const getAnalyticsConsentCookie = (): AnalyticsConsent => {
+export const getAnalyticsConsentCookie = (): AnalyticsConsent | null => {
   const rawConsentCookie = getCookieValue(ANALYTICS_COOKIE_NAME);
+  if (rawConsentCookie === '') {
+    return null;
+  }
   return decodeAnalyticsCookie(rawConsentCookie);
 };

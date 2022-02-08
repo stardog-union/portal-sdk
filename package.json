@@ -12,7 +12,6 @@
   "author": "Stardog Union <help@stardog.com>",
   "homepage": "https://github.com/stardog-union/portal-sdk#readme",
   "devDependencies": {
-    "@graphql-codegen/add": "3.1.1",
     "@graphql-codegen/cli": "2.5.0",
     "@graphql-codegen/introspection": "2.1.1",
     "@graphql-codegen/typescript": "2.4.3",
