@@ -2,12 +2,10 @@ overwrite: true
 schema: "https://apps.stardog.com/api/graphql"
 documents: "src/**/*.graphql"
 generates:
-  index.ts:
+  src/sdk.ts:
     plugins:
       - typescript
       - typescript-operations
       - typescript-graphql-request
-      - add
     config:
-      content: "export * from './src/cookieConsent';"
       documentMode: string

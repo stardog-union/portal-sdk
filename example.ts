@@ -20,8 +20,8 @@ async function main() {
   console.log(`GraphQL Profile:`, profile);
 
   const fakeCookieValue = 'eyJjb25zZW50ZWQiOnRydWUsImlkZW50aXR5IjoiZnJhbmtAYmFyLmNvbSJ9';
-  const consent = decodeAnalyticsCookie(fakeCookieValue);
-  console.log(consent);
+  console.log(decodeAnalyticsCookie(fakeCookieValue));
+  console.log(decodeAnalyticsCookie('not really valid'));
 }
 
 main();
