@@ -317,6 +317,8 @@ export type ListConnectionsQuery = {
   listConnections?: Array<{
     __typename?: 'Connection';
     id: string;
+    index: number;
+    dashboard?: string | null;
     name: string;
     username?: string | null;
     endpoint: string;
@@ -350,6 +352,8 @@ export const ListConnectionsDocument = `
     query listConnections {
   listConnections {
     id
+    index
+    dashboard
     name
     username
     endpoint
