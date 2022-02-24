@@ -1,6 +1,6 @@
 overwrite: true
-schema: "https://apps.stardog.com/api/graphql"
-documents: "src/**/*.graphql"
+schema: 'https://apps.stardog.com/api/graphql'
+documents: 'src/**/*.graphql'
 generates:
   src/sdk.ts:
     plugins:

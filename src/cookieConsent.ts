@@ -17,19 +17,19 @@ export const getCookieValue = (cookieName: string): string => {
 
 export const decodeAnalyticsCookie = (rawCookie: string): AnalyticsConsent => {
   const defaultConsent: AnalyticsConsent = {
-    consented: false
+    consented: false,
   };
   try {
     const decoded = JSON.parse(atob(rawCookie));
-    const consented: boolean = decoded.consented
+    const consented: boolean = decoded.consented;
     const identity: string = decoded.identity || '';
     if (typeof identity !== 'string' || typeof consented !== 'boolean') {
-      throw new Error('invalid cookie')
+      throw new Error('invalid cookie');
     }
     return {
       consented,
-      identity
-    }
+      identity,
+    };
   } catch (e) {
     return defaultConsent;
   }

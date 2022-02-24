@@ -25,7 +25,6 @@ yarn generate
 
 Fix any errors and commit your changes
 
-
 ## Example usage
 
 First you need to get a `GraphQL-Client` object and configure it for the correct url then use that client in the `getSDK` call:

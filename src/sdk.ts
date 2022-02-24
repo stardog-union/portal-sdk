@@ -2,9 +2,15 @@ import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -105,42 +111,35 @@ export type Mutation = {
   updateProfile?: Maybe<User>;
 };
 
-
 /** Available mutations */
 export type MutationAddConnectionArgs = {
   input: AddConnectionInput;
 };
-
 
 /** Available mutations */
 export type MutationDeleteCloudArgs = {
   input: CloudCleanupInput;
 };
 
-
 /** Available mutations */
 export type MutationDeleteConnectionArgs = {
   name: Scalars['String'];
 };
-
 
 /** Available mutations */
 export type MutationEditConnectionArgs = {
   input: EditConnectionInput;
 };
 
-
 /** Available mutations */
 export type MutationGenerateConfigurationArgs = {
   endpoint: Scalars['String'];
 };
 
-
 /** Available mutations */
 export type MutationStartBillingSessionArgs = {
   input: BillingSessionInput;
 };
-
 
 /** Available mutations */
 export type MutationUpdateProfileArgs = {
@@ -192,36 +191,30 @@ export type Query = {
   profile?: Maybe<User>;
 };
 
-
 /** Available queries */
 export type QueryGenerateTokenArgs = {
   endpoint: Scalars['String'];
 };
-
 
 /** Available queries */
 export type QueryGetConnectionArgs = {
   name: Scalars['String'];
 };
 
-
 /** Available queries */
 export type QueryGetConnectionByIndexArgs = {
   index: Scalars['Int'];
 };
-
 
 /** Available queries */
 export type QueryGetStardogCloudArgs = {
   pk: Scalars['String'];
 };
 
-
 /** Available queries */
 export type QueryGetStripeSubscriptionOrderSessionArgs = {
   cloudName: Scalars['String'];
 };
-
 
 /** Available queries */
 export type QueryGetStripeSubscriptionStatusArgs = {
@@ -315,16 +308,41 @@ export type User = {
   username: Scalars['String'];
 };
 
-export type ListConnectionsQueryVariables = Exact<{ [key: string]: never; }>;
+export type ListConnectionsQueryVariables = Exact<{ [key: string]: never }>;
 
+export type ListConnectionsQuery = {
+  __typename?: 'Query';
+  listConnections?: Array<{
+    __typename?: 'Connection';
+    id: string;
+    name: string;
+    username?: string | null;
+    endpoint: string;
+    token?: string | null;
+    isStardogCloud?: boolean | null;
+    isStardogFree?: boolean | null;
+    isAllocating?: boolean | null;
+    useSSO?: boolean | null;
+  } | null> | null;
+};
 
-export type ListConnectionsQuery = { __typename?: 'Query', listConnections?: Array<{ __typename?: 'Connection', id: string, name: string, username?: string | null, endpoint: string, token?: string | null, isStardogCloud?: boolean | null, isStardogFree?: boolean | null, isAllocating?: boolean | null, useSSO?: boolean | null } | null> | null };
+export type ProfileQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ProfileQuery = { __typename?: 'Query', profile?: { __typename?: 'User', id?: string | null, username: string, email?: string | null, first_name?: string | null, last_name?: string | null, company?: string | null, use_case?: string | null, is_authenticated: boolean, is_superuser?: boolean | null } | null };
-
+export type ProfileQuery = {
+  __typename?: 'Query';
+  profile?: {
+    __typename?: 'User';
+    id?: string | null;
+    username: string;
+    email?: string | null;
+    first_name?: string | null;
+    last_name?: string | null;
+    company?: string | null;
+    use_case?: string | null;
+    is_authenticated: boolean;
+    is_superuser?: boolean | null;
+  } | null;
+};
 
 export const ListConnectionsDocument = `
     query listConnections {
@@ -357,19 +375,45 @@ export const ProfileDocument = `
 }
     `;
 
-export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string) => Promise<T>;
-
+export type SdkFunctionWrapper = <T>(
+  action: (requestHeaders?: Record<string, string>) => Promise<T>,
+  operationName: string
+) => Promise<T>;
 
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
 
-export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
+export function getSdk(
+  client: GraphQLClient,
+  withWrapper: SdkFunctionWrapper = defaultWrapper
+) {
   return {
-    listConnections(variables?: ListConnectionsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ListConnectionsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ListConnectionsQuery>(ListConnectionsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'listConnections');
+    listConnections(
+      variables?: ListConnectionsQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<ListConnectionsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<ListConnectionsQuery>(
+            ListConnectionsDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'listConnections'
+      );
     },
-    profile(variables?: ProfileQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ProfileQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ProfileQuery>(ProfileDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'profile');
-    }
+    profile(
+      variables?: ProfileQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<ProfileQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<ProfileQuery>(ProfileDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'profile'
+      );
+    },
   };
 }
 export type Sdk = ReturnType<typeof getSdk>;
