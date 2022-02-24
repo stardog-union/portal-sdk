@@ -59,8 +59,10 @@ export type CloudFlavor = {
 /** Saved Connection info for a Stardog instance */
 export type Connection = {
   __typename?: 'Connection';
+  dashboard?: Maybe<Scalars['String']>;
   endpoint: Scalars['String'];
   id: Scalars['ID'];
+  index: Scalars['Int'];
   isAllocating?: Maybe<Scalars['Boolean']>;
   isStardogCloud?: Maybe<Scalars['Boolean']>;
   isStardogFree?: Maybe<Scalars['Boolean']>;

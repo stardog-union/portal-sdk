@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
-import { getSdk, decodeAnalyticsCookie } from '.';
+import { decodeAnalyticsCookie, getSdk } from '.';
 
-const defaultEndpoint = 'https://apps.stardog.com/api/graphql';
+const defaultEndpoint = 'https://cloud.stardog.com/api/graphql';
 
 // This is just because node.js does not have atob and browsers do not have Buffer!!
 if (typeof atob === 'undefined') {

@@ -33,7 +33,7 @@ First you need to get a `GraphQL-Client` object and configure it for the correct
 import { GraphQLClient } from 'graphql-request';
 import { getSdk } from '.';
 
-const defaultEndpoint = 'https://apps.stardog.com/api/graphql';
+const defaultEndpoint = 'https://cloud.stardog.com/api/graphql';
 
 async function main() {
   const client = new GraphQLClient(defaultEndpoint);

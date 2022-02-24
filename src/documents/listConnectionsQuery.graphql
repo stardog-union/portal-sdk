@@ -1,6 +1,8 @@
 query listConnections {
   listConnections {
     id
+    index
+    dashboard
     name
     username
     endpoint
