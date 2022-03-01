@@ -2,7 +2,7 @@ overwrite: true
 schema: 'https://cloud.stardog.com/api/graphql'
 documents: 'src/**/*.graphql'
 generates:
-  src/sdk.ts:
+  src/sdk/index.ts:
     plugins:
       - typescript
       - typescript-operations

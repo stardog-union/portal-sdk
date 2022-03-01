@@ -17,7 +17,7 @@ yarn install
 
 ## Generating SDK
 
-We use GraphQL for all the data communication between the applications and the backend. Right now there is a limited set of things we expose but that can grow as needed. For now if we want to expose a query or mutation we simply add a `document` in `src/documents/` then run the generate command:
+We use GraphQL for all the data communication between the applications and the backend. Right now there is a limited set of things we expose but that can grow as needed. For now if we want to expose a query or mutation we simply add a `document` in `src/sdk/documents/` then run the generate command:
 
 ```
 yarn generate
