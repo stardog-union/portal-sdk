@@ -41,7 +41,7 @@ export const decodeConnectionCookie = (
       tokenEndpoint,
       graphqlEndpoint,
     };
-  } catch (e) {
+  } catch {
     return null;
   }
 };
