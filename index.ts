@@ -1,2 +1,2 @@
-export * from './src/cookieConsent';
+export * from './src/cookies';
 export * from './src/sdk';

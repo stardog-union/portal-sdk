@@ -1,18 +1,10 @@
+import { getCookieValue } from './utils/cookie';
+
 export const ANALYTICS_COOKIE_NAME = 'stardogAnalyticsConsent';
 
 export type AnalyticsConsent = {
   consented: boolean;
   identity?: string;
-};
-
-export const getCookies = (): string => {
-  return document.cookie;
-};
-
-export const getCookieValue = (cookieName: string): string => {
-  const cookies = getCookies();
-  const match = cookies.match(`(^|;)\\s*${cookieName}\\s*=\\s*([^;]+)`);
-  return match ? (match.pop() as string) : '';
 };
 
 export const decodeAnalyticsCookie = (rawCookie: string): AnalyticsConsent => {
