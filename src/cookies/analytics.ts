@@ -1,4 +1,5 @@
-import { getCookieValue } from './utils/cookie';
+import { getCookieValue } from './utils/getCookieValue';
+import { optionalTypeCheck } from './utils/optionalTypeCheck';
 
 export const ANALYTICS_COOKIE_NAME = 'stardogAnalyticsConsent';
 
@@ -19,7 +20,7 @@ export const decodeAnalyticsCookie = (rawCookie: string): AnalyticsConsent => {
 
     if (
       typeof consented !== 'boolean' ||
-      (typeof identity !== 'undefined' && typeof identity !== 'string')
+      !optionalTypeCheck(identity, 'string')
     ) {
       throw new Error('invalid cookie');
     }

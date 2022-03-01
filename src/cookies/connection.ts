@@ -1,4 +1,5 @@
-import { getCookieValue } from './utils/cookie';
+import { getCookieValue } from './utils/getCookieValue';
+import { optionalTypeCheck } from './utils/optionalTypeCheck';
 
 export const CONNECTION_COOKIE_NAME = 'stardogConnection';
 
@@ -28,10 +29,8 @@ export const decodeConnectionCookie = (
       typeof username !== 'string' ||
       (typeof password !== 'undefined' && typeof password !== 'string') ||
       typeof endpoint !== 'string' ||
-      (typeof tokenEndpoint !== 'undefined' &&
-        typeof tokenEndpoint !== 'string') ||
-      (typeof graphqlEndpoint !== 'undefined' &&
-        typeof graphqlEndpoint !== 'string')
+      !optionalTypeCheck(tokenEndpoint, 'string') ||
+      !optionalTypeCheck(graphqlEndpoint, 'string')
     ) {
       throw new Error('invalid cookie');
     }
