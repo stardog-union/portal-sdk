@@ -1,4 +1,4 @@
-import { getCurrentConnectionInfo } from '../../getCurrentConnectionInfo';
+import { getCurrentConnectionInfo } from '../getCurrentConnectionInfo';
 
 const windowFixture = {
   location: {
