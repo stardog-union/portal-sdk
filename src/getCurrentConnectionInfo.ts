@@ -9,16 +9,11 @@ export type ConnectionInfo = {
 export const getCurrentConnectionInfo = (
   window: Window
 ): ConnectionInfo | null => {
-  const urlPathRegex = /\/u\/(?<index>[0-9]+)\/(?<product>.+?)\//;
+  const urlPathRegex = /\/u\/(?<connectionIndex>[0-9]+)\/(?<product>.+?)\//;
   const currentMatch = window.location.pathname.match(urlPathRegex);
-  if (
-    currentMatch &&
-    currentMatch.groups &&
-    currentMatch.groups.index != null &&
-    currentMatch.groups.product != null
-  ) {
+  if (currentMatch?.groups) {
     return {
-      connectionIndex: Number.parseInt(currentMatch.groups.index),
+      connectionIndex: Number.parseInt(currentMatch.groups.connectionIndex),
       product: currentMatch.groups.product,
     };
   }
