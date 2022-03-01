@@ -8,10 +8,9 @@ export type AnalyticsConsent = {
   identity?: string;
 };
 
-export const decodeAnalyticsCookie = (rawCookie: string): AnalyticsConsent => {
-  const defaultConsent: AnalyticsConsent = {
-    consented: false,
-  };
+export const decodeAnalyticsCookie = (
+  rawCookie: string
+): AnalyticsConsent | null => {
   try {
     const decoded = JSON.parse(atob(rawCookie));
 
@@ -30,7 +29,7 @@ export const decodeAnalyticsCookie = (rawCookie: string): AnalyticsConsent => {
       identity,
     };
   } catch {
-    return defaultConsent;
+    return null;
   }
 };
 
