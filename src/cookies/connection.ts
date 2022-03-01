@@ -5,7 +5,6 @@ export const CONNECTION_COOKIE_NAME = 'stardogConnection';
 
 export type ConnectionCookie = {
   username: string;
-  password?: string;
   endpoint: string;
 
   // optional because older cloud versions might not contain these
@@ -20,14 +19,12 @@ export const decodeConnectionCookie = (
     const decoded = JSON.parse(atob(rawCookie));
 
     const username: string = decoded.username;
-    const password: string | undefined = decoded.password;
     const endpoint: string = decoded.endpoint;
     const tokenEndpoint: string | undefined = decoded.tokenEndpoint;
     const graphqlEndpoint: string | undefined = decoded.graphqlEndpoint;
 
     if (
       typeof username !== 'string' ||
-      (typeof password !== 'undefined' && typeof password !== 'string') ||
       typeof endpoint !== 'string' ||
       !optionalTypeCheck(tokenEndpoint, 'string') ||
       !optionalTypeCheck(graphqlEndpoint, 'string')
@@ -37,7 +34,6 @@ export const decodeConnectionCookie = (
 
     return {
       username,
-      password,
       endpoint,
       tokenEndpoint,
       graphqlEndpoint,
