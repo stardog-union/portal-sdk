@@ -13,16 +13,22 @@ export const decodeAnalyticsCookie = (rawCookie: string): AnalyticsConsent => {
   };
   try {
     const decoded = JSON.parse(atob(rawCookie));
+
     const consented: boolean = decoded.consented;
-    const identity: string = decoded.identity || '';
-    if (typeof identity !== 'string' || typeof consented !== 'boolean') {
+    const identity: string = decoded.identity;
+
+    if (
+      typeof consented !== 'boolean' ||
+      (typeof identity !== 'undefined' && typeof identity !== 'string')
+    ) {
       throw new Error('invalid cookie');
     }
+
     return {
       consented,
       identity,
     };
-  } catch (e) {
+  } catch {
     return defaultConsent;
   }
 };

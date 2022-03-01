@@ -19,17 +19,19 @@ export const decodeConnectionCookie = (
     const decoded = JSON.parse(atob(rawCookie));
 
     const username: string = decoded.username;
-    const password: string = decoded.password;
+    const password: string | undefined = decoded.password;
     const endpoint: string = decoded.endpoint;
-    const tokenEndpoint: string = decoded.tokenEndpoint;
-    const graphqlEndpoint: string = decoded.graphqlEndpoint;
+    const tokenEndpoint: string | undefined = decoded.tokenEndpoint;
+    const graphqlEndpoint: string | undefined = decoded.graphqlEndpoint;
 
     if (
       typeof username !== 'string' ||
-      typeof password !== 'string' ||
+      (typeof password !== 'undefined' && typeof password !== 'string') ||
       typeof endpoint !== 'string' ||
-      typeof tokenEndpoint !== 'string' ||
-      typeof graphqlEndpoint !== 'string'
+      (typeof tokenEndpoint !== 'undefined' &&
+        typeof tokenEndpoint !== 'string') ||
+      (typeof graphqlEndpoint !== 'undefined' &&
+        typeof graphqlEndpoint !== 'string')
     ) {
       throw new Error('invalid cookie');
     }
