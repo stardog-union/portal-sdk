@@ -1,6 +1,4 @@
-export const getCookies = (): string => {
-  return document.cookie;
-};
+import { getCookies } from './getCookies';
 
 export const getCookieValue = (cookieName: string): string => {
   const cookies = getCookies();
