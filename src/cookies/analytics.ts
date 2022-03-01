@@ -9,10 +9,10 @@ export type AnalyticsConsent = {
 };
 
 export const decodeAnalyticsCookie = (
-  rawCookie: string
+  rawConsentCookie: string
 ): AnalyticsConsent | null => {
   try {
-    const decoded = JSON.parse(atob(rawCookie));
+    const decoded = JSON.parse(atob(rawConsentCookie));
 
     const consented: boolean = decoded.consented;
     const identity: string = decoded.identity;
@@ -35,7 +35,7 @@ export const decodeAnalyticsCookie = (
 
 export const getAnalyticsConsentCookie = (): AnalyticsConsent | null => {
   const rawConsentCookie = getCookieValue(ANALYTICS_COOKIE_NAME);
-  if (rawConsentCookie === '') {
+  if (!rawConsentCookie) {
     return null;
   }
   return decodeAnalyticsCookie(rawConsentCookie);
