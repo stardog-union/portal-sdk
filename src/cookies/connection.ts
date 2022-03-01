@@ -43,10 +43,10 @@ export const decodeConnectionCookie = (
   }
 };
 
-export const getConnectionConsentCookie = (): ConnectionCookie | null => {
-  const rawConsentCookie = getCookieValue(CONNECTION_COOKIE_NAME);
-  if (!rawConsentCookie) {
+export const getConnectionCookie = (): ConnectionCookie | null => {
+  const rawCookie = getCookieValue(CONNECTION_COOKIE_NAME);
+  if (!rawCookie) {
     return null;
   }
-  return decodeConnectionCookie(rawConsentCookie);
+  return decodeConnectionCookie(rawCookie);
 };
