@@ -8,12 +8,11 @@ export type AnalyticsConsent = {
   identity?: string;
 };
 
-export const decodeAnalyticsCookie = (rawCookie: string): AnalyticsConsent => {
-  const defaultConsent: AnalyticsConsent = {
-    consented: false,
-  };
+export const decodeAnalyticsCookie = (
+  rawConsentCookie: string
+): AnalyticsConsent | null => {
   try {
-    const decoded = JSON.parse(atob(rawCookie));
+    const decoded = JSON.parse(atob(rawConsentCookie));
 
     const consented: boolean = decoded.consented;
     const identity: string = decoded.identity;
@@ -30,13 +29,13 @@ export const decodeAnalyticsCookie = (rawCookie: string): AnalyticsConsent => {
       identity,
     };
   } catch {
-    return defaultConsent;
+    return null;
   }
 };
 
 export const getAnalyticsConsentCookie = (): AnalyticsConsent | null => {
   const rawConsentCookie = getCookieValue(ANALYTICS_COOKIE_NAME);
-  if (rawConsentCookie === '') {
+  if (!rawConsentCookie) {
     return null;
   }
   return decodeAnalyticsCookie(rawConsentCookie);

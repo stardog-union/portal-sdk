@@ -13,10 +13,10 @@ export type ConnectionCookie = {
 };
 
 export const decodeConnectionCookie = (
-  rawCookie: string
+  rawConnectionCookie: string
 ): ConnectionCookie | null => {
   try {
-    const decoded = JSON.parse(atob(rawCookie));
+    const decoded = JSON.parse(atob(rawConnectionCookie));
 
     const username: string = decoded.username;
     const endpoint: string = decoded.endpoint;
@@ -44,9 +44,9 @@ export const decodeConnectionCookie = (
 };
 
 export const getConnectionCookie = (): ConnectionCookie | null => {
-  const rawCookie = getCookieValue(CONNECTION_COOKIE_NAME);
-  if (!rawCookie) {
+  const rawConnectionCookie = getCookieValue(CONNECTION_COOKIE_NAME);
+  if (!rawConnectionCookie) {
     return null;
   }
-  return decodeConnectionCookie(rawCookie);
+  return decodeConnectionCookie(rawConnectionCookie);
 };
