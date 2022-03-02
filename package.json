@@ -7,6 +7,7 @@
   "scripts": {
     "generate": "graphql-codegen --config codegen.yml && yarn format",
     "test": "ts-node ./example.ts",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write ."
   },
   "repository": "git+https://github.com/stardog-union/portal-sdk.git",
