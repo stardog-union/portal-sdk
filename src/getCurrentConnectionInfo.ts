@@ -9,22 +9,12 @@ export type ConnectionInfo = {
 export const getCurrentConnectionInfo = (
   window: Window
 ): ConnectionInfo | null => {
-  const urlPathRegex =
-    /^\/u\/(?<connectionIndex>[0-9]+)\/(?<productWithSlash>.+?\/)?/;
+  const urlPathRegex = /^\/u\/(?<connectionIndex>[0-9]+)\/(?<product>[^\/]+)?/;
   const currentMatch = window.location.pathname.match(urlPathRegex);
   if (currentMatch?.groups) {
-    const connectionIndex = Number.parseInt(
-      currentMatch.groups.connectionIndex
-    );
-
-    const productWithSlash = currentMatch.groups.productWithSlash as
-      | string
-      | undefined;
-    const product = productWithSlash?.slice(0, productWithSlash.length - 1);
-
     return {
-      connectionIndex,
-      product,
+      connectionIndex: Number.parseInt(currentMatch.groups.connectionIndex),
+      product: currentMatch.groups.product as string | undefined,
     };
   }
 
