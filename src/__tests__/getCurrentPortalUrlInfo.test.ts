@@ -1,21 +1,19 @@
 import { getCurrentConnectionInfo } from '../getCurrentConnectionInfo';
 
-const windowFixture = {
-  location: {
-    hash: '#/',
-    host: 'localhost:8080',
-    hostname: 'localhost',
-    href: 'http://localhost:8080/u/9/explorer/#/',
-    origin: 'http://localhost:8080',
-    pathname: '/u/9/explorer/',
-    port: '8080',
-    protocol: 'http:',
-  },
-} as any as Window;
+const locationFixture = {
+  hash: '#/',
+  host: 'localhost:8080',
+  hostname: 'localhost',
+  href: 'http://localhost:8080/u/9/explorer/#/',
+  origin: 'http://localhost:8080',
+  pathname: '/u/9/explorer/',
+  port: '8080',
+  protocol: 'http:',
+} as Window['location'];
 
 describe('getCurrentConnectionInfo', () => {
   it('returns connectionIndex and product of current valid url', () => {
-    const window = { ...windowFixture };
+    const window = { location: { ...locationFixture } } as any as Window;
 
     const info = getCurrentConnectionInfo(window);
     expect(info).toBeTruthy();
@@ -24,7 +22,7 @@ describe('getCurrentConnectionInfo', () => {
   });
 
   it('returns correct info for missing-product url', () => {
-    const window = { ...windowFixture };
+    const window = { location: { ...locationFixture } } as any as Window;
 
     expect(getCurrentConnectionInfo(window)).toBeTruthy();
 
@@ -37,7 +35,7 @@ describe('getCurrentConnectionInfo', () => {
   });
 
   it('returns null for invalid paths', () => {
-    const window = { ...windowFixture };
+    const window = { location: { ...locationFixture } } as any as Window;
 
     expect(getCurrentConnectionInfo(window)).toBeTruthy();
 
