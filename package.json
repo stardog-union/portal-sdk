@@ -5,6 +5,7 @@
   "private": true,
   "main": "index.ts",
   "scripts": {
+    "build": "rm -rf ./dist/ && tsc --build ./tsconfig.build.json",
     "generate": "graphql-codegen --config codegen.yml && yarn format",
     "test": "jest",
     "typecheck": "tsc --noEmit",
