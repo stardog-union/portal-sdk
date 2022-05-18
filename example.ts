@@ -5,9 +5,8 @@ const defaultEndpoint = 'https://cloud.stardog.com/api/graphql';
 
 // This is just because node.js does not have atob and browsers do not have Buffer!!
 if (typeof atob === 'undefined') {
-  global.atob = function (b64Encoded) {
-    return Buffer.from(b64Encoded, 'base64').toString('binary');
-  };
+  global.atob = (b64Encoded: string) =>
+    Buffer.from(b64Encoded, 'base64').toString('binary');
 }
 
 async function main() {
