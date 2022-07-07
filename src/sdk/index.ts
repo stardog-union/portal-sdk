@@ -24,6 +24,7 @@ export type AddConnectionInput = {
   endpoint: Scalars['String'];
   name: Scalars['String'];
   token?: InputMaybe<Scalars['String']>;
+  useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
   useSSO?: InputMaybe<Scalars['Boolean']>;
   username?: InputMaybe<Scalars['String']>;
 };
@@ -36,6 +37,18 @@ export type BillingSession = {
 
 export type BillingSessionInput = {
   name?: InputMaybe<Scalars['String']>;
+};
+
+export type CancelCloudInput = {
+  cloud_id: Scalars['String'];
+  connection_id: Scalars['String'];
+};
+
+export type CheckoutLineItem = {
+  flavor: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  quantity: Scalars['Int'];
 };
 
 export type CloudCleanupInput = {
@@ -59,6 +72,7 @@ export type CloudFlavor = {
 /** Saved Connection info for a Stardog instance */
 export type Connection = {
   __typename?: 'Connection';
+  cloud?: Maybe<StardogCloud>;
   dashboard?: Maybe<Scalars['String']>;
   endpoint: Scalars['String'];
   id: Scalars['ID'];
@@ -71,6 +85,7 @@ export type Connection = {
   shouldShowDesigner?: Maybe<Scalars['Boolean']>;
   stripeSubscription?: Maybe<PurchaseSession>;
   token?: Maybe<Scalars['String']>;
+  useBrowserAuth?: Maybe<Scalars['Boolean']>;
   useSSO?: Maybe<Scalars['Boolean']>;
   user?: Maybe<User>;
   username?: Maybe<Scalars['String']>;
@@ -88,6 +103,7 @@ export type EditConnectionInput = {
   id: Scalars['ID'];
   name?: InputMaybe<Scalars['String']>;
   token?: InputMaybe<Scalars['String']>;
+  useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
   useSSO?: InputMaybe<Scalars['Boolean']>;
   username?: InputMaybe<Scalars['String']>;
 };
@@ -100,22 +116,44 @@ export type ExampleConfig = {
   properties: Scalars['String'];
 };
 
+/** Generic response type to handle reporting success. */
+export type GenericResponse = {
+  __typename?: 'GenericResponse';
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
 /** Available mutations */
 export type Mutation = {
   __typename?: 'Mutation';
   addConnection?: Maybe<Connection>;
   addStardogFree?: Maybe<StardogFree>;
+  cancelCloud?: Maybe<GenericResponse>;
+  checkoutCart?: Maybe<BillingSession>;
   deleteCloud?: Maybe<DeletionResponse>;
   deleteConnection?: Maybe<DeletionResponse>;
   editConnection?: Maybe<Connection>;
   generateConfiguration?: Maybe<ExampleConfig>;
-  startBillingSession?: Maybe<BillingSession>;
+  getStripeSessionUrl?: Maybe<BillingSession>;
+  resendEmail?: Maybe<GenericResponse>;
+  updatePartnerConnection?: Maybe<GenericResponse>;
   updateProfile?: Maybe<User>;
 };
 
 /** Available mutations */
 export type MutationAddConnectionArgs = {
   input: AddConnectionInput;
+};
+
+/** Available mutations */
+export type MutationCancelCloudArgs = {
+  input: CancelCloudInput;
+};
+
+/** Available mutations */
+export type MutationCheckoutCartArgs = {
+  addOns?: InputMaybe<Array<InputMaybe<CheckoutLineItem>>>;
+  item: CheckoutLineItem;
 };
 
 /** Available mutations */
@@ -139,8 +177,8 @@ export type MutationGenerateConfigurationArgs = {
 };
 
 /** Available mutations */
-export type MutationStartBillingSessionArgs = {
-  input: BillingSessionInput;
+export type MutationUpdatePartnerConnectionArgs = {
+  input: UpdatePartnerConnectionInput;
 };
 
 /** Available mutations */
@@ -161,6 +199,21 @@ export type OAuthToken = {
   user: User;
 };
 
+/** Databricks Partner Information */
+export type PartnerConnectionDetail = {
+  __typename?: 'PartnerConnectionDetail';
+  connection_id?: Maybe<Scalars['String']>;
+  databricks_connection_name?: Maybe<Scalars['String']>;
+  databricks_personal_token_id?: Maybe<Scalars['String']>;
+  databricks_workspace_id?: Maybe<Scalars['String']>;
+  is_configured_resources?: Maybe<Scalars['Boolean']>;
+  jdbc_url?: Maybe<Scalars['String']>;
+  stardog_server_connection?: Maybe<Connection>;
+  user_email?: Maybe<Scalars['String']>;
+  user_first_name?: Maybe<Scalars['String']>;
+  workspace_url?: Maybe<Scalars['String']>;
+};
+
 export type ProfileInput = {
   company: Scalars['String'];
   first_name: Scalars['String'];
@@ -172,6 +225,7 @@ export type ProfileInput = {
 
 export type PurchaseSession = {
   __typename?: 'PurchaseSession';
+  isExpired?: Maybe<Scalars['Boolean']>;
   isWaitingForPayment?: Maybe<Scalars['Boolean']>;
   status?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
@@ -186,11 +240,14 @@ export type Query = {
   getConnectionByIndex?: Maybe<Connection>;
   getStardogCloud?: Maybe<StardogCloud>;
   getStardogFree?: Maybe<StardogFree>;
-  getStripeSubscriptionOrderSession?: Maybe<PurchaseSession>;
+  getStripePrices?: Maybe<Array<Maybe<StripePrice>>>;
   getStripeSubscriptionStatus?: Maybe<StripeSubscriptionStatus>;
+  getUserCurrentPartnerConnection?: Maybe<PartnerConnectionDetail>;
   listConnections?: Maybe<Array<Maybe<Connection>>>;
   listStardogCloud?: Maybe<Array<Maybe<StardogCloud>>>;
   profile?: Maybe<User>;
+  settings: Settings;
+  userPartnerConnections?: Maybe<Array<Maybe<PartnerConnectionDetail>>>;
 };
 
 /** Available queries */
@@ -214,13 +271,13 @@ export type QueryGetStardogCloudArgs = {
 };
 
 /** Available queries */
-export type QueryGetStripeSubscriptionOrderSessionArgs = {
+export type QueryGetStripeSubscriptionStatusArgs = {
   cloudName: Scalars['String'];
 };
 
 /** Available queries */
-export type QueryGetStripeSubscriptionStatusArgs = {
-  cloudName: Scalars['String'];
+export type QueryListStardogCloudArgs = {
+  inactive_days?: InputMaybe<Scalars['Int']>;
 };
 
 /** Contains the counts of available cloud resources to sell. */
@@ -238,6 +295,23 @@ export type Quota = {
   total?: Maybe<Scalars['Int']>;
 };
 
+/** Settings, these are settings that control the front end display */
+export type Settings = {
+  __typename?: 'Settings';
+  auth0Auth: Scalars['Boolean'];
+  azureAuth: Scalars['Boolean'];
+  baseURL: Scalars['String'];
+  designerVersion: Scalars['String'];
+  explorerVersion: Scalars['String'];
+  friendlyName: Scalars['String'];
+  googleAuth: Scalars['Boolean'];
+  openidAuth: Scalars['Boolean'];
+  passwordAuth: Scalars['Boolean'];
+  portal: Scalars['Boolean'];
+  stardogEndpoint: Scalars['String'];
+  studioVersion: Scalars['String'];
+};
+
 /** Stardog Cloud, represents an instance of Cloud that is owned by the user */
 export type StardogCloud = {
   __typename?: 'StardogCloud';
@@ -247,6 +321,8 @@ export type StardogCloud = {
   flavor?: Maybe<CloudFlavor>;
   id?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
+  owner?: Maybe<User>;
+  status?: Maybe<Scalars['String']>;
   updated?: Maybe<Scalars['String']>;
 };
 
@@ -277,13 +353,39 @@ export type StripeCustomer = {
   __typename?: 'StripeCustomer';
   cloud_quota?: Maybe<Quota>;
   customer_id?: Maybe<Scalars['String']>;
-  customer_portal_url?: Maybe<Scalars['String']>;
   is_cloud_quota_breached?: Maybe<Scalars['Boolean']>;
+};
+
+export type StripePrice = {
+  __typename?: 'StripePrice';
+  amount?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  nickname?: Maybe<Scalars['String']>;
+  product_info?: Maybe<StripeProduct>;
+};
+
+export type StripeProduct = {
+  __typename?: 'StripeProduct';
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  metadata?: Maybe<StripeProductMetadata>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type StripeProductMetadata = {
+  __typename?: 'StripeProductMetadata';
+  flavor?: Maybe<Scalars['String']>;
 };
 
 export type StripeSubscriptionStatus = {
   __typename?: 'StripeSubscriptionStatus';
   status: Scalars['String'];
+};
+
+export type UpdatePartnerConnectionInput = {
+  connection_id: Scalars['String'];
+  databricks_connection_name: Scalars['String'];
+  stardog_connection_id: Scalars['String'];
 };
 
 /**
@@ -292,15 +394,20 @@ export type StripeSubscriptionStatus = {
  */
 export type User = {
   __typename?: 'User';
+  can_provision_cloud?: Maybe<Scalars['Boolean']>;
   company?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   first_name?: Maybe<Scalars['String']>;
+  has_stardog_free?: Maybe<Scalars['Boolean']>;
   has_updated_profile?: Maybe<Scalars['Boolean']>;
   id?: Maybe<Scalars['ID']>;
   is_authenticated: Scalars['Boolean'];
+  is_databricks_user?: Maybe<Scalars['Boolean']>;
   is_ephemeral?: Maybe<Scalars['Boolean']>;
+  is_staff?: Maybe<Scalars['Boolean']>;
   is_superuser?: Maybe<Scalars['Boolean']>;
   is_verified?: Maybe<Scalars['Boolean']>;
+  last_login?: Maybe<Scalars['String']>;
   last_name?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
   stripe_customer?: Maybe<StripeCustomer>;
@@ -326,6 +433,7 @@ export type ListConnectionsQuery = {
     isStardogCloud?: boolean | null;
     isStardogFree?: boolean | null;
     isAllocating?: boolean | null;
+    useBrowserAuth?: boolean | null;
     useSSO?: boolean | null;
   } | null> | null;
 };
@@ -361,6 +469,7 @@ export const ListConnectionsDocument = `
     isStardogCloud
     isStardogFree
     isAllocating
+    useBrowserAuth
     useSSO
   }
 }
