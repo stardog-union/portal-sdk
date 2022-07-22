@@ -78,7 +78,7 @@ The overall process of releasing should go as follows:
 3. Push everything to GitHub using `git push --set-upstream origin release/x.x.x`.
 4. Create a PR with the intention to merge `release/x.x.x` into `main`.
 5. If status checks and approvals are satisfied, merge `release/x.x.x` into `main`.
-6. On the Github page for the repo, click "Draft a new release" on the `Releases` section on the top.
+6. On the Github page for the repo, click on "Releases" on the top, then "Draft a new release".
 7. Create a new release with a new tag `vx.x.x` and corresponding title.
 8. Click 'Auto-generate release notes' and check the release notes.
 9. If everything seems fine, publish the release!
