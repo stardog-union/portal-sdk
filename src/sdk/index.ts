@@ -18,6 +18,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Datetime: any;
 };
 
 export type AddConnectionInput = {
@@ -127,6 +128,7 @@ export type GenericResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   addConnection?: Maybe<Connection>;
+  addShare?: Maybe<Share>;
   addStardogFree?: Maybe<StardogFree>;
   cancelCloud?: Maybe<GenericResponse>;
   checkoutCart?: Maybe<BillingSession>;
@@ -135,6 +137,7 @@ export type Mutation = {
   editConnection?: Maybe<Connection>;
   generateConfiguration?: Maybe<ExampleConfig>;
   getStripeSessionUrl?: Maybe<BillingSession>;
+  removePartnerConnection?: Maybe<GenericResponse>;
   resendEmail?: Maybe<GenericResponse>;
   updatePartnerConnection?: Maybe<GenericResponse>;
   updateProfile?: Maybe<User>;
@@ -143,6 +146,11 @@ export type Mutation = {
 /** Available mutations */
 export type MutationAddConnectionArgs = {
   input: AddConnectionInput;
+};
+
+/** Available mutations */
+export type MutationAddShareArgs = {
+  input: ShareInput;
 };
 
 /** Available mutations */
@@ -177,6 +185,11 @@ export type MutationGenerateConfigurationArgs = {
 };
 
 /** Available mutations */
+export type MutationRemovePartnerConnectionArgs = {
+  input: RemovePartnerConnectionInput;
+};
+
+/** Available mutations */
 export type MutationUpdatePartnerConnectionArgs = {
   input: UpdatePartnerConnectionInput;
 };
@@ -206,6 +219,7 @@ export type PartnerConnectionDetail = {
   databricks_connection_name?: Maybe<Scalars['String']>;
   databricks_personal_token_id?: Maybe<Scalars['String']>;
   databricks_workspace_id?: Maybe<Scalars['String']>;
+  http_path?: Maybe<Scalars['String']>;
   is_configured_resources?: Maybe<Scalars['Boolean']>;
   jdbc_url?: Maybe<Scalars['String']>;
   stardog_server_connection?: Maybe<Connection>;
@@ -238,12 +252,14 @@ export type Query = {
   generateToken?: Maybe<OAuthToken>;
   getConnection?: Maybe<Connection>;
   getConnectionByIndex?: Maybe<Connection>;
+  getShareByShortHash?: Maybe<Share>;
   getStardogCloud?: Maybe<StardogCloud>;
   getStardogFree?: Maybe<StardogFree>;
   getStripePrices?: Maybe<Array<Maybe<StripePrice>>>;
   getStripeSubscriptionStatus?: Maybe<StripeSubscriptionStatus>;
   getUserCurrentPartnerConnection?: Maybe<PartnerConnectionDetail>;
   listConnections?: Maybe<Array<Maybe<Connection>>>;
+  listInactiveClouds?: Maybe<Array<Maybe<StardogCloud>>>;
   listStardogCloud?: Maybe<Array<Maybe<StardogCloud>>>;
   profile?: Maybe<User>;
   settings: Settings;
@@ -266,6 +282,11 @@ export type QueryGetConnectionByIndexArgs = {
 };
 
 /** Available queries */
+export type QueryGetShareByShortHashArgs = {
+  shortHash: Scalars['String'];
+};
+
+/** Available queries */
 export type QueryGetStardogCloudArgs = {
   pk: Scalars['String'];
 };
@@ -273,6 +294,11 @@ export type QueryGetStardogCloudArgs = {
 /** Available queries */
 export type QueryGetStripeSubscriptionStatusArgs = {
   cloudName: Scalars['String'];
+};
+
+/** Available queries */
+export type QueryListInactiveCloudsArgs = {
+  flavor?: InputMaybe<Scalars['String']>;
 };
 
 /** Available queries */
@@ -295,6 +321,10 @@ export type Quota = {
   total?: Maybe<Scalars['Int']>;
 };
 
+export type RemovePartnerConnectionInput = {
+  connection_id: Scalars['String'];
+};
+
 /** Settings, these are settings that control the front end display */
 export type Settings = {
   __typename?: 'Settings';
@@ -310,6 +340,25 @@ export type Settings = {
   portal: Scalars['Boolean'];
   stardogEndpoint: Scalars['String'];
   studioVersion: Scalars['String'];
+};
+
+/** Share URL, short urls for sharing */
+export type Share = {
+  __typename?: 'Share';
+  endpoint?: Maybe<Scalars['String']>;
+  expiration?: Maybe<Scalars['Datetime']>;
+  last_used?: Maybe<Scalars['String']>;
+  lookup_count?: Maybe<Scalars['Int']>;
+  service?: Maybe<Scalars['String']>;
+  short_url?: Maybe<Scalars['String']>;
+  target_path?: Maybe<Scalars['String']>;
+};
+
+export type ShareInput = {
+  endpoint: Scalars['String'];
+  expires: Scalars['Int'];
+  service: Scalars['String'];
+  target_path: Scalars['String'];
 };
 
 /** Stardog Cloud, represents an instance of Cloud that is owned by the user */
@@ -417,6 +466,22 @@ export type User = {
   username: Scalars['String'];
 };
 
+export type AddShareMutationVariables = Exact<{
+  input: ShareInput;
+}>;
+
+export type AddShareMutation = {
+  __typename?: 'Mutation';
+  addShare?: {
+    __typename?: 'Share';
+    short_url?: string | null;
+    target_path?: string | null;
+    endpoint?: string | null;
+    service?: string | null;
+    expiration?: any | null;
+  } | null;
+};
+
 export type ListConnectionsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ListConnectionsQuery = {
@@ -456,6 +521,17 @@ export type ProfileQuery = {
   } | null;
 };
 
+export const AddShareDocument = `
+    mutation addShare($input: ShareInput!) {
+  addShare(input: $input) {
+    short_url
+    target_path
+    endpoint
+    service
+    expiration
+  }
+}
+    `;
 export const ListConnectionsDocument = `
     query listConnections {
   listConnections {
@@ -502,6 +578,19 @@ export function getSdk(
   withWrapper: SdkFunctionWrapper = defaultWrapper
 ) {
   return {
+    addShare(
+      variables: AddShareMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<AddShareMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<AddShareMutation>(AddShareDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'addShare'
+      );
+    },
     listConnections(
       variables?: ListConnectionsQueryVariables,
       requestHeaders?: Dom.RequestInit['headers']
