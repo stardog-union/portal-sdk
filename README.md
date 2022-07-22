@@ -68,3 +68,17 @@ GraphQL Profile: {
 }
 ✨  Done in 2.34s.
 ```
+
+### Releases
+
+The overall process of releasing should go as follows:
+
+1. Create a branch from `main` named `release/x.x.x` (where `x.x.x` is the version).
+2. Update the yarn version by running `yarn version --new-version x.x.x`.
+3. Push everything to GitHub using `git push --set-upstream origin release/x.x.x`.
+4. Create a PR with the intention to merge `release/x.x.x` into `main`.
+5. If status checks and approvals are satisfied, merge `release/x.x.x` into `main`.
+6. On the Github page for the repo, click "Create a new release" on the `Releases` section on the top.
+7. Create a new release with a new tag `vx.x.x` and corresponding title.
+8. Click 'Auto-generate release notes' and check the release notes.
+9. If everything seems fine, publish the release!
