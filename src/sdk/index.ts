@@ -18,7 +18,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  Datetime: any;
+  Datetime: string;
 };
 
 export type AddConnectionInput = {
@@ -259,6 +259,7 @@ export type Query = {
   getStripeSubscriptionStatus?: Maybe<StripeSubscriptionStatus>;
   getUserCurrentPartnerConnection?: Maybe<PartnerConnectionDetail>;
   listConnections?: Maybe<Array<Maybe<Connection>>>;
+  listConnectionsByEndpoint?: Maybe<Array<Maybe<Connection>>>;
   listInactiveClouds?: Maybe<Array<Maybe<StardogCloud>>>;
   listStardogCloud?: Maybe<Array<Maybe<StardogCloud>>>;
   profile?: Maybe<User>;
@@ -294,6 +295,11 @@ export type QueryGetStardogCloudArgs = {
 /** Available queries */
 export type QueryGetStripeSubscriptionStatusArgs = {
   cloudName: Scalars['String'];
+};
+
+/** Available queries */
+export type QueryListConnectionsByEndpointArgs = {
+  endpoint: Scalars['String'];
 };
 
 /** Available queries */
@@ -347,11 +353,12 @@ export type Share = {
   __typename?: 'Share';
   endpoint?: Maybe<Scalars['String']>;
   expiration?: Maybe<Scalars['Datetime']>;
-  last_used?: Maybe<Scalars['String']>;
+  last_accessed?: Maybe<Scalars['Datetime']>;
   lookup_count?: Maybe<Scalars['Int']>;
   service?: Maybe<Scalars['String']>;
   short_url?: Maybe<Scalars['String']>;
   target_path?: Maybe<Scalars['String']>;
+  timestamp?: Maybe<Scalars['Datetime']>;
 };
 
 export type ShareInput = {
@@ -478,7 +485,7 @@ export type AddShareMutation = {
     target_path?: string | null;
     endpoint?: string | null;
     service?: string | null;
-    expiration?: any | null;
+    expiration?: string | null;
   } | null;
 };
 
