@@ -9,3 +9,5 @@ generates:
       - typescript-graphql-request
     config:
       documentMode: string
+      scalars:
+        Datetime: string
