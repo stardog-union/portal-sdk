@@ -1,4 +1,6 @@
 # Portal SDK
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstardog-union%2Fportal-sdk.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstardog-union%2Fportal-sdk?ref=badge_shield)
+
 
 This is a collection of tools to share information between the front end applications and the portal via graphql.
 
@@ -84,3 +86,7 @@ The overall process of releasing should go as follows:
 7. Create a new release with a new tag `vx.x.x` and corresponding title.
 8. Click 'Auto-generate release notes' and check the release notes.
 9. If everything seems fine, publish the release!
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstardog-union%2Fportal-sdk.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstardog-union%2Fportal-sdk?ref=badge_large)
