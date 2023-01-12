@@ -1,6 +1,6 @@
 # Portal SDK
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstardog-union%2Fportal-sdk.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstardog-union%2Fportal-sdk?ref=badge_shield)
 
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstardog-union%2Fportal-sdk.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstardog-union%2Fportal-sdk?ref=badge_shield)
 
 This is a collection of tools to share information between the front end applications and the portal via graphql.
 
@@ -25,8 +25,8 @@ We use GraphQL for all the data communication between the applications and the b
 yarn generate
 ```
 
-Fix any errors and commit your changes  
-  
+Fix any errors and commit your changes
+
 **NOTE**: By default, this will use the schema that is currently deployed to production (https://cloud.stardog.com/api/graphql). If you need to generate from a schema that isn't in production yet, temporarily modify `codegen.yml` to point it at an updated schema url.
 
 ## Example usage
@@ -87,6 +87,6 @@ The overall process of releasing should go as follows:
 8. Click 'Auto-generate release notes' and check the release notes.
 9. If everything seems fine, publish the release!
 
-
 ## License
+
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstardog-union%2Fportal-sdk.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstardog-union%2Fportal-sdk?ref=badge_large)
