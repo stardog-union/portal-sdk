@@ -30,6 +30,20 @@ export type AddConnectionInput = {
   username?: InputMaybe<Scalars['String']>;
 };
 
+/** ArchivedCloud, represents an archived Stardog Cloud instance */
+export type ArchivedCloud = {
+  __typename?: 'ArchivedCloud';
+  bi_endpoint?: Maybe<Scalars['String']>;
+  created?: Maybe<Scalars['String']>;
+  customer_ref?: Maybe<Scalars['String']>;
+  endpoint?: Maybe<Scalars['String']>;
+  flavor?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['ID']>;
+  name?: Maybe<Scalars['String']>;
+  payment_ref?: Maybe<Scalars['String']>;
+  region?: Maybe<Scalars['String']>;
+};
+
 export type BillingSession = {
   __typename?: 'BillingSession';
   session_id?: Maybe<Scalars['String']>;
@@ -86,6 +100,7 @@ export type Connection = {
   shouldShowDesigner?: Maybe<Scalars['Boolean']>;
   stripeSubscription?: Maybe<PurchaseSession>;
   token?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
   useBrowserAuth?: Maybe<Scalars['Boolean']>;
   useSSO?: Maybe<Scalars['Boolean']>;
   user?: Maybe<User>;
@@ -124,10 +139,50 @@ export type GenericResponse = {
   success: Scalars['Boolean'];
 };
 
+/** Grafana settings generate Grafana dashboard URLs */
+export type GrafanaDashboardSettings = {
+  __typename?: 'GrafanaDashboardSettings';
+  id: Scalars['String'];
+  slug: Scalars['String'];
+};
+
+/** Invitation to join a Stardog Cloud instance */
+export type Invitation = {
+  __typename?: 'Invitation';
+  accepted?: Maybe<Scalars['Boolean']>;
+  created?: Maybe<Scalars['Datetime']>;
+  email?: Maybe<Scalars['String']>;
+  endpoint?: Maybe<Scalars['String']>;
+  existing_user?: Maybe<User>;
+  expires?: Maybe<Scalars['Datetime']>;
+  id?: Maybe<Scalars['ID']>;
+  role?: Maybe<Scalars['String']>;
+  sender?: Maybe<User>;
+};
+
+export type InvitationInput = {
+  email: Scalars['String'];
+  endpoint: Scalars['String'];
+  role: Scalars['String'];
+};
+
+export type InvitationVerifyInput = {
+  id: Scalars['ID'];
+};
+
+export type MarketplaceSettings = {
+  __typename?: 'MarketplaceSettings';
+  marketplaceDatabase: Scalars['String'];
+  marketplaceEndpoint: Scalars['String'];
+  marketplacePassword: Scalars['String'];
+  marketplaceUsername: Scalars['String'];
+};
+
 /** Available mutations */
 export type Mutation = {
   __typename?: 'Mutation';
   addConnection?: Maybe<Connection>;
+  addInvitation?: Maybe<GenericResponse>;
   addShare?: Maybe<Share>;
   addStardogFree?: Maybe<StardogFree>;
   cancelCloud?: Maybe<GenericResponse>;
@@ -141,11 +196,17 @@ export type Mutation = {
   resendEmail?: Maybe<GenericResponse>;
   updatePartnerConnection?: Maybe<GenericResponse>;
   updateProfile?: Maybe<User>;
+  verifyInvitation?: Maybe<GenericResponse>;
 };
 
 /** Available mutations */
 export type MutationAddConnectionArgs = {
   input: AddConnectionInput;
+};
+
+/** Available mutations */
+export type MutationAddInvitationArgs = {
+  input: InvitationInput;
 };
 
 /** Available mutations */
@@ -197,6 +258,11 @@ export type MutationUpdatePartnerConnectionArgs = {
 /** Available mutations */
 export type MutationUpdateProfileArgs = {
   input?: InputMaybe<ProfileInput>;
+};
+
+/** Available mutations */
+export type MutationVerifyInvitationArgs = {
+  input: InvitationVerifyInput;
 };
 
 /**
@@ -252,17 +318,26 @@ export type Query = {
   generateToken?: Maybe<OAuthToken>;
   getConnection?: Maybe<Connection>;
   getConnectionByIndex?: Maybe<Connection>;
+  getInvitation?: Maybe<Invitation>;
   getShareByShortHash?: Maybe<Share>;
   getStardogCloud?: Maybe<StardogCloud>;
   getStardogFree?: Maybe<StardogFree>;
   getStripePrices?: Maybe<Array<Maybe<StripePrice>>>;
   getStripeSubscriptionStatus?: Maybe<StripeSubscriptionStatus>;
+  getUser?: Maybe<User>;
+  getUserArchivedClouds?: Maybe<Array<Maybe<ArchivedCloud>>>;
+  getUserClouds?: Maybe<Array<Maybe<StardogCloud>>>;
+  getUserConnections?: Maybe<Array<Maybe<Connection>>>;
   getUserCurrentPartnerConnection?: Maybe<PartnerConnectionDetail>;
+  getUserSearchDetails?: Maybe<UserSearchDetails>;
+  grafanaHighLevelDashboardSettings?: Maybe<GrafanaDashboardSettings>;
   listConnections?: Maybe<Array<Maybe<Connection>>>;
   listConnectionsByEndpoint?: Maybe<Array<Maybe<Connection>>>;
   listInactiveClouds?: Maybe<Array<Maybe<StardogCloud>>>;
   listStardogCloud?: Maybe<Array<Maybe<StardogCloud>>>;
+  marketplaceSettings?: Maybe<MarketplaceSettings>;
   profile?: Maybe<User>;
+  searchUsers?: Maybe<Array<Maybe<User>>>;
   settings: Settings;
   userPartnerConnections?: Maybe<Array<Maybe<PartnerConnectionDetail>>>;
 };
@@ -283,6 +358,11 @@ export type QueryGetConnectionByIndexArgs = {
 };
 
 /** Available queries */
+export type QueryGetInvitationArgs = {
+  id: Scalars['ID'];
+};
+
+/** Available queries */
 export type QueryGetShareByShortHashArgs = {
   shortHash: Scalars['String'];
 };
@@ -298,6 +378,31 @@ export type QueryGetStripeSubscriptionStatusArgs = {
 };
 
 /** Available queries */
+export type QueryGetUserArgs = {
+  user_id: Scalars['String'];
+};
+
+/** Available queries */
+export type QueryGetUserArchivedCloudsArgs = {
+  user_id: Scalars['String'];
+};
+
+/** Available queries */
+export type QueryGetUserCloudsArgs = {
+  user_id: Scalars['String'];
+};
+
+/** Available queries */
+export type QueryGetUserConnectionsArgs = {
+  user_id: Scalars['String'];
+};
+
+/** Available queries */
+export type QueryGetUserSearchDetailsArgs = {
+  token: Scalars['String'];
+};
+
+/** Available queries */
 export type QueryListConnectionsByEndpointArgs = {
   endpoint: Scalars['String'];
 };
@@ -310,6 +415,13 @@ export type QueryListInactiveCloudsArgs = {
 /** Available queries */
 export type QueryListStardogCloudArgs = {
   inactive_days?: InputMaybe<Scalars['Int']>;
+};
+
+/** Available queries */
+export type QuerySearchUsersArgs = {
+  limit: Scalars['Int'];
+  offset: Scalars['Int'];
+  token: Scalars['String'];
 };
 
 /** Contains the counts of available cloud resources to sell. */
@@ -337,10 +449,13 @@ export type Settings = {
   auth0Auth: Scalars['Boolean'];
   azureAuth: Scalars['Boolean'];
   baseURL: Scalars['String'];
+  dataMarketplace: Scalars['Boolean'];
   designerVersion: Scalars['String'];
   explorerVersion: Scalars['String'];
   friendlyName: Scalars['String'];
   googleAuth: Scalars['Boolean'];
+  homeFooterLinks: Scalars['Boolean'];
+  keycloakAuth: Scalars['Boolean'];
   openidAuth: Scalars['Boolean'];
   passwordAuth: Scalars['Boolean'];
   portal: Scalars['Boolean'];
@@ -378,6 +493,9 @@ export type StardogCloud = {
   id?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
   owner?: Maybe<User>;
+  payment_ref?: Maybe<Scalars['String']>;
+  price_ref?: Maybe<Scalars['String']>;
+  region?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
   updated?: Maybe<Scalars['String']>;
 };
@@ -452,6 +570,7 @@ export type User = {
   __typename?: 'User';
   can_provision_cloud?: Maybe<Scalars['Boolean']>;
   company?: Maybe<Scalars['String']>;
+  date_joined?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   first_name?: Maybe<Scalars['String']>;
   has_stardog_free?: Maybe<Scalars['Boolean']>;
@@ -460,6 +579,7 @@ export type User = {
   is_authenticated: Scalars['Boolean'];
   is_databricks_user?: Maybe<Scalars['Boolean']>;
   is_ephemeral?: Maybe<Scalars['Boolean']>;
+  is_partner_user?: Maybe<Scalars['Boolean']>;
   is_staff?: Maybe<Scalars['Boolean']>;
   is_superuser?: Maybe<Scalars['Boolean']>;
   is_verified?: Maybe<Scalars['Boolean']>;
@@ -470,7 +590,13 @@ export type User = {
   sub?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   use_case?: Maybe<Scalars['String']>;
+  userflow_signature?: Maybe<Scalars['String']>;
   username: Scalars['String'];
+};
+
+export type UserSearchDetails = {
+  __typename?: 'UserSearchDetails';
+  total?: Maybe<Scalars['Int']>;
 };
 
 export type AddShareMutationVariables = Exact<{
@@ -525,6 +651,8 @@ export type ProfileQuery = {
     use_case?: string | null;
     is_authenticated: boolean;
     is_superuser?: boolean | null;
+    userflow_signature?: string | null;
+    date_joined?: string | null;
   } | null;
 };
 
@@ -569,6 +697,8 @@ export const ProfileDocument = `
     use_case
     is_authenticated
     is_superuser
+    userflow_signature
+    date_joined
   }
 }
     `;
