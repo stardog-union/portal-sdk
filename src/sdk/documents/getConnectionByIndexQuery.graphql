@@ -1,0 +1,16 @@
+query getConnectionByIndex($index: Int!) {
+  connection: getConnectionByIndex(index: $index) {
+    id
+    index
+    dashboard
+    name
+    username
+    endpoint
+    token
+    isStardogCloud
+    isStardogFree
+    isAllocating
+    useBrowserAuth
+    useSSO
+  }
+}
