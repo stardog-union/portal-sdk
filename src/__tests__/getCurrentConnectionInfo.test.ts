@@ -24,6 +24,14 @@ describe('getCurrentConnectionInfo', () => {
     expect(info?.productPath).toBe(undefined);
   });
 
+  it('returns the demo connectionIndex for a valid demo url', () => {
+    const info = getCurrentConnectionInfoForPathname('/u/demo/explorer/');
+    expect(info).toBeTruthy();
+    expect(info?.connectionIndex).toBe(12345);
+    expect(info?.product).toBe('explorer');
+    expect(info?.productPath).toBe(undefined);
+  });
+
   it('returns the correct productPath for a valid url', () => {
     const info = getCurrentConnectionInfoForPathname(
       '/u/9/explorer/unstable/index.html'

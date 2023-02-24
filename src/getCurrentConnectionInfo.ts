@@ -20,13 +20,14 @@ export const getCurrentConnectionInfo = (
   window: Window
 ): ConnectionInfo | null => {
   const connectionIndexMatch = window.location.pathname.match(
-    /^\/u\/([0-9]+)(?:\/(.*))?$/
+    /^\/u\/([0-9]+|demo)(?:\/(.*))?$/
   );
   if (!connectionIndexMatch) {
     return null;
   }
 
-  const connectionIndex = Number.parseInt(connectionIndexMatch[1]);
+  // 12345 is the connection index for the demo connection
+  const connectionIndex = Number.parseInt(connectionIndexMatch[1].replace('demo', '12345'));
   const connectionIndexExtra = connectionIndexMatch[2];
 
   const productMatch = connectionIndexExtra?.match(/^([^\/]+)(?:\/(.*))?$/);
