@@ -160,14 +160,14 @@ export type Invitation = {
   sender?: Maybe<User>;
 };
 
+export type InvitationFlagInput = {
+  id: Scalars['ID'];
+};
+
 export type InvitationInput = {
   email: Scalars['String'];
   endpoint: Scalars['String'];
   role: Scalars['String'];
-};
-
-export type InvitationVerifyInput = {
-  id: Scalars['ID'];
 };
 
 export type MarketplaceSettings = {
@@ -181,6 +181,7 @@ export type MarketplaceSettings = {
 /** Available mutations */
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptInvitation?: Maybe<GenericResponse>;
   addConnection?: Maybe<Connection>;
   addInvitation?: Maybe<GenericResponse>;
   addShare?: Maybe<Share>;
@@ -197,6 +198,11 @@ export type Mutation = {
   updatePartnerConnection?: Maybe<GenericResponse>;
   updateProfile?: Maybe<User>;
   verifyInvitation?: Maybe<GenericResponse>;
+};
+
+/** Available mutations */
+export type MutationAcceptInvitationArgs = {
+  input: InvitationFlagInput;
 };
 
 /** Available mutations */
@@ -262,7 +268,7 @@ export type MutationUpdateProfileArgs = {
 
 /** Available mutations */
 export type MutationVerifyInvitationArgs = {
-  input: InvitationVerifyInput;
+  input: InvitationFlagInput;
 };
 
 /**
@@ -615,6 +621,29 @@ export type AddShareMutation = {
   } | null;
 };
 
+export type GetConnectionByIndexQueryVariables = Exact<{
+  index: Scalars['Int'];
+}>;
+
+export type GetConnectionByIndexQuery = {
+  __typename?: 'Query';
+  connection?: {
+    __typename?: 'Connection';
+    id: string;
+    index: number;
+    dashboard?: string | null;
+    name: string;
+    username?: string | null;
+    endpoint: string;
+    token?: string | null;
+    isStardogCloud?: boolean | null;
+    isStardogFree?: boolean | null;
+    isAllocating?: boolean | null;
+    useBrowserAuth?: boolean | null;
+    useSSO?: boolean | null;
+  } | null;
+};
+
 export type ListConnectionsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ListConnectionsQuery = {
@@ -664,6 +693,24 @@ export const AddShareDocument = `
     endpoint
     service
     expiration
+  }
+}
+    `;
+export const GetConnectionByIndexDocument = `
+    query getConnectionByIndex($index: Int!) {
+  connection: getConnectionByIndex(index: $index) {
+    id
+    index
+    dashboard
+    name
+    username
+    endpoint
+    token
+    isStardogCloud
+    isStardogFree
+    isAllocating
+    useBrowserAuth
+    useSSO
   }
 }
     `;
@@ -726,6 +773,20 @@ export function getSdk(
             ...wrappedRequestHeaders,
           }),
         'addShare'
+      );
+    },
+    getConnectionByIndex(
+      variables: GetConnectionByIndexQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<GetConnectionByIndexQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetConnectionByIndexQuery>(
+            GetConnectionByIndexDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getConnectionByIndex'
       );
     },
     listConnections(
