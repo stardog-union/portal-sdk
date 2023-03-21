@@ -2,6 +2,7 @@ import { getCookieValue } from './utils/getCookieValue';
 import { optionalTypeCheck } from './utils/optionalTypeCheck';
 
 export const CONNECTION_COOKIE_NAME = 'stardogConnection';
+export const DEMO_CONNECTION_INDEX = 12345;
 
 export type ConnectionCookie = {
   username: string;

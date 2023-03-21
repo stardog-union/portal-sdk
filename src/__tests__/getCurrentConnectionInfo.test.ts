@@ -1,4 +1,5 @@
 import { getCurrentConnectionInfo } from '../getCurrentConnectionInfo';
+import { DEMO_CONNECTION_INDEX } from '../cookies';
 
 const getCurrentConnectionInfoForPathname = (pathname: string) => {
   const location = {
@@ -27,7 +28,7 @@ describe('getCurrentConnectionInfo', () => {
   it('returns the demo connectionIndex for a valid demo url', () => {
     const info = getCurrentConnectionInfoForPathname('/u/demo/explorer/');
     expect(info).toBeTruthy();
-    expect(info?.connectionIndex).toBe(12345);
+    expect(info?.connectionIndex).toBe(DEMO_CONNECTION_INDEX);
     expect(info?.product).toBe('explorer');
     expect(info?.productPath).toBe(undefined);
   });

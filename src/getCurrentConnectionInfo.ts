@@ -1,3 +1,5 @@
+import { DEMO_CONNECTION_INDEX } from './cookies';
+
 /**
  * Information parsed out of the current url.
  *
@@ -26,8 +28,9 @@ export const getCurrentConnectionInfo = (
     return null;
   }
 
-  // 12345 is the connection index for the demo connection
-  const connectionIndex = Number.parseInt(connectionIndexMatch[1].replace('demo', '12345'));
+  const connectionIndex = Number.parseInt(
+    connectionIndexMatch[1].replace('demo', DEMO_CONNECTION_INDEX.toString())
+  );
   const connectionIndexExtra = connectionIndexMatch[2];
 
   const productMatch = connectionIndexExtra?.match(/^([^\/]+)(?:\/(.*))?$/);
