@@ -773,10 +773,15 @@ export const ProfileDocument = `
 
 export type SdkFunctionWrapper = <T>(
   action: (requestHeaders?: Record<string, string>) => Promise<T>,
-  operationName: string
+  operationName: string,
+  operationType?: string
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
+const defaultWrapper: SdkFunctionWrapper = (
+  action,
+  _operationName,
+  _operationType
+) => action();
 
 export function getSdk(
   client: GraphQLClient,
@@ -793,7 +798,8 @@ export function getSdk(
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'addShare'
+        'addShare',
+        'mutation'
       );
     },
     getConnectionByIndex(
@@ -807,7 +813,8 @@ export function getSdk(
             variables,
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
-        'getConnectionByIndex'
+        'getConnectionByIndex',
+        'query'
       );
     },
     listConnections(
@@ -821,7 +828,8 @@ export function getSdk(
             variables,
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
-        'listConnections'
+        'listConnections',
+        'query'
       );
     },
     profile(
@@ -834,7 +842,8 @@ export function getSdk(
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'profile'
+        'profile',
+        'query'
       );
     },
   };

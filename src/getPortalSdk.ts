@@ -36,7 +36,7 @@ export const getPortalSdk = () => {
       return result.listConnections.filter(
         (
           connection
-        ): connection is NonNullable<typeof result.listConnections[0]> =>
+        ): connection is NonNullable<(typeof result.listConnections)[0]> =>
           connection !== null
       );
     },
