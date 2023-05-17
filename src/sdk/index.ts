@@ -744,6 +744,7 @@ export const ProfileDocument = `
     company
     use_case
     is_authenticated
+    is_staff
     is_superuser
     userflow_signature
     date_joined
