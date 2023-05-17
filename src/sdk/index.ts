@@ -195,6 +195,7 @@ export type Mutation = {
   getStripeSessionUrl?: Maybe<BillingSession>;
   removePartnerConnection?: Maybe<GenericResponse>;
   resendEmail?: Maybe<GenericResponse>;
+  trackEvent?: Maybe<GenericResponse>;
   updatePartnerConnection?: Maybe<GenericResponse>;
   updateProfile?: Maybe<User>;
   verifyInvitation?: Maybe<GenericResponse>;
@@ -257,6 +258,11 @@ export type MutationRemovePartnerConnectionArgs = {
 };
 
 /** Available mutations */
+export type MutationTrackEventArgs = {
+  input: TrackEventInput;
+};
+
+/** Available mutations */
 export type MutationUpdatePartnerConnectionArgs = {
   input: UpdatePartnerConnectionInput;
 };
@@ -287,6 +293,7 @@ export type OAuthToken = {
 /** Databricks Partner Information */
 export type PartnerConnectionDetail = {
   __typename?: 'PartnerConnectionDetail';
+  cluster_id?: Maybe<Scalars['String']>;
   connection_id?: Maybe<Scalars['String']>;
   databricks_connection_name?: Maybe<Scalars['String']>;
   databricks_personal_token_id?: Maybe<Scalars['String']>;
@@ -301,11 +308,15 @@ export type PartnerConnectionDetail = {
 };
 
 export type ProfileInput = {
+  best_describes_company: Scalars['String'];
+  best_describes_role: Scalars['String'];
   company: Scalars['String'];
+  familiarity_with_kgs: Scalars['String'];
   first_name: Scalars['String'];
+  industry: Scalars['String'];
   last_name: Scalars['String'];
-  phone: Scalars['String'];
-  title: Scalars['String'];
+  phone?: InputMaybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
   use_case: Scalars['String'];
 };
 
@@ -562,6 +573,10 @@ export type StripeSubscriptionStatus = {
   status: Scalars['String'];
 };
 
+export type TrackEventInput = {
+  event: Scalars['String'];
+};
+
 export type UpdatePartnerConnectionInput = {
   connection_id: Scalars['String'];
   databricks_connection_name: Scalars['String'];
@@ -574,14 +589,18 @@ export type UpdatePartnerConnectionInput = {
  */
 export type User = {
   __typename?: 'User';
+  best_describes_company?: Maybe<Scalars['String']>;
+  best_describes_role?: Maybe<Scalars['String']>;
   can_provision_cloud?: Maybe<Scalars['Boolean']>;
   company?: Maybe<Scalars['String']>;
   date_joined?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
+  familiarity_with_kgs?: Maybe<Scalars['String']>;
   first_name?: Maybe<Scalars['String']>;
   has_stardog_free?: Maybe<Scalars['Boolean']>;
   has_updated_profile?: Maybe<Scalars['Boolean']>;
   id?: Maybe<Scalars['ID']>;
+  industry?: Maybe<Scalars['String']>;
   is_authenticated: Scalars['Boolean'];
   is_databricks_user?: Maybe<Scalars['Boolean']>;
   is_ephemeral?: Maybe<Scalars['Boolean']>;
@@ -679,6 +698,7 @@ export type ProfileQuery = {
     company?: string | null;
     use_case?: string | null;
     is_authenticated: boolean;
+    is_staff?: boolean | null;
     is_superuser?: boolean | null;
     userflow_signature?: string | null;
     date_joined?: string | null;
@@ -743,6 +763,7 @@ export const ProfileDocument = `
     company
     use_case
     is_authenticated
+    is_staff
     is_superuser
     userflow_signature
     date_joined
@@ -752,10 +773,15 @@ export const ProfileDocument = `
 
 export type SdkFunctionWrapper = <T>(
   action: (requestHeaders?: Record<string, string>) => Promise<T>,
-  operationName: string
+  operationName: string,
+  operationType?: string
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
+const defaultWrapper: SdkFunctionWrapper = (
+  action,
+  _operationName,
+  _operationType
+) => action();
 
 export function getSdk(
   client: GraphQLClient,
@@ -772,7 +798,8 @@ export function getSdk(
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'addShare'
+        'addShare',
+        'mutation'
       );
     },
     getConnectionByIndex(
@@ -786,7 +813,8 @@ export function getSdk(
             variables,
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
-        'getConnectionByIndex'
+        'getConnectionByIndex',
+        'query'
       );
     },
     listConnections(
@@ -800,7 +828,8 @@ export function getSdk(
             variables,
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
-        'listConnections'
+        'listConnections',
+        'query'
       );
     },
     profile(
@@ -813,7 +842,8 @@ export function getSdk(
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'profile'
+        'profile',
+        'query'
       );
     },
   };
