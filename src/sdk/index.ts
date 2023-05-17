@@ -679,6 +679,7 @@ export type ProfileQuery = {
     company?: string | null;
     use_case?: string | null;
     is_authenticated: boolean;
+    is_staff?: boolean | null;
     is_superuser?: boolean | null;
     userflow_signature?: string | null;
     date_joined?: string | null;
