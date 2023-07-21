@@ -585,6 +585,7 @@ export type StripeSubscriptionStatus = {
 };
 
 export type TrackEventInput = {
+  client_type?: InputMaybe<Scalars['String']>;
   event: Scalars['String'];
 };
 
@@ -727,6 +728,19 @@ export type ProfileQuery = {
   } | null;
 };
 
+export type TrackEventMutationVariables = Exact<{
+  input: TrackEventInput;
+}>;
+
+export type TrackEventMutation = {
+  __typename?: 'Mutation';
+  trackEvent?: {
+    __typename?: 'GenericResponse';
+    success: boolean;
+    error?: string | null;
+  } | null;
+};
+
 export const AddShareDocument = `
     mutation addShare($input: ShareInput!) {
   addShare(input: $input) {
@@ -790,6 +804,14 @@ export const ProfileDocument = `
     userflow_signature
     date_joined
     is_studio_voicebox_enabled
+  }
+}
+    `;
+export const TrackEventDocument = `
+    mutation trackEvent($input: TrackEventInput!) {
+  trackEvent(input: $input) {
+    success
+    error
   }
 }
     `;
@@ -867,6 +889,20 @@ export function getSdk(
           }),
         'profile',
         'query'
+      );
+    },
+    trackEvent(
+      variables: TrackEventMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<TrackEventMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<TrackEventMutation>(TrackEventDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'trackEvent',
+        'mutation'
       );
     },
   };

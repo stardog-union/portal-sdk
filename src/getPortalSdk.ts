@@ -2,6 +2,34 @@ import { GraphQLClient } from 'graphql-request';
 import { getConnectionCookie } from './cookies';
 import { getSdk, ShareInput } from './sdk';
 
+export enum trackingEventList {
+  CHECKOUT_FREE = 'Checkout Free Instance',
+  CHECKOUT_PAID = 'Checkout Paid Instance',
+  CLOUD_INVITE_USERS = 'Cloud invite users',
+  CONNECT_EXISTING = 'Existing Instance Connected',
+  DESIGNER_CREATE_DATA_SOURCE = 'Designer create data source',
+  DESIGNER_CREATE_PROJECT = 'Designer create project',
+  DESIGNER_DEFINE_RESOURCE_CSV = 'Designer define resource csv',
+  DESIGNER_DEFINE_RESOURCE_VIRTUAL = 'Designer define resource virtual',
+  DESIGNER_EXPORT_PROJECT = 'Designer export project',
+  DESIGNER_PUBLISH_PROJECT = 'Designer publish project',
+  EXPLORER_QUERY_BUILDER_EXECUTION = 'Explorer query builder execution',
+  EXPLORER_TEXT_BAR_SEARCH = 'Explorer text bar search',
+  STUDIO_CREATE_DATA_SOURCE = 'Studio create data source',
+  STUDIO_CREATE_MODEL = 'Studio create model',
+  STUDIO_CREATE_USER = 'Studio create user',
+  STUDIO_CREATE_VIRTUAL_GRAPH = 'Studio create virtual graph',
+  STUDIO_EDIT_DATA_SOURCE = 'Studio edit data source',
+  STUDIO_EDIT_MODEL = 'Studio edit model',
+  STUDIO_EDIT_VIRTUAL_GRAPH = 'Studio edit virtual graph',
+  STUDIO_SPARQL_QUERY_EXECUTION = 'Studio SPARQL query execution',
+  VERIFICATION_MODAL_SEEN = 'Verification modal seen',
+}
+
+export enum clientTypeList {
+  HUBSPOT = 'hubspot',
+}
+
 /** returns portal-sdk sdk object, or null if not in Portal */
 export const getPortalSdk = () => {
   const connectionCookie = getConnectionCookie();
@@ -21,6 +49,13 @@ export const getPortalSdk = () => {
     addShare: async (input: ShareInput) => {
       const result = await sdk.addShare({ input });
       return result.addShare || null;
+    },
+    TrackEvent: async (input: {
+      event: trackingEventList;
+      client_type?: clientTypeList;
+    }) => {
+      const result = await sdk.trackEvent({ input });
+      return result.trackEvent || null;
     },
     profile: async () => {
       const result = await sdk.profile();
