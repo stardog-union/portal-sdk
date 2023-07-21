@@ -2,7 +2,7 @@ import { GraphQLClient } from 'graphql-request';
 import { getConnectionCookie } from './cookies';
 import { getSdk, ShareInput } from './sdk';
 
-export enum trackingEventList {
+export enum TrackingEventList {
   CHECKOUT_FREE = 'Checkout Free Instance',
   CHECKOUT_PAID = 'Checkout Paid Instance',
   CLOUD_INVITE_USERS = 'Cloud invite users',
@@ -26,7 +26,7 @@ export enum trackingEventList {
   VERIFICATION_MODAL_SEEN = 'Verification modal seen',
 }
 
-export enum clientTypeList {
+export enum ClientTypeList {
   HUBSPOT = 'hubspot',
 }
 
@@ -50,9 +50,9 @@ export const getPortalSdk = () => {
       const result = await sdk.addShare({ input });
       return result.addShare || null;
     },
-    TrackEvent: async (input: {
-      event: trackingEventList;
-      client_type?: clientTypeList;
+    trackEvent: async (input: {
+      event: TrackingEventList;
+      client_type?: ClientTypeList;
     }) => {
       const result = await sdk.trackEvent({ input });
       return result.trackEvent || null;
