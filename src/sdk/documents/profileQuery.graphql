@@ -12,5 +12,6 @@ query profile {
     is_superuser
     userflow_signature
     date_joined
+    is_studio_voicebox_enabled
   }
 }
