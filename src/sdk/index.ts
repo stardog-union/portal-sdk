@@ -63,7 +63,7 @@ export type CheckoutLineItem = {
   flavor: Scalars['String'];
   id: Scalars['String'];
   name: Scalars['String'];
-  quantity: Scalars['Int'];
+  quantity?: InputMaybe<Scalars['Int']>;
 };
 
 export type CloudCleanupInput = {
@@ -198,6 +198,7 @@ export type Mutation = {
   trackEvent?: Maybe<GenericResponse>;
   updatePartnerConnection?: Maybe<GenericResponse>;
   updateProfile?: Maybe<User>;
+  updateUserFeatures?: Maybe<User>;
   verifyInvitation?: Maybe<GenericResponse>;
 };
 
@@ -270,6 +271,12 @@ export type MutationUpdatePartnerConnectionArgs = {
 /** Available mutations */
 export type MutationUpdateProfileArgs = {
   input?: InputMaybe<ProfileInput>;
+};
+
+/** Available mutations */
+export type MutationUpdateUserFeaturesArgs = {
+  input: UserFeaturesInput;
+  user_id: Scalars['ID'];
 };
 
 /** Available mutations */
@@ -416,6 +423,7 @@ export type QueryGetUserConnectionsArgs = {
 
 /** Available queries */
 export type QueryGetUserSearchDetailsArgs = {
+  filters?: InputMaybe<UserSearchFiltersInput>;
   token: Scalars['String'];
 };
 
@@ -436,6 +444,7 @@ export type QueryListStardogCloudArgs = {
 
 /** Available queries */
 export type QuerySearchUsersArgs = {
+  filters?: InputMaybe<UserSearchFiltersInput>;
   limit: Scalars['Int'];
   offset: Scalars['Int'];
   token: Scalars['String'];
@@ -553,6 +562,8 @@ export type StripePrice = {
   id?: Maybe<Scalars['String']>;
   nickname?: Maybe<Scalars['String']>;
   product_info?: Maybe<StripeProduct>;
+  stardog_billing_type?: Maybe<Scalars['String']>;
+  stardog_flavor?: Maybe<Scalars['String']>;
 };
 
 export type StripeProduct = {
@@ -606,6 +617,7 @@ export type User = {
   is_ephemeral?: Maybe<Scalars['Boolean']>;
   is_partner_user?: Maybe<Scalars['Boolean']>;
   is_staff?: Maybe<Scalars['Boolean']>;
+  is_studio_voicebox_enabled?: Maybe<Scalars['Boolean']>;
   is_superuser?: Maybe<Scalars['Boolean']>;
   is_verified?: Maybe<Scalars['Boolean']>;
   last_login?: Maybe<Scalars['String']>;
@@ -619,9 +631,18 @@ export type User = {
   username: Scalars['String'];
 };
 
+export type UserFeaturesInput = {
+  is_studio_voicebox_enabled: Scalars['Boolean'];
+};
+
 export type UserSearchDetails = {
   __typename?: 'UserSearchDetails';
   total?: Maybe<Scalars['Int']>;
+};
+
+export type UserSearchFiltersInput = {
+  is_staff?: InputMaybe<Scalars['Boolean']>;
+  is_studio_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type AddShareMutationVariables = Exact<{
@@ -702,6 +723,7 @@ export type ProfileQuery = {
     is_superuser?: boolean | null;
     userflow_signature?: string | null;
     date_joined?: string | null;
+    is_studio_voicebox_enabled?: boolean | null;
   } | null;
 };
 
@@ -767,6 +789,7 @@ export const ProfileDocument = `
     is_superuser
     userflow_signature
     date_joined
+    is_studio_voicebox_enabled
   }
 }
     `;
