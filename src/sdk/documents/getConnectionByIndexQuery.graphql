@@ -2,6 +2,9 @@ query getConnectionByIndex($index: Int!) {
   connection: getConnectionByIndex(index: $index) {
     id
     index
+    cloud {
+      id
+    }
     dashboard
     name
     username
