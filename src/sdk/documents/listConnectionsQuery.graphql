@@ -2,6 +2,9 @@ query listConnections {
   listConnections {
     id
     index
+    cloud {
+      id
+    }
     dashboard
     name
     username
