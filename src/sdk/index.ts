@@ -623,6 +623,7 @@ export type User = {
   is_verified?: Maybe<Scalars['Boolean']>;
   last_login?: Maybe<Scalars['String']>;
   last_name?: Maybe<Scalars['String']>;
+  needs_stardog_free?: Maybe<Scalars['Boolean']>;
   phone?: Maybe<Scalars['String']>;
   stripe_customer?: Maybe<StripeCustomer>;
   sub?: Maybe<Scalars['String']>;
