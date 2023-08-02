@@ -682,6 +682,7 @@ export type GetConnectionByIndexQuery = {
     isAllocating?: boolean | null;
     useBrowserAuth?: boolean | null;
     useSSO?: boolean | null;
+    cloud?: { __typename?: 'StardogCloud'; id?: string | null } | null;
   } | null;
 };
 
@@ -703,6 +704,7 @@ export type ListConnectionsQuery = {
     isAllocating?: boolean | null;
     useBrowserAuth?: boolean | null;
     useSSO?: boolean | null;
+    cloud?: { __typename?: 'StardogCloud'; id?: string | null } | null;
   } | null> | null;
 };
 
@@ -757,6 +759,9 @@ export const GetConnectionByIndexDocument = `
   connection: getConnectionByIndex(index: $index) {
     id
     index
+    cloud {
+      id
+    }
     dashboard
     name
     username
@@ -775,6 +780,9 @@ export const ListConnectionsDocument = `
   listConnections {
     id
     index
+    cloud {
+      id
+    }
     dashboard
     name
     username
