@@ -1,7 +1,11 @@
 import * as portalSdkImport from '../sdk';
 
 import { getConnectionCookie } from '../cookies';
-import { getPortalSdk } from '../getPortalSdk';
+import {
+  ClientTypeList,
+  TrackingEventList,
+  getPortalSdk,
+} from '../getPortalSdk';
 
 jest.mock('../sdk', () => ({
   getSdk: jest.fn(),
@@ -12,6 +16,7 @@ jest.mock('../cookies', () => ({
 }));
 
 const addShare = jest.fn(async () => ({ addShare: null }));
+const trackEvent = jest.fn(async () => ({ trackEvent: null }));
 const profile = jest.fn(async () => ({ profile: null }));
 const listConnections = jest.fn(async () => ({ listConnections: [null] }));
 const getConnectionByIndex = jest.fn(async () => ({ connection: null }));
@@ -20,6 +25,7 @@ describe('getPortalSdk', () => {
   beforeEach(() => {
     jest.spyOn(portalSdkImport, 'getSdk').mockReturnValue({
       addShare,
+      trackEvent,
       profile,
       listConnections,
       getConnectionByIndex,
@@ -60,6 +66,12 @@ describe('getPortalSdk', () => {
     };
     await sdk?.addShare(input);
     expect(addShare).toHaveBeenCalledWith({ input });
+    const eventInput = {
+      event: TrackingEventList.DESIGNER_CREATE_DATA_SOURCE,
+      client_type: ClientTypeList.HUBSPOT,
+    };
+    await sdk?.trackEvent(eventInput);
+    expect(trackEvent).toHaveBeenCalled();
 
     await sdk?.profile();
     expect(profile).toHaveBeenCalled();
