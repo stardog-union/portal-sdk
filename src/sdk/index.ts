@@ -199,6 +199,7 @@ export type Mutation = {
   updatePartnerConnection?: Maybe<GenericResponse>;
   updateProfile?: Maybe<User>;
   updateUserFeatures?: Maybe<User>;
+  upgradeCloud?: Maybe<BillingSession>;
   verifyInvitation?: Maybe<GenericResponse>;
 };
 
@@ -277,6 +278,12 @@ export type MutationUpdateProfileArgs = {
 export type MutationUpdateUserFeaturesArgs = {
   input: UserFeaturesInput;
   user_id: Scalars['ID'];
+};
+
+/** Available mutations */
+export type MutationUpgradeCloudArgs = {
+  connectionId: Scalars['ID'];
+  item: CheckoutLineItem;
 };
 
 /** Available mutations */
@@ -618,9 +625,11 @@ export type User = {
   is_ephemeral?: Maybe<Scalars['Boolean']>;
   is_partner_user?: Maybe<Scalars['Boolean']>;
   is_staff?: Maybe<Scalars['Boolean']>;
+  /** @deprecated is_studio_voicebox_enabled is deprecated. Use is_voicebox_enabled instead. */
   is_studio_voicebox_enabled?: Maybe<Scalars['Boolean']>;
   is_superuser?: Maybe<Scalars['Boolean']>;
   is_verified?: Maybe<Scalars['Boolean']>;
+  is_voicebox_enabled?: Maybe<Scalars['Boolean']>;
   last_login?: Maybe<Scalars['String']>;
   last_name?: Maybe<Scalars['String']>;
   needs_stardog_free?: Maybe<Scalars['Boolean']>;
@@ -634,7 +643,7 @@ export type User = {
 };
 
 export type UserFeaturesInput = {
-  is_studio_voicebox_enabled: Scalars['Boolean'];
+  is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UserSearchDetails = {
@@ -644,7 +653,7 @@ export type UserSearchDetails = {
 
 export type UserSearchFiltersInput = {
   is_staff?: InputMaybe<Scalars['Boolean']>;
-  is_studio_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
+  is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type AddShareMutationVariables = Exact<{
