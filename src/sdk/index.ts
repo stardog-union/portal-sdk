@@ -736,7 +736,7 @@ export type ProfileQuery = {
     is_superuser?: boolean | null;
     userflow_signature?: string | null;
     date_joined?: string | null;
-    is_studio_voicebox_enabled?: boolean | null;
+    is_voicebox_enabled?: boolean | null;
   } | null;
 };
 
@@ -821,7 +821,7 @@ export const ProfileDocument = `
     is_superuser
     userflow_signature
     date_joined
-    is_studio_voicebox_enabled
+    is_voicebox_enabled
   }
 }
     `;
