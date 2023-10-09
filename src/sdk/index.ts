@@ -487,6 +487,7 @@ export type Settings = {
   explorerVersion: Scalars['String'];
   friendlyName: Scalars['String'];
   googleAuth: Scalars['Boolean'];
+  hagertyAuth: Scalars['Boolean'];
   homeFooterLinks: Scalars['Boolean'];
   keycloakAuth: Scalars['Boolean'];
   openidAuth: Scalars['Boolean'];
@@ -625,6 +626,7 @@ export type User = {
   is_ephemeral?: Maybe<Scalars['Boolean']>;
   is_partner_user?: Maybe<Scalars['Boolean']>;
   is_staff?: Maybe<Scalars['Boolean']>;
+  is_static_voicebox?: Maybe<Scalars['Boolean']>;
   /** @deprecated is_studio_voicebox_enabled is deprecated. Use is_voicebox_enabled instead. */
   is_studio_voicebox_enabled?: Maybe<Scalars['Boolean']>;
   is_superuser?: Maybe<Scalars['Boolean']>;
@@ -643,6 +645,7 @@ export type User = {
 };
 
 export type UserFeaturesInput = {
+  is_static_voicebox?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
 };
 
