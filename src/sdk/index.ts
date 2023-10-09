@@ -721,6 +721,19 @@ export type ListConnectionsQuery = {
   } | null> | null;
 };
 
+export type MarketplaceSettingsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MarketplaceSettingsQuery = {
+  __typename?: 'Query';
+  marketplaceSettings?: {
+    __typename?: 'MarketplaceSettings';
+    marketplaceUsername: string;
+    marketplacePassword: string;
+    marketplaceEndpoint: string;
+    marketplaceDatabase: string;
+  } | null;
+};
+
 export type ProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ProfileQuery = {
@@ -807,6 +820,16 @@ export const ListConnectionsDocument = `
     isAllocating
     useBrowserAuth
     useSSO
+  }
+}
+    `;
+export const MarketplaceSettingsDocument = `
+    query marketplaceSettings {
+  marketplaceSettings {
+    marketplaceUsername
+    marketplacePassword
+    marketplaceEndpoint
+    marketplaceDatabase
   }
 }
     `;
@@ -897,6 +920,21 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'listConnections',
+        'query'
+      );
+    },
+    marketplaceSettings(
+      variables?: MarketplaceSettingsQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<MarketplaceSettingsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<MarketplaceSettingsQuery>(
+            MarketplaceSettingsDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'marketplaceSettings',
         'query'
       );
     },
