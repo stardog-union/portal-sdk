@@ -13,5 +13,6 @@ query profile {
     userflow_signature
     date_joined
     is_voicebox_enabled
+    is_static_voicebox
   }
 }

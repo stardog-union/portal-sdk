@@ -740,6 +740,7 @@ export type ProfileQuery = {
     userflow_signature?: string | null;
     date_joined?: string | null;
     is_voicebox_enabled?: boolean | null;
+    is_static_voicebox?: boolean | null;
   } | null;
 };
 
@@ -825,6 +826,7 @@ export const ProfileDocument = `
     userflow_signature
     date_joined
     is_voicebox_enabled
+    is_static_voicebox
   }
 }
     `;
