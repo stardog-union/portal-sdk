@@ -1,0 +1,8 @@
+query marketplaceSettings {
+  marketplaceSettings {
+    marketplaceUsername
+    marketplacePassword
+    marketplaceEndpoint
+    marketplaceDatabase
+  }
+}

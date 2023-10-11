@@ -1,6 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
+
 import { getConnectionCookie } from './cookies';
-import { getSdk, ShareInput } from './sdk';
+import { ShareInput, getSdk } from './sdk';
 
 export enum TrackingEventList {
   CHECKOUT_FREE = 'Checkout Free Instance',
@@ -50,16 +51,9 @@ export const getPortalSdk = () => {
       const result = await sdk.addShare({ input });
       return result.addShare || null;
     },
-    trackEvent: async (input: {
-      event: TrackingEventList;
-      client_type?: ClientTypeList;
-    }) => {
-      const result = await sdk.trackEvent({ input });
-      return result.trackEvent || null;
-    },
-    profile: async () => {
-      const result = await sdk.profile();
-      return result.profile || null;
+    getConnectionByIndex: async (index: number) => {
+      const result = await sdk.getConnectionByIndex({ index });
+      return result.connection || null;
     },
     listConnections: async () => {
       const result = await sdk.listConnections();
@@ -75,9 +69,20 @@ export const getPortalSdk = () => {
           connection !== null
       );
     },
-    getConnectionByIndex: async (index: number) => {
-      const result = await sdk.getConnectionByIndex({ index });
-      return result.connection || null;
+    marketplaceSettings: async () => {
+      const result = await sdk.marketplaceSettings();
+      return result.marketplaceSettings || null;
+    },
+    profile: async () => {
+      const result = await sdk.profile();
+      return result.profile || null;
+    },
+    trackEvent: async (input: {
+      event: TrackingEventList;
+      client_type?: ClientTypeList;
+    }) => {
+      const result = await sdk.trackEvent({ input });
+      return result.trackEvent || null;
     },
   };
 };

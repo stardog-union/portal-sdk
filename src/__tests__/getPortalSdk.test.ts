@@ -1,11 +1,10 @@
-import * as portalSdkImport from '../sdk';
-
 import { getConnectionCookie } from '../cookies';
 import {
   ClientTypeList,
   TrackingEventList,
   getPortalSdk,
 } from '../getPortalSdk';
+import * as portalSdkImport from '../sdk';
 
 jest.mock('../sdk', () => ({
   getSdk: jest.fn(),
@@ -16,19 +15,23 @@ jest.mock('../cookies', () => ({
 }));
 
 const addShare = jest.fn(async () => ({ addShare: null }));
-const trackEvent = jest.fn(async () => ({ trackEvent: null }));
-const profile = jest.fn(async () => ({ profile: null }));
-const listConnections = jest.fn(async () => ({ listConnections: [null] }));
 const getConnectionByIndex = jest.fn(async () => ({ connection: null }));
+const listConnections = jest.fn(async () => ({ listConnections: [null] }));
+const marketplaceSettings = jest.fn(async () => ({
+  marketplaceSettings: null,
+}));
+const profile = jest.fn(async () => ({ profile: null }));
+const trackEvent = jest.fn(async () => ({ trackEvent: null }));
 
 describe('getPortalSdk', () => {
   beforeEach(() => {
     jest.spyOn(portalSdkImport, 'getSdk').mockReturnValue({
       addShare,
-      trackEvent,
-      profile,
-      listConnections,
       getConnectionByIndex,
+      listConnections,
+      marketplaceSettings,
+      profile,
+      trackEvent,
     });
   });
 

@@ -487,6 +487,7 @@ export type Settings = {
   explorerVersion: Scalars['String'];
   friendlyName: Scalars['String'];
   googleAuth: Scalars['Boolean'];
+  hagertyAuth: Scalars['Boolean'];
   homeFooterLinks: Scalars['Boolean'];
   keycloakAuth: Scalars['Boolean'];
   openidAuth: Scalars['Boolean'];
@@ -625,6 +626,7 @@ export type User = {
   is_ephemeral?: Maybe<Scalars['Boolean']>;
   is_partner_user?: Maybe<Scalars['Boolean']>;
   is_staff?: Maybe<Scalars['Boolean']>;
+  is_static_voicebox?: Maybe<Scalars['Boolean']>;
   /** @deprecated is_studio_voicebox_enabled is deprecated. Use is_voicebox_enabled instead. */
   is_studio_voicebox_enabled?: Maybe<Scalars['Boolean']>;
   is_superuser?: Maybe<Scalars['Boolean']>;
@@ -643,6 +645,7 @@ export type User = {
 };
 
 export type UserFeaturesInput = {
+  is_static_voicebox?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
 };
 
@@ -718,6 +721,19 @@ export type ListConnectionsQuery = {
   } | null> | null;
 };
 
+export type MarketplaceSettingsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MarketplaceSettingsQuery = {
+  __typename?: 'Query';
+  marketplaceSettings?: {
+    __typename?: 'MarketplaceSettings';
+    marketplaceUsername: string;
+    marketplacePassword: string;
+    marketplaceEndpoint: string;
+    marketplaceDatabase: string;
+  } | null;
+};
+
 export type ProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ProfileQuery = {
@@ -737,6 +753,7 @@ export type ProfileQuery = {
     userflow_signature?: string | null;
     date_joined?: string | null;
     is_voicebox_enabled?: boolean | null;
+    is_static_voicebox?: boolean | null;
   } | null;
 };
 
@@ -806,6 +823,16 @@ export const ListConnectionsDocument = `
   }
 }
     `;
+export const MarketplaceSettingsDocument = `
+    query marketplaceSettings {
+  marketplaceSettings {
+    marketplaceUsername
+    marketplacePassword
+    marketplaceEndpoint
+    marketplaceDatabase
+  }
+}
+    `;
 export const ProfileDocument = `
     query profile {
   profile {
@@ -822,6 +849,7 @@ export const ProfileDocument = `
     userflow_signature
     date_joined
     is_voicebox_enabled
+    is_static_voicebox
   }
 }
     `;
@@ -892,6 +920,21 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'listConnections',
+        'query'
+      );
+    },
+    marketplaceSettings(
+      variables?: MarketplaceSettingsQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<MarketplaceSettingsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<MarketplaceSettingsQuery>(
+            MarketplaceSettingsDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'marketplaceSettings',
         'query'
       );
     },
