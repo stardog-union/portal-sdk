@@ -1,7 +1,6 @@
+import { getCurrentConnectionFromPortal } from '../getCurrentConnectionFromPortal';
 import * as getCurrentConnectionInfoModule from '../getCurrentConnectionInfo';
 import * as getPortalSdkModule from '../getPortalSdk';
-
-import { getCurrentConnectionFromPortal } from '../getCurrentConnectionFromPortal';
 
 const getConnectionByIndex = jest.fn();
 
@@ -11,10 +10,11 @@ describe('getCurrentConnectionFromPortal', () => {
 
     jest.spyOn(getPortalSdkModule, 'getPortalSdk').mockReturnValue({
       addShare: jest.fn(),
-      trackEvent: jest.fn(),
-      profile: jest.fn(),
-      listConnections: jest.fn(),
       getConnectionByIndex,
+      listConnections: jest.fn(),
+      marketplaceSettings: jest.fn(),
+      profile: jest.fn(),
+      trackEvent: jest.fn(),
     });
 
     jest
