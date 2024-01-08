@@ -80,6 +80,7 @@ export const getPortalSdk = () => {
     trackEvent: async (input: {
       event: TrackingEventList;
       client_type?: ClientTypeList;
+      properties?: string;
     }) => {
       const result = await sdk.trackEvent({ input });
       return result.trackEvent || null;
