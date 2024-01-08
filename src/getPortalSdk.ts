@@ -8,6 +8,10 @@ export enum TrackingEventList {
   CHECKOUT_PAID = 'Checkout Paid Instance',
   CLOUD_INVITE_USERS = 'Cloud invite users',
   CONNECT_EXISTING = 'Existing Instance Connected',
+  CLOUD_PROFILE_COMPLETED = 'Cloud profile completed',
+  CLOUD_PROFILE_UPDATED = 'Cloud profile updated',
+  CLOUD_STORED_EDGES = 'Cloud stored edges',
+  CONNECT_TO_DATASOURCE = 'Connect to datasource',
   DESIGNER_CREATE_DATA_SOURCE = 'Designer create data source',
   DESIGNER_CREATE_PROJECT = 'Designer create project',
   DESIGNER_DEFINE_RESOURCE_CSV = 'Designer define resource csv',
@@ -16,6 +20,8 @@ export enum TrackingEventList {
   DESIGNER_PUBLISH_PROJECT = 'Designer publish project',
   EXPLORER_QUERY_BUILDER_EXECUTION = 'Explorer query builder execution',
   EXPLORER_TEXT_BAR_SEARCH = 'Explorer text bar search',
+  KNOWLEDGE_KIT_USAGE = 'Knowledge kit usage',
+  KNOWLEDGE_CATALOG_ADD_DATA_CATALOG = 'Knowledge catalog add data catalog',
   STUDIO_CREATE_DATA_SOURCE = 'Studio create data source',
   STUDIO_CREATE_MODEL = 'Studio create model',
   STUDIO_CREATE_USER = 'Studio create user',
@@ -25,6 +31,7 @@ export enum TrackingEventList {
   STUDIO_EDIT_VIRTUAL_GRAPH = 'Studio edit virtual graph',
   STUDIO_SPARQL_QUERY_EXECUTION = 'Studio SPARQL query execution',
   VERIFICATION_MODAL_SEEN = 'Verification modal seen',
+  VOICEBOX_USAGE = 'Voicebox usage',
 }
 
 export enum ClientTypeList {
