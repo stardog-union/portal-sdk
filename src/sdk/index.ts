@@ -188,6 +188,7 @@ export type Mutation = {
   addStardogFree?: Maybe<StardogFree>;
   cancelCloud?: Maybe<GenericResponse>;
   checkoutCart?: Maybe<BillingSession>;
+  deleteAccount?: Maybe<DeletionResponse>;
   deleteCloud?: Maybe<DeletionResponse>;
   deleteConnection?: Maybe<DeletionResponse>;
   editConnection?: Maybe<Connection>;
@@ -595,6 +596,7 @@ export type StripeSubscriptionStatus = {
 export type TrackEventInput = {
   client_type?: InputMaybe<Scalars['String']>;
   event: Scalars['String'];
+  properties?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdatePartnerConnectionInput = {
