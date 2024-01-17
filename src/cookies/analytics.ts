@@ -1,42 +1,19 @@
-import { getCookieValue } from './utils/getCookieValue';
-import { optionalTypeCheck } from './utils/optionalTypeCheck';
-
-export const ANALYTICS_COOKIE_NAME = 'stardogAnalyticsConsent';
+/// <reference types="cookiebot-sdk" />
 
 export type AnalyticsConsent = {
-  consented: boolean;
-  identity?: string;
+  marketing: boolean;
+  preferences: boolean;
+  statistics: boolean;
 };
 
-export const decodeAnalyticsCookie = (
-  rawConsentCookie: string
-): AnalyticsConsent | null => {
-  try {
-    const decoded = JSON.parse(atob(rawConsentCookie));
-
-    const consented: boolean = decoded.consented;
-    const identity: string = decoded.identity;
-
-    if (
-      typeof consented !== 'boolean' ||
-      !optionalTypeCheck(identity, 'string')
-    ) {
-      throw new Error('invalid cookie');
-    }
-
-    return {
-      consented,
-      identity,
-    };
-  } catch {
+export const getAnalyticsConsent = (): AnalyticsConsent | null => {
+  if (!window.Cookiebot || !window.Cookiebot.hasResponse) {
     return null;
   }
-};
 
-export const getAnalyticsConsentCookie = (): AnalyticsConsent | null => {
-  const rawConsentCookie = getCookieValue(ANALYTICS_COOKIE_NAME);
-  if (!rawConsentCookie) {
-    return null;
-  }
-  return decodeAnalyticsCookie(rawConsentCookie);
+  return {
+    marketing: window.Cookiebot.consent.marketing,
+    statistics: window.Cookiebot.consent.statistics,
+    preferences: window.Cookiebot.consent.preferences,
+  };
 };
