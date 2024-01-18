@@ -1,5 +1,7 @@
 /// <reference types="cookiebot-sdk" />
 
+export const ANALYTICS_COOKIE_NAME = 'CookieConsent';
+
 export type AnalyticsConsent = {
   marketing: boolean;
   preferences: boolean;
