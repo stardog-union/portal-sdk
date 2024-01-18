@@ -62,6 +62,7 @@ describe('analytics', () => {
       });
       expect(getAnalyticsConsent()).toEqual({
         marketing: true,
+        necessary: true,
         statistics: true,
         preferences: true,
       });
