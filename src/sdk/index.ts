@@ -134,6 +134,11 @@ export type EditConnectionInput = {
   username?: InputMaybe<Scalars['String']>;
 };
 
+export type EditVoiceboxConversationInput = {
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
+};
+
 /** Example Configuration for jwt.yaml and stardog.properties */
 export type ExampleConfig = {
   __typename?: 'ExampleConfig';
@@ -206,6 +211,7 @@ export type Mutation = {
   deleteCloud?: Maybe<DeletionResponse>;
   deleteConnection?: Maybe<DeletionResponse>;
   editConnection?: Maybe<Connection>;
+  editVoiceboxConversation?: Maybe<GenericResponse>;
   generateConfiguration?: Maybe<ExampleConfig>;
   getStripeSessionUrl?: Maybe<BillingSession>;
   removePartnerConnection?: Maybe<GenericResponse>;
@@ -262,6 +268,11 @@ export type MutationDeleteConnectionArgs = {
 /** Root Mutation Type */
 export type MutationEditConnectionArgs = {
   input: EditConnectionInput;
+};
+
+/** Root Mutation Type */
+export type MutationEditVoiceboxConversationArgs = {
+  input: EditVoiceboxConversationInput;
 };
 
 /** Root Mutation Type */
@@ -711,8 +722,11 @@ export type VoiceboxConversation = {
   __typename?: 'VoiceboxConversation';
   created?: Maybe<Scalars['Datetime']>;
   id: Scalars['ID'];
+  /** The last message in the conversation that was sent by the user. */
+  last_user_message?: Maybe<VoiceboxMessage>;
   /** Message history ordered oldest to newest. */
   message_history?: Maybe<Array<Maybe<VoiceboxMessage>>>;
+  name?: Maybe<Scalars['String']>;
   updated?: Maybe<Scalars['Datetime']>;
 };
 
@@ -769,6 +783,47 @@ export type GetConnectionByIndexQuery = {
   } | null;
 };
 
+export type GetVoiceboxConversationQueryVariables = Exact<{
+  conversation_id: Scalars['String'];
+}>;
+
+export type GetVoiceboxConversationQuery = {
+  __typename?: 'Query';
+  getVoiceboxConversation?: {
+    __typename?: 'VoiceboxConversation';
+    id: string;
+    message_history?: Array<{
+      __typename?: 'VoiceboxMessage';
+      id: string;
+      content?: string | null;
+      sender?: string | null;
+      created?: string | null;
+      score?: number | null;
+      user_message_context?: {
+        __typename?: 'UserVoiceboxMessageContext';
+        id: string;
+        app?: string | null;
+        connection_id?: string | null;
+        database?: string | null;
+        named_graphs?: Array<string | null> | null;
+        model?: string | null;
+        reasoning?: boolean | null;
+      } | null;
+      system_message_context?: {
+        __typename?: 'SystemVoiceboxMessageContext';
+        id: string;
+        followup_examples?: Array<string | null> | null;
+        actions?: Array<{
+          __typename?: 'VoicboxSystemMessageAction';
+          type?: string | null;
+          label?: string | null;
+          value?: string | null;
+        } | null> | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
+
 export type ListConnectionsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ListConnectionsQuery = {
@@ -789,6 +844,22 @@ export type ListConnectionsQuery = {
     useSSO?: boolean | null;
     cloud?: { __typename?: 'StardogCloud'; id?: string | null } | null;
   } | null> | null;
+};
+
+export type ListVoiceboxConversationsQueryVariables = Exact<{
+  paging?: InputMaybe<PagingInput>;
+}>;
+
+export type ListVoiceboxConversationsQuery = {
+  __typename?: 'Query';
+  listVoiceboxConversations?: Array<{
+    __typename?: 'VoiceboxConversation';
+    id: string;
+  } | null> | null;
+  voiceboxConversationCount?: {
+    __typename?: 'ItemCount';
+    count?: number | null;
+  } | null;
 };
 
 export type MarketplaceSettingsQueryVariables = Exact<{ [key: string]: never }>;
@@ -872,6 +943,38 @@ export const GetConnectionByIndexDocument = `
   }
 }
     `;
+export const GetVoiceboxConversationDocument = `
+    query getVoiceboxConversation($conversation_id: String!) {
+  getVoiceboxConversation(conversation_id: $conversation_id) {
+    id
+    message_history {
+      id
+      content
+      sender
+      created
+      score
+      user_message_context {
+        id
+        app
+        connection_id
+        database
+        named_graphs
+        model
+        reasoning
+      }
+      system_message_context {
+        id
+        followup_examples
+        actions {
+          type
+          label
+          value
+        }
+      }
+    }
+  }
+}
+    `;
 export const ListConnectionsDocument = `
     query listConnections {
   listConnections {
@@ -890,6 +993,16 @@ export const ListConnectionsDocument = `
     isAllocating
     useBrowserAuth
     useSSO
+  }
+}
+    `;
+export const ListVoiceboxConversationsDocument = `
+    query listVoiceboxConversations($paging: PagingInput) {
+  listVoiceboxConversations(paging: $paging) {
+    id
+  }
+  voiceboxConversationCount {
+    count
   }
 }
     `;
@@ -978,6 +1091,21 @@ export function getSdk(
         'query'
       );
     },
+    getVoiceboxConversation(
+      variables: GetVoiceboxConversationQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<GetVoiceboxConversationQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetVoiceboxConversationQuery>(
+            GetVoiceboxConversationDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getVoiceboxConversation',
+        'query'
+      );
+    },
     listConnections(
       variables?: ListConnectionsQueryVariables,
       requestHeaders?: Dom.RequestInit['headers']
@@ -990,6 +1118,21 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'listConnections',
+        'query'
+      );
+    },
+    listVoiceboxConversations(
+      variables?: ListVoiceboxConversationsQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<ListVoiceboxConversationsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<ListVoiceboxConversationsQuery>(
+            ListVoiceboxConversationsDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'listVoiceboxConversations',
         'query'
       );
     },

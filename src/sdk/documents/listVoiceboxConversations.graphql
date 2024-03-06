@@ -1,0 +1,8 @@
+query listVoiceboxConversations($paging: PagingInput) {
+  listVoiceboxConversations(paging: $paging) {
+    id
+  }
+  voiceboxConversationCount {
+    count
+  }
+}

@@ -16,7 +16,14 @@ jest.mock('../cookies', () => ({
 
 const addShare = jest.fn(async () => ({ addShare: null }));
 const getConnectionByIndex = jest.fn(async () => ({ connection: null }));
+const getVoiceboxConversation = jest.fn(async () => ({
+  getVoiceboxConversation: null,
+}));
 const listConnections = jest.fn(async () => ({ listConnections: [null] }));
+const listVoiceboxConversations = jest.fn(async () => ({
+  listVoiceboxConversations: null,
+  voiceboxConversationCount: null,
+}));
 const marketplaceSettings = jest.fn(async () => ({
   marketplaceSettings: null,
 }));
@@ -28,7 +35,9 @@ describe('getPortalSdk', () => {
     jest.spyOn(portalSdkImport, 'getSdk').mockReturnValue({
       addShare,
       getConnectionByIndex,
+      getVoiceboxConversation,
       listConnections,
+      listVoiceboxConversations,
       marketplaceSettings,
       profile,
       trackEvent,
