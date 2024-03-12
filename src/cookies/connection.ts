@@ -11,6 +11,8 @@ export type ConnectionCookie = {
   // optional because older cloud versions might not contain these
   tokenEndpoint?: string;
   graphqlEndpoint?: string;
+  isPortal?: boolean;
+  isLaunchpad?: boolean;
 };
 
 export const decodeConnectionCookie = (
