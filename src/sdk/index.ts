@@ -855,6 +855,24 @@ export type ListVoiceboxConversationsQuery = {
   listVoiceboxConversations?: Array<{
     __typename?: 'VoiceboxConversation';
     id: string;
+    last_user_message?: {
+      __typename?: 'VoiceboxMessage';
+      id: string;
+      content?: string | null;
+      sender?: string | null;
+      created?: string | null;
+      score?: number | null;
+      user_message_context?: {
+        __typename?: 'UserVoiceboxMessageContext';
+        id: string;
+        app?: string | null;
+        connection_id?: string | null;
+        database?: string | null;
+        named_graphs?: Array<string | null> | null;
+        model?: string | null;
+        reasoning?: boolean | null;
+      } | null;
+    } | null;
   } | null> | null;
   voiceboxConversationCount?: {
     __typename?: 'ItemCount';
@@ -1000,6 +1018,22 @@ export const ListVoiceboxConversationsDocument = `
     query listVoiceboxConversations($paging: PagingInput) {
   listVoiceboxConversations(paging: $paging) {
     id
+    last_user_message {
+      id
+      content
+      sender
+      created
+      score
+      user_message_context {
+        id
+        app
+        connection_id
+        database
+        named_graphs
+        model
+        reasoning
+      }
+    }
   }
   voiceboxConversationCount {
     count
