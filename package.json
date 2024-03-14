@@ -21,6 +21,7 @@
     "@graphql-codegen/typescript-graphql-files-modules": "2.2.1",
     "@graphql-codegen/typescript-graphql-request": "^4.5.8",
     "@graphql-codegen/typescript-operations": "2.5.12",
+    "@types/cookiebot-sdk": "^2.43.4",
     "@types/jest": "^29.2.5",
     "@types/node": "^18.11.18",
     "graphql": "^16.8.1",
