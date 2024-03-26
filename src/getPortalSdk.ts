@@ -62,19 +62,52 @@ export const getPortalSdk = () => {
       const result = await sdk.getConnectionByIndex({ index });
       return result.connection || null;
     },
+    getVoiceboxConversation: async (conversationId: string) => {
+      const result = await sdk.getVoiceboxConversation({
+        conversation_id: conversationId,
+      });
+      if (!result.getVoiceboxConversation) {
+        return null;
+      }
+      return {
+        id: result.getVoiceboxConversation.id,
+        messages:
+          result.getVoiceboxConversation.message_history?.filter(
+            (
+              message
+            ): message is NonNullable<
+              (typeof result.getVoiceboxConversation.message_history)[0]
+            > => message !== null
+          ) || [],
+      };
+    },
     listConnections: async () => {
       const result = await sdk.listConnections();
-
       if (!result.listConnections) {
         return null;
       }
-
       return result.listConnections.filter(
         (
           connection
         ): connection is NonNullable<(typeof result.listConnections)[0]> =>
           connection !== null
       );
+    },
+    listVoiceboxConversations: async () => {
+      const result = await sdk.listVoiceboxConversations();
+      if (!result.listVoiceboxConversations) {
+        return null;
+      }
+      return {
+        conversations: result.listVoiceboxConversations.filter(
+          (
+            conversation
+          ): conversation is NonNullable<
+            (typeof result.listVoiceboxConversations)[0]
+          > => conversation !== null
+        ),
+        count: result.voiceboxConversationCount?.count || 0,
+      };
     },
     marketplaceSettings: async () => {
       const result = await sdk.marketplaceSettings();

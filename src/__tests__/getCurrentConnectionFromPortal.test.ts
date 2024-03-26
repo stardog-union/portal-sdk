@@ -11,7 +11,9 @@ describe('getCurrentConnectionFromPortal', () => {
     jest.spyOn(getPortalSdkModule, 'getPortalSdk').mockReturnValue({
       addShare: jest.fn(),
       getConnectionByIndex,
+      getVoiceboxConversation: jest.fn(),
       listConnections: jest.fn(),
+      listVoiceboxConversations: jest.fn(),
       marketplaceSettings: jest.fn(),
       profile: jest.fn(),
       trackEvent: jest.fn(),

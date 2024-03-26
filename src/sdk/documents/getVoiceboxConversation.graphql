@@ -1,0 +1,30 @@
+query getVoiceboxConversation($conversation_id: String!) {
+  getVoiceboxConversation(conversation_id: $conversation_id) {
+    id
+    message_history {
+      id
+      content
+      sender
+      created
+      score
+      user_message_context {
+        id
+        app
+        connection_id
+        database
+        named_graphs
+        model
+        reasoning
+      }
+      system_message_context {
+        id
+        followup_examples
+        actions {
+          type
+          label
+          value
+        }
+      }
+    }
+  }
+}
