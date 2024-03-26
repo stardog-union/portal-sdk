@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { decodeAnalyticsCookie, getSdk } from '.';
+import { getSdk } from '.';
 
 const defaultEndpoint = 'https://cloud.stardog.com/api/graphql';
 
@@ -17,11 +17,6 @@ async function main() {
 
   console.log(`GraphQL Connections:`, listConnections);
   console.log(`GraphQL Profile:`, profile);
-
-  const fakeCookieValue =
-    'eyJjb25zZW50ZWQiOnRydWUsImlkZW50aXR5IjoiZnJhbmtAYmFyLmNvbSJ9';
-  console.log(decodeAnalyticsCookie(fakeCookieValue));
-  console.log(decodeAnalyticsCookie('not really valid'));
 }
 
 main();
