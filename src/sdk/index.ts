@@ -19,6 +19,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   Datetime: string;
+  PositiveInt: any;
 };
 
 export type AddConnectionInput = {
@@ -28,6 +29,16 @@ export type AddConnectionInput = {
   useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
   useSSO?: InputMaybe<Scalars['Boolean']>;
   username?: InputMaybe<Scalars['String']>;
+};
+
+export type ApiToken = {
+  __typename?: 'ApiToken';
+  created: Scalars['Datetime'];
+  expires: Scalars['Datetime'];
+  id: Scalars['ID'];
+  last_used?: Maybe<Scalars['Datetime']>;
+  name?: Maybe<Scalars['String']>;
+  prefix: Scalars['String'];
 };
 
 /** ArchivedCloud, represents an archived Stardog Cloud instance */
@@ -112,6 +123,16 @@ export type Connection = {
   username?: Maybe<Scalars['String']>;
 };
 
+export type CreateApiTokenInput = {
+  expires_days: Scalars['PositiveInt'];
+  name: Scalars['String'];
+};
+
+export type CreateApiTokenResult = {
+  __typename?: 'CreateApiTokenResult';
+  secret: Scalars['String'];
+};
+
 export type CustomerSsoSettings = {
   __typename?: 'CustomerSsoSettings';
   azureProviders: Array<Maybe<AzureProvider>>;
@@ -122,6 +143,11 @@ export type DeletionResponse = {
   __typename?: 'DeletionResponse';
   error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type EditApiTokenInput = {
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
 };
 
 export type EditConnectionInput = {
@@ -207,9 +233,12 @@ export type Mutation = {
   addShare?: Maybe<Share>;
   cancelCloud?: Maybe<GenericResponse>;
   checkoutCart?: Maybe<BillingSession>;
+  createApiToken?: Maybe<CreateApiTokenResult>;
   deleteAccount?: Maybe<DeletionResponse>;
+  deleteApiToken?: Maybe<GenericResponse>;
   deleteCloud?: Maybe<DeletionResponse>;
   deleteConnection?: Maybe<DeletionResponse>;
+  editApiToken?: Maybe<GenericResponse>;
   editConnection?: Maybe<Connection>;
   editVoiceboxConversation?: Maybe<GenericResponse>;
   generateConfiguration?: Maybe<ExampleConfig>;
@@ -256,6 +285,16 @@ export type MutationCheckoutCartArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationCreateApiTokenArgs = {
+  input: CreateApiTokenInput;
+};
+
+/** Root Mutation Type */
+export type MutationDeleteApiTokenArgs = {
+  id: Scalars['ID'];
+};
+
+/** Root Mutation Type */
 export type MutationDeleteCloudArgs = {
   input: CloudCleanupInput;
 };
@@ -263,6 +302,11 @@ export type MutationDeleteCloudArgs = {
 /** Root Mutation Type */
 export type MutationDeleteConnectionArgs = {
   name: Scalars['String'];
+};
+
+/** Root Mutation Type */
+export type MutationEditApiTokenArgs = {
+  input: EditApiTokenInput;
 };
 
 /** Root Mutation Type */
@@ -377,6 +421,7 @@ export type PurchaseSession = {
 /** Root Query Type */
 export type Query = {
   __typename?: 'Query';
+  apiTokenCount?: Maybe<ItemCount>;
   checkCloudQueue?: Maybe<QueueCounts>;
   customerSsoSettings?: Maybe<CustomerSsoSettings>;
   generateToken?: Maybe<OAuthToken>;
@@ -396,6 +441,7 @@ export type Query = {
   /** Retrieve a single Voicebox conversation for the authenticated user by the conversation id. */
   getVoiceboxConversation?: Maybe<VoiceboxConversation>;
   grafanaHighLevelDashboardSettings?: Maybe<GrafanaDashboardSettings>;
+  listApiTokens?: Maybe<Array<Maybe<ApiToken>>>;
   listConnections?: Maybe<Array<Maybe<Connection>>>;
   listConnectionsByEndpoint?: Maybe<Array<Maybe<Connection>>>;
   listInactiveClouds?: Maybe<Array<Maybe<StardogCloud>>>;
@@ -481,6 +527,11 @@ export type QueryGetUserSearchDetailsArgs = {
 /** Root Query Type */
 export type QueryGetVoiceboxConversationArgs = {
   conversation_id: Scalars['String'];
+};
+
+/** Root Query Type */
+export type QueryListApiTokensArgs = {
+  paging?: InputMaybe<PagingInput>;
 };
 
 /** Root Query Type */
@@ -916,6 +967,19 @@ export type ProfileQuery = {
   } | null;
 };
 
+export type EditVoiceboxConversationMutationVariables = Exact<{
+  input: EditVoiceboxConversationInput;
+}>;
+
+export type EditVoiceboxConversationMutation = {
+  __typename?: 'Mutation';
+  editVoiceboxConversation?: {
+    __typename?: 'GenericResponse';
+    success: boolean;
+    error?: string | null;
+  } | null;
+};
+
 export type TrackEventMutationVariables = Exact<{
   input: TrackEventInput;
 }>;
@@ -1070,6 +1134,14 @@ export const ProfileDocument = `
   }
 }
     `;
+export const EditVoiceboxConversationDocument = `
+    mutation editVoiceboxConversation($input: EditVoiceboxConversationInput!) {
+  editVoiceboxConversation(input: $input) {
+    success
+    error
+  }
+}
+    `;
 export const TrackEventDocument = `
     mutation trackEvent($input: TrackEventInput!) {
   trackEvent(input: $input) {
@@ -1197,6 +1269,21 @@ export function getSdk(
           }),
         'profile',
         'query'
+      );
+    },
+    editVoiceboxConversation(
+      variables: EditVoiceboxConversationMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<EditVoiceboxConversationMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<EditVoiceboxConversationMutation>(
+            EditVoiceboxConversationDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'editVoiceboxConversation',
+        'mutation'
       );
     },
     trackEvent(

@@ -125,5 +125,11 @@ export const getPortalSdk = () => {
       const result = await sdk.trackEvent({ input });
       return result.trackEvent || null;
     },
+    editVoiceboxConversation: async (input: { id: string; name: string }) => {
+      const result = await sdk.editVoiceboxConversation({
+        input,
+      });
+      return result.editVoiceboxConversation || null;
+    },
   };
 };
