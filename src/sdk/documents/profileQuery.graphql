@@ -5,16 +5,18 @@ query profile {
     last_name
     username
 
-    # analytics setup (bones)
-    email
+    # analytics identity (bones)
     company
     date_joined
+    email
     id
     is_databricks_user
-    is_authenticated
-    is_ephemeral
     title
     use_case
+
+    # analytics setup (bones)
+    is_authenticated
+    is_ephemeral
     userflow_signature
 
     # feature flags (bones)

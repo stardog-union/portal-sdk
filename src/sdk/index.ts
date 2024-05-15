@@ -982,15 +982,15 @@ export type ProfileQuery = {
     first_name?: string | null;
     last_name?: string | null;
     username: string;
-    email?: string | null;
     company?: string | null;
     date_joined?: string | null;
+    email?: string | null;
     id?: string | null;
     is_databricks_user?: boolean | null;
-    is_authenticated: boolean;
-    is_ephemeral?: boolean | null;
     title?: string | null;
     use_case?: string | null;
+    is_authenticated: boolean;
+    is_ephemeral?: boolean | null;
     userflow_signature?: string | null;
     is_staff?: boolean | null;
     is_static_voicebox?: boolean | null;
@@ -1101,15 +1101,15 @@ export const ProfileDocument = `
     first_name
     last_name
     username
-    email
     company
     date_joined
+    email
     id
     is_databricks_user
-    is_authenticated
-    is_ephemeral
     title
     use_case
+    is_authenticated
+    is_ephemeral
     userflow_signature
     is_staff
     is_static_voicebox
