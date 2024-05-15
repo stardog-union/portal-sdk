@@ -1,6 +1,8 @@
 query listVoiceboxConversations($paging: PagingInput) {
   listVoiceboxConversations(paging: $paging) {
+    id
     last_user_message {
+      id
       user_message_context {
         connection_id
         database
