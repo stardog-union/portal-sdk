@@ -893,8 +893,10 @@ export type ListVoiceboxConversationsQuery = {
   __typename?: 'Query';
   listVoiceboxConversations?: Array<{
     __typename?: 'VoiceboxConversation';
+    id: string;
     last_user_message?: {
       __typename?: 'VoiceboxMessage';
+      id: string;
       user_message_context?: {
         __typename?: 'UserVoiceboxMessageContext';
         connection_id?: string | null;
@@ -1016,7 +1018,9 @@ export const ListConnectionsDocument = `
 export const ListVoiceboxConversationsDocument = `
     query listVoiceboxConversations($paging: PagingInput) {
   listVoiceboxConversations(paging: $paging) {
+    id
     last_user_message {
+      id
       user_message_context {
         connection_id
         database
