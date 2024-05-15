@@ -58,12 +58,6 @@ export const getPortalSdk = () => {
       const result = await sdk.addShare({ input });
       return result.addShare || null;
     },
-    editVoiceboxConversation: async (input: { id: string; name: string }) => {
-      const result = await sdk.editVoiceboxConversation({
-        input,
-      });
-      return result.editVoiceboxConversation || null;
-    },
     getConnectionByIndex: async (index: number) => {
       const result = await sdk.getConnectionByIndex({ index });
       return result.connection || null;
@@ -114,10 +108,6 @@ export const getPortalSdk = () => {
         ),
         count: result.voiceboxConversationCount?.count || 0,
       };
-    },
-    marketplaceSettings: async () => {
-      const result = await sdk.marketplaceSettings();
-      return result.marketplaceSettings || null;
     },
     profile: async () => {
       const result = await sdk.profile();

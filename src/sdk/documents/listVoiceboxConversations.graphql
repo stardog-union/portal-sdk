@@ -1,15 +1,7 @@
 query listVoiceboxConversations($paging: PagingInput) {
   listVoiceboxConversations(paging: $paging) {
-    id
     last_user_message {
-      id
-      content
-      sender
-      created
-      score
       user_message_context {
-        id
-        app
         connection_id
         database
         named_graphs
