@@ -868,14 +868,7 @@ export type AddShareMutationVariables = Exact<{
 
 export type AddShareMutation = {
   __typename?: 'Mutation';
-  addShare?: {
-    __typename?: 'Share';
-    short_url?: string | null;
-    target_path?: string | null;
-    endpoint?: string | null;
-    service?: string | null;
-    expiration?: string | null;
-  } | null;
+  addShare?: { __typename?: 'Share'; short_url?: string | null } | null;
 };
 
 export type GetConnectionByIndexQueryVariables = Exact<{
@@ -886,19 +879,14 @@ export type GetConnectionByIndexQuery = {
   __typename?: 'Query';
   connection?: {
     __typename?: 'Connection';
-    id: string;
-    index: number;
-    dashboard?: string | null;
-    name: string;
+    token?: string | null;
+    useBrowserAuth?: boolean | null;
     username?: string | null;
     endpoint: string;
-    token?: string | null;
-    isStardogCloud?: boolean | null;
-    isStardogFree?: boolean | null;
-    isAllocating?: boolean | null;
-    useBrowserAuth?: boolean | null;
-    useSSO?: boolean | null;
-    cloud?: { __typename?: 'StardogCloud'; id?: string | null } | null;
+    dashboard?: string | null;
+    id: string;
+    name: string;
+    index: number;
   } | null;
 };
 
@@ -916,11 +904,9 @@ export type GetVoiceboxConversationQuery = {
       id: string;
       content?: string | null;
       sender?: string | null;
-      created?: string | null;
       score?: number | null;
       user_message_context?: {
         __typename?: 'UserVoiceboxMessageContext';
-        id: string;
         app?: string | null;
         connection_id?: string | null;
         database?: string | null;
@@ -930,7 +916,6 @@ export type GetVoiceboxConversationQuery = {
       } | null;
       system_message_context?: {
         __typename?: 'SystemVoiceboxMessageContext';
-        id: string;
         followup_examples?: Array<string | null> | null;
         actions?: Array<{
           __typename?: 'VoicboxSystemMessageAction';
@@ -949,19 +934,14 @@ export type ListConnectionsQuery = {
   __typename?: 'Query';
   listConnections?: Array<{
     __typename?: 'Connection';
+    dashboard?: string | null;
+    endpoint: string;
     id: string;
     index: number;
-    dashboard?: string | null;
     name: string;
-    username?: string | null;
-    endpoint: string;
     token?: string | null;
-    isStardogCloud?: boolean | null;
-    isStardogFree?: boolean | null;
-    isAllocating?: boolean | null;
     useBrowserAuth?: boolean | null;
-    useSSO?: boolean | null;
-    cloud?: { __typename?: 'StardogCloud'; id?: string | null } | null;
+    username?: string | null;
   } | null> | null;
 };
 
@@ -973,18 +953,10 @@ export type ListVoiceboxConversationsQuery = {
   __typename?: 'Query';
   listVoiceboxConversations?: Array<{
     __typename?: 'VoiceboxConversation';
-    id: string;
     last_user_message?: {
       __typename?: 'VoiceboxMessage';
-      id: string;
-      content?: string | null;
-      sender?: string | null;
-      created?: string | null;
-      score?: number | null;
       user_message_context?: {
         __typename?: 'UserVoiceboxMessageContext';
-        id: string;
-        app?: string | null;
         connection_id?: string | null;
         database?: string | null;
         named_graphs?: Array<string | null> | null;
@@ -999,52 +971,28 @@ export type ListVoiceboxConversationsQuery = {
   } | null;
 };
 
-export type MarketplaceSettingsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type MarketplaceSettingsQuery = {
-  __typename?: 'Query';
-  marketplaceSettings?: {
-    __typename?: 'MarketplaceSettings';
-    marketplaceUsername: string;
-    marketplacePassword: string;
-    marketplaceEndpoint: string;
-    marketplaceDatabase: string;
-  } | null;
-};
-
 export type ProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ProfileQuery = {
   __typename?: 'Query';
   profile?: {
     __typename?: 'User';
-    id?: string | null;
-    username: string;
-    email?: string | null;
     first_name?: string | null;
     last_name?: string | null;
+    username: string;
+    email?: string | null;
     company?: string | null;
-    use_case?: string | null;
-    is_authenticated: boolean;
-    is_staff?: boolean | null;
-    is_superuser?: boolean | null;
-    userflow_signature?: string | null;
     date_joined?: string | null;
-    is_voicebox_enabled?: boolean | null;
+    id?: string | null;
+    is_databricks_user?: boolean | null;
+    is_authenticated: boolean;
+    is_ephemeral?: boolean | null;
+    title?: string | null;
+    use_case?: string | null;
+    userflow_signature?: string | null;
+    is_staff?: boolean | null;
     is_static_voicebox?: boolean | null;
-  } | null;
-};
-
-export type EditVoiceboxConversationMutationVariables = Exact<{
-  input: EditVoiceboxConversationInput;
-}>;
-
-export type EditVoiceboxConversationMutation = {
-  __typename?: 'Mutation';
-  editVoiceboxConversation?: {
-    __typename?: 'GenericResponse';
-    success: boolean;
-    error?: string | null;
+    is_voicebox_enabled?: boolean | null;
   } | null;
 };
 
@@ -1065,31 +1013,20 @@ export const AddShareDocument = `
     mutation addShare($input: ShareInput!) {
   addShare(input: $input) {
     short_url
-    target_path
-    endpoint
-    service
-    expiration
   }
 }
     `;
 export const GetConnectionByIndexDocument = `
     query getConnectionByIndex($index: Int!) {
   connection: getConnectionByIndex(index: $index) {
-    id
-    index
-    cloud {
-      id
-    }
-    dashboard
-    name
+    token
+    useBrowserAuth
     username
     endpoint
-    token
-    isStardogCloud
-    isStardogFree
-    isAllocating
-    useBrowserAuth
-    useSSO
+    dashboard
+    id
+    name
+    index
   }
 }
     `;
@@ -1101,10 +1038,8 @@ export const GetVoiceboxConversationDocument = `
       id
       content
       sender
-      created
       score
       user_message_context {
-        id
         app
         connection_id
         database
@@ -1113,7 +1048,6 @@ export const GetVoiceboxConversationDocument = `
         reasoning
       }
       system_message_context {
-        id
         followup_examples
         actions {
           type
@@ -1128,37 +1062,22 @@ export const GetVoiceboxConversationDocument = `
 export const ListConnectionsDocument = `
     query listConnections {
   listConnections {
+    dashboard
+    endpoint
     id
     index
-    cloud {
-      id
-    }
-    dashboard
     name
-    username
-    endpoint
     token
-    isStardogCloud
-    isStardogFree
-    isAllocating
     useBrowserAuth
-    useSSO
+    username
   }
 }
     `;
 export const ListVoiceboxConversationsDocument = `
     query listVoiceboxConversations($paging: PagingInput) {
   listVoiceboxConversations(paging: $paging) {
-    id
     last_user_message {
-      id
-      content
-      sender
-      created
-      score
       user_message_context {
-        id
-        app
         connection_id
         database
         named_graphs
@@ -1172,41 +1091,25 @@ export const ListVoiceboxConversationsDocument = `
   }
 }
     `;
-export const MarketplaceSettingsDocument = `
-    query marketplaceSettings {
-  marketplaceSettings {
-    marketplaceUsername
-    marketplacePassword
-    marketplaceEndpoint
-    marketplaceDatabase
-  }
-}
-    `;
 export const ProfileDocument = `
     query profile {
   profile {
-    id
-    username
-    email
     first_name
     last_name
+    username
+    email
     company
-    use_case
-    is_authenticated
-    is_staff
-    is_superuser
-    userflow_signature
     date_joined
-    is_voicebox_enabled
+    id
+    is_databricks_user
+    is_authenticated
+    is_ephemeral
+    title
+    use_case
+    userflow_signature
+    is_staff
     is_static_voicebox
-  }
-}
-    `;
-export const EditVoiceboxConversationDocument = `
-    mutation editVoiceboxConversation($input: EditVoiceboxConversationInput!) {
-  editVoiceboxConversation(input: $input) {
-    success
-    error
+    is_voicebox_enabled
   }
 }
     `;
@@ -1310,21 +1213,6 @@ export function getSdk(
         'query'
       );
     },
-    marketplaceSettings(
-      variables?: MarketplaceSettingsQueryVariables,
-      requestHeaders?: Dom.RequestInit['headers']
-    ): Promise<MarketplaceSettingsQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<MarketplaceSettingsQuery>(
-            MarketplaceSettingsDocument,
-            variables,
-            { ...requestHeaders, ...wrappedRequestHeaders }
-          ),
-        'marketplaceSettings',
-        'query'
-      );
-    },
     profile(
       variables?: ProfileQueryVariables,
       requestHeaders?: Dom.RequestInit['headers']
@@ -1337,21 +1225,6 @@ export function getSdk(
           }),
         'profile',
         'query'
-      );
-    },
-    editVoiceboxConversation(
-      variables: EditVoiceboxConversationMutationVariables,
-      requestHeaders?: Dom.RequestInit['headers']
-    ): Promise<EditVoiceboxConversationMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<EditVoiceboxConversationMutation>(
-            EditVoiceboxConversationDocument,
-            variables,
-            { ...requestHeaders, ...wrappedRequestHeaders }
-          ),
-        'editVoiceboxConversation',
-        'mutation'
       );
     },
     trackEvent(

@@ -1,6 +1,0 @@
-mutation editVoiceboxConversation($input: EditVoiceboxConversationInput!) {
-  editVoiceboxConversation(input: $input) {
-    success
-    error
-  }
-}
