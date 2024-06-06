@@ -25,12 +25,16 @@ export const decodeConnectionCookie = (
     const endpoint: string = decoded.endpoint;
     const tokenEndpoint: string | undefined = decoded.tokenEndpoint;
     const graphqlEndpoint: string | undefined = decoded.graphqlEndpoint;
+    const isPortal: boolean | undefined = decoded.isPortal;
+    const isLaunchpad: boolean | undefined = decoded.isLaunchpad;
 
     if (
       typeof username !== 'string' ||
       typeof endpoint !== 'string' ||
       !optionalTypeCheck(tokenEndpoint, 'string') ||
-      !optionalTypeCheck(graphqlEndpoint, 'string')
+      !optionalTypeCheck(graphqlEndpoint, 'string') ||
+      !optionalTypeCheck(isPortal, 'boolean') ||
+      !optionalTypeCheck(isLaunchpad, 'boolean')
     ) {
       throw new Error('invalid cookie');
     }
@@ -40,6 +44,8 @@ export const decodeConnectionCookie = (
       endpoint,
       tokenEndpoint,
       graphqlEndpoint,
+      isPortal,
+      isLaunchpad,
     };
   } catch {
     return null;
