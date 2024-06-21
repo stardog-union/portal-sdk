@@ -19,7 +19,7 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^2.16.5",
+    "@graphql-codegen/cli": "^4.0.1",
     "@graphql-codegen/introspection": "^2.2.3",
     "@graphql-codegen/typescript": "^2.8.8",
     "@graphql-codegen/typescript-graphql-files-modules": "^2.2.1",
