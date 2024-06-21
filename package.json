@@ -19,12 +19,12 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "2.16.4",
-    "@graphql-codegen/introspection": "2.2.3",
-    "@graphql-codegen/typescript": "2.8.7",
-    "@graphql-codegen/typescript-graphql-files-modules": "2.2.1",
-    "@graphql-codegen/typescript-graphql-request": "^4.5.8",
-    "@graphql-codegen/typescript-operations": "2.5.12",
+    "@graphql-codegen/cli": "^2.16.5",
+    "@graphql-codegen/introspection": "^2.2.3",
+    "@graphql-codegen/typescript": "^2.8.8",
+    "@graphql-codegen/typescript-graphql-files-modules": "^2.2.1",
+    "@graphql-codegen/typescript-graphql-request": "^4.5.9",
+    "@graphql-codegen/typescript-operations": "^2.5.13",
     "@types/cookiebot-sdk": "^2.43.4",
     "@types/jest": "^29.2.5",
     "@types/node": "^18",
