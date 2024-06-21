@@ -5,10 +5,8 @@ query getVoiceboxConversation($conversation_id: String!) {
       id
       content
       sender
-      created
       score
       user_message_context {
-        id
         app
         connection_id
         database
@@ -17,7 +15,6 @@ query getVoiceboxConversation($conversation_id: String!) {
         reasoning
       }
       system_message_context {
-        id
         followup_examples
         actions {
           type

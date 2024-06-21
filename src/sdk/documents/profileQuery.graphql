@@ -1,18 +1,27 @@
 query profile {
   profile {
-    id
-    username
-    email
+    # display name
     first_name
     last_name
+    username
+
+    # analytics identity (bones)
     company
-    use_case
-    is_authenticated
-    is_staff
-    is_superuser
-    userflow_signature
     date_joined
-    is_voicebox_enabled
+    email
+    id
+    is_databricks_user
+    title
+    use_case
+
+    # analytics setup (bones)
+    is_authenticated
+    is_ephemeral
+    userflow_signature
+
+    # feature flags (bones)
+    is_staff
     is_static_voicebox
+    is_voicebox_enabled
   }
 }

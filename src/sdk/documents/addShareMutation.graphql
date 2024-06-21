@@ -1,9 +1,5 @@
 mutation addShare($input: ShareInput!) {
   addShare(input: $input) {
     short_url
-    target_path
-    endpoint
-    service
-    expiration
   }
 }

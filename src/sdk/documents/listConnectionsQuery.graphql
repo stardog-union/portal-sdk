@@ -1,19 +1,13 @@
 query listConnections {
   listConnections {
+    # same fields as getConnectionByIndex
+    dashboard
+    endpoint
     id
     index
-    cloud {
-      id
-    }
-    dashboard
     name
-    username
-    endpoint
     token
-    isStardogCloud
-    isStardogFree
-    isAllocating
     useBrowserAuth
-    useSSO
+    username
   }
 }
