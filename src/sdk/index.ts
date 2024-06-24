@@ -115,6 +115,7 @@ export type Connection = {
   name: Scalars['String'];
   shouldShowDesigner?: Maybe<Scalars['Boolean']>;
   stripeSubscription?: Maybe<PurchaseSession>;
+  stripeSubscriptionOrder?: Maybe<ProvisionedOrder>;
   token?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
   useBrowserAuth?: Maybe<Scalars['Boolean']>;
@@ -124,6 +125,7 @@ export type Connection = {
 };
 
 export type CreateApiTokenInput = {
+  app_id?: InputMaybe<Scalars['ID']>;
   expires_days: Scalars['PositiveInt'];
   name: Scalars['String'];
 };
@@ -131,6 +133,15 @@ export type CreateApiTokenInput = {
 export type CreateApiTokenResult = {
   __typename?: 'CreateApiTokenResult';
   secret: Scalars['String'];
+};
+
+export type CreateVoiceboxAppInput = {
+  connection_id: Scalars['String'];
+  database?: InputMaybe<Scalars['String']>;
+  model?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  named_graphs?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  reasoning?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type CustomerSsoSettings = {
@@ -234,10 +245,13 @@ export type Mutation = {
   cancelCloud?: Maybe<GenericResponse>;
   checkoutCart?: Maybe<BillingSession>;
   createApiToken?: Maybe<CreateApiTokenResult>;
+  createVoiceboxApp?: Maybe<GenericResponse>;
   deleteAccount?: Maybe<DeletionResponse>;
   deleteApiToken?: Maybe<GenericResponse>;
   deleteCloud?: Maybe<DeletionResponse>;
   deleteConnection?: Maybe<DeletionResponse>;
+  deleteVoiceboxApp?: Maybe<GenericResponse>;
+  deleteVoiceboxConversation?: Maybe<GenericResponse>;
   editApiToken?: Maybe<GenericResponse>;
   editConnection?: Maybe<Connection>;
   editVoiceboxConversation?: Maybe<GenericResponse>;
@@ -249,6 +263,7 @@ export type Mutation = {
   updatePartnerConnection?: Maybe<GenericResponse>;
   updateProfile?: Maybe<User>;
   updateUserFeatures?: Maybe<User>;
+  updateVoiceboxApp?: Maybe<GenericResponse>;
   upgradeCloud?: Maybe<BillingSession>;
   verifyInvitation?: Maybe<GenericResponse>;
 };
@@ -290,6 +305,11 @@ export type MutationCreateApiTokenArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationCreateVoiceboxAppArgs = {
+  input: CreateVoiceboxAppInput;
+};
+
+/** Root Mutation Type */
 export type MutationDeleteApiTokenArgs = {
   id: Scalars['ID'];
 };
@@ -302,6 +322,16 @@ export type MutationDeleteCloudArgs = {
 /** Root Mutation Type */
 export type MutationDeleteConnectionArgs = {
   name: Scalars['String'];
+};
+
+/** Root Mutation Type */
+export type MutationDeleteVoiceboxAppArgs = {
+  id: Scalars['ID'];
+};
+
+/** Root Mutation Type */
+export type MutationDeleteVoiceboxConversationArgs = {
+  conversation_id: Scalars['ID'];
 };
 
 /** Root Mutation Type */
@@ -348,6 +378,11 @@ export type MutationUpdateProfileArgs = {
 export type MutationUpdateUserFeaturesArgs = {
   input: UserFeaturesInput;
   user_id: Scalars['ID'];
+};
+
+/** Root Mutation Type */
+export type MutationUpdateVoiceboxAppArgs = {
+  input: UpdateVoiceboxAppInput;
 };
 
 /** Root Mutation Type */
@@ -410,6 +445,14 @@ export type ProfileInput = {
   use_case: Scalars['String'];
 };
 
+export type ProvisionedOrder = {
+  __typename?: 'ProvisionedOrder';
+  payment_system?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  trial_days_remaining?: Maybe<Scalars['Int']>;
+  trial_days_total?: Maybe<Scalars['Int']>;
+};
+
 export type PurchaseSession = {
   __typename?: 'PurchaseSession';
   isExpired?: Maybe<Scalars['Boolean']>;
@@ -431,7 +474,7 @@ export type Query = {
   getShareByShortHash?: Maybe<Share>;
   getStardogCloud?: Maybe<StardogCloud>;
   getStripePrices?: Maybe<Array<Maybe<StripePrice>>>;
-  getStripeSubscriptionStatus?: Maybe<StripeSubscriptionStatus>;
+  getStripeSubscriptionOrder?: Maybe<ProvisionedOrder>;
   getUser?: Maybe<User>;
   getUserArchivedClouds?: Maybe<Array<Maybe<ArchivedCloud>>>;
   getUserClouds?: Maybe<Array<Maybe<StardogCloud>>>;
@@ -446,6 +489,8 @@ export type Query = {
   listConnectionsByEndpoint?: Maybe<Array<Maybe<Connection>>>;
   listInactiveClouds?: Maybe<Array<Maybe<StardogCloud>>>;
   listStardogCloud?: Maybe<Array<Maybe<StardogCloud>>>;
+  /** Retrieve Voicebox Applications owned by the authenticated user. */
+  listVoiceboxApps?: Maybe<Array<Maybe<VoiceboxApp>>>;
   /**
    * Retrieve Voicebox conversations for the authenticated user, ordered by creation date, with the newest first.
    * Use PagingInput to paginate. If PagingInput is omitted, all conversations are returned.
@@ -461,6 +506,11 @@ export type Query = {
    * to page through all conversations.
    */
   voiceboxConversationCount?: Maybe<ItemCount>;
+};
+
+/** Root Query Type */
+export type QueryApiTokenCountArgs = {
+  app_id?: InputMaybe<Scalars['ID']>;
 };
 
 /** Root Query Type */
@@ -494,8 +544,8 @@ export type QueryGetStardogCloudArgs = {
 };
 
 /** Root Query Type */
-export type QueryGetStripeSubscriptionStatusArgs = {
-  cloudName: Scalars['String'];
+export type QueryGetStripeSubscriptionOrderArgs = {
+  cloudId: Scalars['ID'];
 };
 
 /** Root Query Type */
@@ -531,6 +581,7 @@ export type QueryGetVoiceboxConversationArgs = {
 
 /** Root Query Type */
 export type QueryListApiTokensArgs = {
+  app_id?: InputMaybe<Scalars['ID']>;
   paging?: InputMaybe<PagingInput>;
 };
 
@@ -669,11 +720,6 @@ export type StripeProductMetadata = {
   flavor?: Maybe<Scalars['String']>;
 };
 
-export type StripeSubscriptionStatus = {
-  __typename?: 'StripeSubscriptionStatus';
-  status: Scalars['String'];
-};
-
 export type SystemVoiceboxMessageContext = {
   __typename?: 'SystemVoiceboxMessageContext';
   actions?: Maybe<Array<Maybe<VoicboxSystemMessageAction>>>;
@@ -691,6 +737,15 @@ export type UpdatePartnerConnectionInput = {
   connection_id: Scalars['String'];
   databricks_connection_name: Scalars['String'];
   stardog_connection_id: Scalars['String'];
+};
+
+export type UpdateVoiceboxAppInput = {
+  database?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  model?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  named_graphs?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  reasoning?: InputMaybe<Scalars['Boolean']>;
 };
 
 /**
@@ -768,10 +823,23 @@ export type VoicboxSystemMessageAction = {
   value?: Maybe<Scalars['String']>;
 };
 
+export type VoiceboxApp = {
+  __typename?: 'VoiceboxApp';
+  connection_id: Scalars['String'];
+  database?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  model?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  named_graphs?: Maybe<Array<Maybe<Scalars['String']>>>;
+  reasoning?: Maybe<Scalars['Boolean']>;
+};
+
 /** A user's conversation with Voicebox */
 export type VoiceboxConversation = {
   __typename?: 'VoiceboxConversation';
   created?: Maybe<Scalars['Datetime']>;
+  /** The first message in the conversation that was sent by the user. */
+  first_user_message?: Maybe<VoiceboxMessage>;
   id: Scalars['ID'];
   /** The last message in the conversation that was sent by the user. */
   last_user_message?: Maybe<VoiceboxMessage>;
