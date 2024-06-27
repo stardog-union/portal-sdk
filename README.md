@@ -8,8 +8,8 @@ This is a collection of tools to share information between the front end applica
 
 Prerequisites for install
 
-- [Node.js](https://nodejs.org/) 14.15+.
-- [Yarn](https://yarnpkg.com/en/) 1.0.0+.
+- [Node.js](https://nodejs.org/) 18.
+- [Yarn](https://yarnpkg.com/en/) 1.2.0+.
 
 Simply run:
 
