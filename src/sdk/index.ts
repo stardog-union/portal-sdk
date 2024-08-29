@@ -149,6 +149,11 @@ export type CustomerSsoSettings = {
   azureProviders: Array<Maybe<AzureProvider>>;
 };
 
+export type DeleteApiTokenInput = {
+  app_id?: InputMaybe<Scalars['ID']>;
+  id: Scalars['ID'];
+};
+
 /** Generic deletion response type to handle reporting success. */
 export type DeletionResponse = {
   __typename?: 'DeletionResponse';
@@ -311,7 +316,7 @@ export type MutationCreateVoiceboxAppArgs = {
 
 /** Root Mutation Type */
 export type MutationDeleteApiTokenArgs = {
-  id: Scalars['ID'];
+  input: DeleteApiTokenInput;
 };
 
 /** Root Mutation Type */
@@ -494,6 +499,8 @@ export type Query = {
   /**
    * Retrieve Voicebox conversations for the authenticated user, ordered by creation date, with the newest first.
    * Use PagingInput to paginate. If PagingInput is omitted, all conversations are returned.
+   * Designer conversations will only be returned if include_designer is set to true.
+   * Use connection_id to filter by connection_id, if no connection_id is provided, all conversations are returned.
    */
   listVoiceboxConversations?: Maybe<Array<Maybe<VoiceboxConversation>>>;
   marketplaceSettings?: Maybe<MarketplaceSettings>;
@@ -602,6 +609,7 @@ export type QueryListStardogCloudArgs = {
 
 /** Root Query Type */
 export type QueryListVoiceboxConversationsArgs = {
+  filterInput?: InputMaybe<VoiceboxConversationsFilterInput>;
   paging?: InputMaybe<PagingInput>;
 };
 
@@ -611,6 +619,11 @@ export type QuerySearchUsersArgs = {
   limit: Scalars['Int'];
   offset: Scalars['Int'];
   token: Scalars['String'];
+};
+
+/** Root Query Type */
+export type QueryVoiceboxConversationCountArgs = {
+  filterInput?: InputMaybe<VoiceboxConversationsFilterInput>;
 };
 
 /** Contains the counts of available cloud resources to sell. */
@@ -642,6 +655,7 @@ export type Settings = {
   designerVersion: Scalars['String'];
   explorerVersion: Scalars['String'];
   friendlyName: Scalars['String'];
+  geoaxisAuth: Scalars['Boolean'];
   googleAuth: Scalars['Boolean'];
   homeFooterLinks: Scalars['Boolean'];
   keycloakAuth: Scalars['Boolean'];
@@ -847,6 +861,11 @@ export type VoiceboxConversation = {
   message_history?: Maybe<Array<Maybe<VoiceboxMessage>>>;
   name?: Maybe<Scalars['String']>;
   updated?: Maybe<Scalars['Datetime']>;
+};
+
+export type VoiceboxConversationsFilterInput = {
+  connection_id?: InputMaybe<Scalars['String']>;
+  include_designer?: InputMaybe<Scalars['Boolean']>;
 };
 
 /** A Message within a Voicebox conversation. */
