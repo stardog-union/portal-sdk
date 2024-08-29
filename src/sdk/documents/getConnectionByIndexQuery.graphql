@@ -1,19 +1,23 @@
 query getConnectionByIndex($index: Int!) {
   connection: getConnectionByIndex(index: $index) {
-    id
-    index
-    cloud {
-      id
-    }
-    dashboard
-    name
-    username
-    endpoint
+    # getCurrentConnectionFromPortal
     token
-    isStardogCloud
-    isStardogFree
-    isAllocating
     useBrowserAuth
-    useSSO
+    username
+
+    # useStardogConnectionFromPortalIndex (bones)
+    endpoint
+
+    # usePortalDashboardUrl (bones)
+    dashboard
+
+    # usePortalVoiceboxLastSettings (bones)
+    id
+
+    # sign in form (VET apps)
+    name
+
+    # refetch token (VET apps)
+    index
   }
 }
