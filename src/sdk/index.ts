@@ -18,6 +18,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Base64Bytes: any;
   Datetime: string;
   PositiveInt: any;
 };
@@ -29,6 +30,12 @@ export type AddConnectionInput = {
   useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
   useSSO?: InputMaybe<Scalars['Boolean']>;
   username?: InputMaybe<Scalars['String']>;
+};
+
+export type AddSsoConnectionInput = {
+  connection_name: Scalars['String'];
+  provider_name: Scalars['String'];
+  stardog_endpoint: Scalars['String'];
 };
 
 export type ApiToken = {
@@ -119,6 +126,7 @@ export type Connection = {
   token?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
   useBrowserAuth?: Maybe<Scalars['Boolean']>;
+  useConnectionSSO?: Maybe<Scalars['Boolean']>;
   useSSO?: Maybe<Scalars['Boolean']>;
   user?: Maybe<User>;
   username?: Maybe<Scalars['String']>;
@@ -160,6 +168,43 @@ export type DeletionResponse = {
   error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
 };
+
+export type DesignerProject = {
+  __typename?: 'DesignerProject';
+  content: Scalars['Base64Bytes'];
+  created_at: Scalars['Datetime'];
+  id: Scalars['ID'];
+  owner: User;
+  roles: Array<DesignerProjectRole>;
+  updated_at: Scalars['Datetime'];
+};
+
+export type DesignerProjectInvitation = {
+  __typename?: 'DesignerProjectInvitation';
+  accepted_at?: Maybe<Scalars['Datetime']>;
+  created_at: Scalars['Datetime'];
+  id: Scalars['ID'];
+  invitee: User;
+  is_accepted: Scalars['Boolean'];
+  project: DesignerProject;
+  role: DesignerProjectRoleChoices;
+  updated_at: Scalars['Datetime'];
+};
+
+export type DesignerProjectRole = {
+  __typename?: 'DesignerProjectRole';
+  created_at: Scalars['Datetime'];
+  id: Scalars['ID'];
+  project: DesignerProject;
+  role: DesignerProjectRoleChoices;
+  updated_at: Scalars['Datetime'];
+  user: User;
+};
+
+export enum DesignerProjectRoleChoices {
+  Editor = 'EDITOR',
+  Viewer = 'VIEWER',
+}
 
 export type EditApiTokenInput = {
   id: Scalars['ID'];
@@ -232,6 +277,10 @@ export type ItemCount = {
   count?: Maybe<Scalars['Int']>;
 };
 
+export type LogoutSsoConnectionInput = {
+  connection_id: Scalars['String'];
+};
+
 export type MarketplaceSettings = {
   __typename?: 'MarketplaceSettings';
   marketplaceDatabase: Scalars['String'];
@@ -243,18 +292,24 @@ export type MarketplaceSettings = {
 /** Root Mutation Type */
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Accept an incoming Designer project invitation. */
+  acceptDesignerProjectInvitation: Scalars['ID'];
   acceptInvitation?: Maybe<GenericResponse>;
   addConnection?: Maybe<Connection>;
   addInvitation?: Maybe<GenericResponse>;
+  addSSOConnection?: Maybe<SsoConnectionRedirectResponse>;
   addShare?: Maybe<Share>;
   cancelCloud?: Maybe<GenericResponse>;
+  changeDesignerProjectRole: Scalars['ID'];
   checkoutCart?: Maybe<BillingSession>;
   createApiToken?: Maybe<CreateApiTokenResult>;
+  createDesignerProject: Scalars['ID'];
   createVoiceboxApp?: Maybe<GenericResponse>;
   deleteAccount?: Maybe<DeletionResponse>;
   deleteApiToken?: Maybe<GenericResponse>;
   deleteCloud?: Maybe<DeletionResponse>;
   deleteConnection?: Maybe<DeletionResponse>;
+  deleteDesignerProject: Scalars['ID'];
   deleteVoiceboxApp?: Maybe<GenericResponse>;
   deleteVoiceboxConversation?: Maybe<GenericResponse>;
   editApiToken?: Maybe<GenericResponse>;
@@ -262,15 +317,33 @@ export type Mutation = {
   editVoiceboxConversation?: Maybe<GenericResponse>;
   generateConfiguration?: Maybe<ExampleConfig>;
   getStripeSessionUrl?: Maybe<BillingSession>;
+  logoutSSOConnection?: Maybe<GenericResponse>;
+  reauthenticateSSOConnection?: Maybe<SsoConnectionRedirectResponse>;
   removePartnerConnection?: Maybe<GenericResponse>;
   resendEmail?: Maybe<GenericResponse>;
+  /** Revoke an outgoing Designer project invitation, or reject an invitation sent to you. */
+  revokeDesignerProjectInvitation: Scalars['ID'];
+  /** Revoke a given role, or leave a role given to you. */
+  revokeDesignerProjectRole: Scalars['ID'];
+  /**
+   * Send a Designer project invitation.
+   *
+   * (you cannot send an invitation to someone who already has a role)
+   */
+  sendDesignerProjectInvitation: Scalars['ID'];
   trackEvent?: Maybe<GenericResponse>;
+  updateDesignerProject: Scalars['ID'];
   updatePartnerConnection?: Maybe<GenericResponse>;
   updateProfile?: Maybe<User>;
   updateUserFeatures?: Maybe<User>;
   updateVoiceboxApp?: Maybe<GenericResponse>;
   upgradeCloud?: Maybe<BillingSession>;
   verifyInvitation?: Maybe<GenericResponse>;
+};
+
+/** Root Mutation Type */
+export type MutationAcceptDesignerProjectInvitationArgs = {
+  invitation_id: Scalars['ID'];
 };
 
 /** Root Mutation Type */
@@ -289,6 +362,11 @@ export type MutationAddInvitationArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationAddSsoConnectionArgs = {
+  input: AddSsoConnectionInput;
+};
+
+/** Root Mutation Type */
 export type MutationAddShareArgs = {
   input: ShareInput;
 };
@@ -296,6 +374,12 @@ export type MutationAddShareArgs = {
 /** Root Mutation Type */
 export type MutationCancelCloudArgs = {
   input: CancelCloudInput;
+};
+
+/** Root Mutation Type */
+export type MutationChangeDesignerProjectRoleArgs = {
+  role: DesignerProjectRoleChoices;
+  role_id: Scalars['ID'];
 };
 
 /** Root Mutation Type */
@@ -307,6 +391,11 @@ export type MutationCheckoutCartArgs = {
 /** Root Mutation Type */
 export type MutationCreateApiTokenArgs = {
   input: CreateApiTokenInput;
+};
+
+/** Root Mutation Type */
+export type MutationCreateDesignerProjectArgs = {
+  content: Scalars['Base64Bytes'];
 };
 
 /** Root Mutation Type */
@@ -327,6 +416,11 @@ export type MutationDeleteCloudArgs = {
 /** Root Mutation Type */
 export type MutationDeleteConnectionArgs = {
   name: Scalars['String'];
+};
+
+/** Root Mutation Type */
+export type MutationDeleteDesignerProjectArgs = {
+  project_id: Scalars['ID'];
 };
 
 /** Root Mutation Type */
@@ -360,13 +454,46 @@ export type MutationGenerateConfigurationArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationLogoutSsoConnectionArgs = {
+  input: LogoutSsoConnectionInput;
+};
+
+/** Root Mutation Type */
+export type MutationReauthenticateSsoConnectionArgs = {
+  input: ReauthenticateSsoConnectionInput;
+};
+
+/** Root Mutation Type */
 export type MutationRemovePartnerConnectionArgs = {
   input: RemovePartnerConnectionInput;
 };
 
 /** Root Mutation Type */
+export type MutationRevokeDesignerProjectInvitationArgs = {
+  invitation_id?: InputMaybe<Scalars['ID']>;
+};
+
+/** Root Mutation Type */
+export type MutationRevokeDesignerProjectRoleArgs = {
+  role_id: Scalars['ID'];
+};
+
+/** Root Mutation Type */
+export type MutationSendDesignerProjectInvitationArgs = {
+  invitee_id: Scalars['ID'];
+  project_id: Scalars['ID'];
+  role: DesignerProjectRoleChoices;
+};
+
+/** Root Mutation Type */
 export type MutationTrackEventArgs = {
   input: TrackEventInput;
+};
+
+/** Root Mutation Type */
+export type MutationUpdateDesignerProjectArgs = {
+  content: Scalars['Base64Bytes'];
+  project_id: Scalars['ID'];
 };
 
 /** Root Mutation Type */
@@ -475,7 +602,14 @@ export type Query = {
   generateToken?: Maybe<OAuthToken>;
   getConnection?: Maybe<Connection>;
   getConnectionByIndex?: Maybe<Connection>;
+  /** Retrieve a single Designer project. */
+  getDesignerProject: DesignerProject;
+  /** List both incoming and outgoing Designer project invitations. */
+  getDesignerProjectInvitations: Array<DesignerProjectInvitation>;
+  /** List all Designer projects you own, as well as any projects shared with you. */
+  getDesignerProjects: Array<DesignerProject>;
   getInvitation?: Maybe<Invitation>;
+  getSSOConnectionRegistry?: Maybe<Array<Maybe<SsoConnectionRegistration>>>;
   getShareByShortHash?: Maybe<Share>;
   getStardogCloud?: Maybe<StardogCloud>;
   getStripePrices?: Maybe<Array<Maybe<StripePrice>>>;
@@ -533,6 +667,11 @@ export type QueryGetConnectionArgs = {
 /** Root Query Type */
 export type QueryGetConnectionByIndexArgs = {
   index: Scalars['Int'];
+};
+
+/** Root Query Type */
+export type QueryGetDesignerProjectArgs = {
+  project_id: Scalars['ID'];
 };
 
 /** Root Query Type */
@@ -641,8 +780,24 @@ export type Quota = {
   total?: Maybe<Scalars['Int']>;
 };
 
+export type ReauthenticateSsoConnectionInput = {
+  connection_id: Scalars['String'];
+};
+
 export type RemovePartnerConnectionInput = {
   connection_id: Scalars['String'];
+};
+
+export type SsoConnectionRedirectResponse = {
+  __typename?: 'SSOConnectionRedirectResponse';
+  redirect_url: Scalars['String'];
+};
+
+export type SsoConnectionRegistration = {
+  __typename?: 'SSOConnectionRegistration';
+  display_provider_name: Scalars['String'];
+  provider_name: Scalars['String'];
+  stardog_endpoint?: Maybe<Scalars['String']>;
 };
 
 /** Settings, these are settings that control the front end display */
@@ -739,6 +894,7 @@ export type SystemVoiceboxMessageContext = {
   actions?: Maybe<Array<Maybe<VoicboxSystemMessageAction>>>;
   followup_examples?: Maybe<Array<Maybe<Scalars['String']>>>;
   id: Scalars['ID'];
+  success?: Maybe<Scalars['Boolean']>;
 };
 
 export type TrackEventInput = {
@@ -781,6 +937,7 @@ export type User = {
   id?: Maybe<Scalars['ID']>;
   industry?: Maybe<Scalars['String']>;
   is_authenticated: Scalars['Boolean'];
+  is_blocked_email?: Maybe<Scalars['Boolean']>;
   is_databricks_user?: Maybe<Scalars['Boolean']>;
   is_ephemeral?: Maybe<Scalars['Boolean']>;
   is_partner_user?: Maybe<Scalars['Boolean']>;
@@ -790,6 +947,7 @@ export type User = {
   is_studio_voicebox_enabled?: Maybe<Scalars['Boolean']>;
   is_superuser?: Maybe<Scalars['Boolean']>;
   is_verified?: Maybe<Scalars['Boolean']>;
+  is_voicebox_api_access_enabled?: Maybe<Scalars['Boolean']>;
   is_voicebox_enabled?: Maybe<Scalars['Boolean']>;
   last_login?: Maybe<Scalars['String']>;
   last_name?: Maybe<Scalars['String']>;
@@ -805,6 +963,7 @@ export type User = {
 
 export type UserFeaturesInput = {
   is_static_voicebox?: InputMaybe<Scalars['Boolean']>;
+  is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
 };
 
@@ -815,6 +974,7 @@ export type UserSearchDetails = {
 
 export type UserSearchFiltersInput = {
   is_staff?: InputMaybe<Scalars['Boolean']>;
+  is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
 };
 
@@ -936,6 +1096,7 @@ export type GetVoiceboxConversationQuery = {
       system_message_context?: {
         __typename?: 'SystemVoiceboxMessageContext';
         followup_examples?: Array<string | null> | null;
+        success?: boolean | null;
         actions?: Array<{
           __typename?: 'VoicboxSystemMessageAction';
           type?: string | null;
@@ -1075,6 +1236,7 @@ export const GetVoiceboxConversationDocument = `
           label
           value
         }
+        success
       }
     }
   }

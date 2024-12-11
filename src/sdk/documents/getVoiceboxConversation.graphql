@@ -21,6 +21,7 @@ query getVoiceboxConversation($conversation_id: String!) {
           label
           value
         }
+        success
       }
     }
   }
