@@ -62,6 +62,14 @@ export const getPortalSdk = () => {
       const result = await sdk.getConnectionByIndex({ index });
       return result.connection || null;
     },
+    getDesignerProject: async (projectId: string) => {
+      const result = await sdk.getDesignerProject({ project_id: projectId });
+      return result.getDesignerProject || null;
+    },
+    getDesignerProjects: async () => {
+      const result = await sdk.getDesignerProjects();
+      return result.getDesignerProjects || null;
+    },
     getVoiceboxConversation: async (conversationId: string) => {
       const result = await sdk.getVoiceboxConversation({
         conversation_id: conversationId,

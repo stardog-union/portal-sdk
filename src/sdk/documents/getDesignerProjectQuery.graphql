@@ -1,0 +1,20 @@
+query getDesignerProject($project_id: ID!) {
+  getDesignerProject(project_id: $project_id) {
+    id
+    name
+    content
+    created_at
+    updated_at
+    owner {
+      id
+      username
+    }
+    roles {
+      role
+      user {
+        id
+        username
+      }
+    }
+  }
+}

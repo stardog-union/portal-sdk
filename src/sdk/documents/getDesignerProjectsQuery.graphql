@@ -1,0 +1,19 @@
+query getDesignerProjects {
+  getDesignerProjects {
+    id
+    name
+    created_at
+    updated_at
+    owner {
+      id
+      username
+    }
+    roles {
+      role
+      user {
+        id
+        username
+      }
+    }
+  }
+}

@@ -16,6 +16,20 @@ jest.mock('../cookies', () => ({
 
 const addShare = jest.fn(async () => ({ addShare: null }));
 const getConnectionByIndex = jest.fn(async () => ({ connection: null }));
+const getDesignerProject = jest.fn(async () => {
+  return {
+    getDesignerProject: {
+      id: 'id',
+      name: 'name',
+      content: 'content',
+      created_at: 'created_at',
+      updated_at: 'updated_at',
+      owner: { id: 'id', username: 'username' },
+      roles: [],
+    },
+  };
+});
+const getDesignerProjects = jest.fn(async () => ({ getDesignerProjects: [] }));
 const getVoiceboxConversation = jest.fn(async () => ({
   getVoiceboxConversation: null,
 }));
@@ -32,6 +46,8 @@ describe('getPortalSdk', () => {
     jest.spyOn(portalSdkImport, 'getSdk').mockReturnValue({
       addShare,
       getConnectionByIndex,
+      getDesignerProject,
+      getDesignerProjects,
       getVoiceboxConversation,
       listConnections,
       listVoiceboxConversations,
