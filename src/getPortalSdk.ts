@@ -70,6 +70,13 @@ export const getPortalSdk = () => {
       const result = await sdk.getDesignerProjects();
       return result.getDesignerProjects || null;
     },
+    renameDesignerProject: async (projectId: string, name: string) => {
+      const result = await sdk.renameDesignerProject({
+        project_id: projectId,
+        name,
+      });
+      return result.renameDesignerProject || null;
+    },
     getVoiceboxConversation: async (conversationId: string) => {
       const result = await sdk.getVoiceboxConversation({
         conversation_id: conversationId,

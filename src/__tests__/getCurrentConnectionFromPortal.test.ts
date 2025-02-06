@@ -17,6 +17,7 @@ describe('getCurrentConnectionFromPortal', () => {
       listConnections: jest.fn(),
       listVoiceboxConversations: jest.fn(),
       profile: jest.fn(),
+      renameDesignerProject: jest.fn(),
       trackEvent: jest.fn(),
     });
 

@@ -39,6 +39,9 @@ const listVoiceboxConversations = jest.fn(async () => ({
   voiceboxConversationCount: null,
 }));
 const profile = jest.fn(async () => ({ profile: null }));
+const renameDesignerProject = jest.fn(async () => ({
+  renameDesignerProject: 'newName',
+}));
 const trackEvent = jest.fn(async () => ({ trackEvent: null }));
 
 describe('getPortalSdk', () => {
@@ -52,6 +55,7 @@ describe('getPortalSdk', () => {
       listConnections,
       listVoiceboxConversations,
       profile,
+      renameDesignerProject,
       trackEvent,
     });
   });

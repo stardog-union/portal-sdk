@@ -333,6 +333,7 @@ export type Mutation = {
   logoutSSOConnection?: Maybe<GenericResponse>;
   reauthenticateSSOConnection?: Maybe<SsoConnectionRedirectResponse>;
   removePartnerConnection?: Maybe<GenericResponse>;
+  renameDesignerProject: Scalars['ID'];
   resendEmail?: Maybe<GenericResponse>;
   /** Revoke an outgoing Designer project invitation, or reject an invitation sent to you. */
   revokeDesignerProjectInvitation: Scalars['ID'];
@@ -409,6 +410,7 @@ export type MutationCreateApiTokenArgs = {
 /** Root Mutation Type */
 export type MutationCreateDesignerProjectArgs = {
   content: Scalars['Base64Bytes'];
+  name: Scalars['String'];
 };
 
 /** Root Mutation Type */
@@ -484,6 +486,12 @@ export type MutationReauthenticateSsoConnectionArgs = {
 /** Root Mutation Type */
 export type MutationRemovePartnerConnectionArgs = {
   input: RemovePartnerConnectionInput;
+};
+
+/** Root Mutation Type */
+export type MutationRenameDesignerProjectArgs = {
+  name: Scalars['String'];
+  project_id: Scalars['ID'];
 };
 
 /** Root Mutation Type */
@@ -1261,6 +1269,16 @@ export type ProfileQuery = {
   } | null;
 };
 
+export type RenameDesignerProjectMutationVariables = Exact<{
+  project_id: Scalars['ID'];
+  name: Scalars['String'];
+}>;
+
+export type RenameDesignerProjectMutation = {
+  __typename?: 'Mutation';
+  renameDesignerProject: string;
+};
+
 export type TrackEventMutationVariables = Exact<{
   input: TrackEventInput;
 }>;
@@ -1425,6 +1443,11 @@ export const ProfileDocument = `
   }
 }
     `;
+export const RenameDesignerProjectDocument = `
+    mutation renameDesignerProject($project_id: ID!, $name: String!) {
+  renameDesignerProject(project_id: $project_id, name: $name)
+}
+    `;
 export const TrackEventDocument = `
     mutation trackEvent($input: TrackEventInput!) {
   trackEvent(input: $input) {
@@ -1567,6 +1590,21 @@ export function getSdk(
           }),
         'profile',
         'query'
+      );
+    },
+    renameDesignerProject(
+      variables: RenameDesignerProjectMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<RenameDesignerProjectMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<RenameDesignerProjectMutation>(
+            RenameDesignerProjectDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'renameDesignerProject',
+        'mutation'
       );
     },
     trackEvent(
