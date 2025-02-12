@@ -19,6 +19,7 @@ describe('getCurrentConnectionFromPortal', () => {
       profile: jest.fn(),
       renameDesignerProject: jest.fn(),
       trackEvent: jest.fn(),
+      updateDesignerProject: jest.fn(),
     });
 
     jest

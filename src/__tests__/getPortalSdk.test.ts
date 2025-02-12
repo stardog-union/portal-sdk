@@ -43,6 +43,9 @@ const renameDesignerProject = jest.fn(async () => ({
   renameDesignerProject: 'newName',
 }));
 const trackEvent = jest.fn(async () => ({ trackEvent: null }));
+const updateDesignerProject = jest.fn(async () => ({
+  updateDesignerProject: 'id',
+}));
 
 describe('getPortalSdk', () => {
   beforeEach(() => {
@@ -57,6 +60,7 @@ describe('getPortalSdk', () => {
       profile,
       renameDesignerProject,
       trackEvent,
+      updateDesignerProject,
     });
   });
 

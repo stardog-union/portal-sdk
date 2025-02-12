@@ -1292,6 +1292,16 @@ export type TrackEventMutation = {
   } | null;
 };
 
+export type UpdateDesignerProjectMutationVariables = Exact<{
+  project_id: Scalars['ID'];
+  content: Scalars['Base64Bytes'];
+}>;
+
+export type UpdateDesignerProjectMutation = {
+  __typename?: 'Mutation';
+  updateDesignerProject: string;
+};
+
 export const AddShareDocument = `
     mutation addShare($input: ShareInput!) {
   addShare(input: $input) {
@@ -1456,6 +1466,11 @@ export const TrackEventDocument = `
   }
 }
     `;
+export const UpdateDesignerProjectDocument = `
+    mutation updateDesignerProject($project_id: ID!, $content: Base64Bytes!) {
+  updateDesignerProject(project_id: $project_id, content: $content)
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(
   action: (requestHeaders?: Record<string, string>) => Promise<T>,
@@ -1618,6 +1633,21 @@ export function getSdk(
             ...wrappedRequestHeaders,
           }),
         'trackEvent',
+        'mutation'
+      );
+    },
+    updateDesignerProject(
+      variables: UpdateDesignerProjectMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<UpdateDesignerProjectMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<UpdateDesignerProjectMutation>(
+            UpdateDesignerProjectDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'updateDesignerProject',
         'mutation'
       );
     },

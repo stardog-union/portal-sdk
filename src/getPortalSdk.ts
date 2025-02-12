@@ -77,6 +77,13 @@ export const getPortalSdk = () => {
       });
       return result.renameDesignerProject || null;
     },
+    updateDesignerProject: async (projectId: string, content: string) => {
+      const result = await sdk.updateDesignerProject({
+        project_id: projectId,
+        content,
+      });
+      return result.updateDesignerProject || null;
+    },
     getVoiceboxConversation: async (conversationId: string) => {
       const result = await sdk.getVoiceboxConversation({
         conversation_id: conversationId,
