@@ -1099,6 +1099,25 @@ export type AddShareMutation = {
   addShare?: { __typename?: 'Share'; short_url?: string | null } | null;
 };
 
+export type CreateDesignerProjectMutationVariables = Exact<{
+  name: Scalars['String'];
+  content: Scalars['Base64Bytes'];
+}>;
+
+export type CreateDesignerProjectMutation = {
+  __typename?: 'Mutation';
+  createDesignerProject: string;
+};
+
+export type DeleteDesignerProjectMutationVariables = Exact<{
+  project_id: Scalars['ID'];
+}>;
+
+export type DeleteDesignerProjectMutation = {
+  __typename?: 'Mutation';
+  deleteDesignerProject: string;
+};
+
 export type GetConnectionByIndexQueryVariables = Exact<{
   index: Scalars['Int'];
 }>;
@@ -1309,6 +1328,16 @@ export const AddShareDocument = `
   }
 }
     `;
+export const CreateDesignerProjectDocument = `
+    mutation createDesignerProject($name: String!, $content: Base64Bytes!) {
+  createDesignerProject(name: $name, content: $content)
+}
+    `;
+export const DeleteDesignerProjectDocument = `
+    mutation deleteDesignerProject($project_id: ID!) {
+  deleteDesignerProject(project_id: $project_id)
+}
+    `;
 export const GetConnectionByIndexDocument = `
     query getConnectionByIndex($index: Int!) {
   connection: getConnectionByIndex(index: $index) {
@@ -1500,6 +1529,36 @@ export function getSdk(
             ...wrappedRequestHeaders,
           }),
         'addShare',
+        'mutation'
+      );
+    },
+    createDesignerProject(
+      variables: CreateDesignerProjectMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<CreateDesignerProjectMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreateDesignerProjectMutation>(
+            CreateDesignerProjectDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'createDesignerProject',
+        'mutation'
+      );
+    },
+    deleteDesignerProject(
+      variables: DeleteDesignerProjectMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<DeleteDesignerProjectMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteDesignerProjectMutation>(
+            DeleteDesignerProjectDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'deleteDesignerProject',
         'mutation'
       );
     },

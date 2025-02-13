@@ -12,6 +12,8 @@ describe('getCurrentConnectionFromPortal', () => {
       addShare: jest.fn(),
       getConnectionByIndex,
       getVoiceboxConversation: jest.fn(),
+      createDesignerProject: jest.fn(),
+      deleteDesignerProject: jest.fn(),
       getDesignerProject: jest.fn(),
       getDesignerProjects: jest.fn(),
       listConnections: jest.fn(),
