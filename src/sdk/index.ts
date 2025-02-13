@@ -20,6 +20,7 @@ export type Scalars = {
   Float: number;
   Base64Bytes: any;
   Datetime: string;
+  NonNegativeInt: any;
   PositiveInt: any;
 };
 
@@ -174,6 +175,7 @@ export type DesignerProject = {
   content: Scalars['Base64Bytes'];
   created_at: Scalars['Datetime'];
   id: Scalars['ID'];
+  name: Scalars['String'];
   owner: User;
   roles: Array<DesignerProjectRole>;
   updated_at: Scalars['Datetime'];
@@ -224,6 +226,12 @@ export type EditConnectionInput = {
 export type EditVoiceboxConversationInput = {
   id: Scalars['ID'];
   name?: InputMaybe<Scalars['String']>;
+};
+
+export type EditVoiceboxCreditInput = {
+  limit?: InputMaybe<Scalars['NonNegativeInt']>;
+  usage?: InputMaybe<Scalars['NonNegativeInt']>;
+  user_id: Scalars['ID'];
 };
 
 /** Example Configuration for jwt.yaml and stardog.properties */
@@ -315,11 +323,17 @@ export type Mutation = {
   editApiToken?: Maybe<GenericResponse>;
   editConnection?: Maybe<Connection>;
   editVoiceboxConversation?: Maybe<GenericResponse>;
+  /**
+   * Update a user's Voicebox credit. Can be used for example to reset their usage.
+   * Limited to Stardog employee's who have permission to edit credits.
+   */
+  editVoiceboxCredit?: Maybe<GenericResponse>;
   generateConfiguration?: Maybe<ExampleConfig>;
   getStripeSessionUrl?: Maybe<BillingSession>;
   logoutSSOConnection?: Maybe<GenericResponse>;
   reauthenticateSSOConnection?: Maybe<SsoConnectionRedirectResponse>;
   removePartnerConnection?: Maybe<GenericResponse>;
+  renameDesignerProject: Scalars['ID'];
   resendEmail?: Maybe<GenericResponse>;
   /** Revoke an outgoing Designer project invitation, or reject an invitation sent to you. */
   revokeDesignerProjectInvitation: Scalars['ID'];
@@ -396,6 +410,7 @@ export type MutationCreateApiTokenArgs = {
 /** Root Mutation Type */
 export type MutationCreateDesignerProjectArgs = {
   content: Scalars['Base64Bytes'];
+  name: Scalars['String'];
 };
 
 /** Root Mutation Type */
@@ -449,6 +464,11 @@ export type MutationEditVoiceboxConversationArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationEditVoiceboxCreditArgs = {
+  input: EditVoiceboxCreditInput;
+};
+
+/** Root Mutation Type */
 export type MutationGenerateConfigurationArgs = {
   endpoint: Scalars['String'];
 };
@@ -466,6 +486,12 @@ export type MutationReauthenticateSsoConnectionArgs = {
 /** Root Mutation Type */
 export type MutationRemovePartnerConnectionArgs = {
   input: RemovePartnerConnectionInput;
+};
+
+/** Root Mutation Type */
+export type MutationRenameDesignerProjectArgs = {
+  name: Scalars['String'];
+  project_id: Scalars['ID'];
 };
 
 /** Root Mutation Type */
@@ -597,6 +623,8 @@ export type PurchaseSession = {
 export type Query = {
   __typename?: 'Query';
   apiTokenCount?: Maybe<ItemCount>;
+  /** Can the authenticated user edit another user's (or their own) Voicebox credit. */
+  canEditVoiceboxCredit?: Maybe<Scalars['Boolean']>;
   checkCloudQueue?: Maybe<QueueCounts>;
   customerSsoSettings?: Maybe<CustomerSsoSettings>;
   generateToken?: Maybe<OAuthToken>;
@@ -620,8 +648,12 @@ export type Query = {
   getUserConnections?: Maybe<Array<Maybe<Connection>>>;
   getUserCurrentPartnerConnection?: Maybe<PartnerConnectionDetail>;
   getUserSearchDetails?: Maybe<UserSearchDetails>;
+  /** Get a user's Voicebox Credit containing usage information. Must be a Stardog employee to fetch this information. */
+  getUserVoiceboxCredit?: Maybe<VoiceboxCredit>;
   /** Retrieve a single Voicebox conversation for the authenticated user by the conversation id. */
   getVoiceboxConversation?: Maybe<VoiceboxConversation>;
+  /** Get the authenticated user's Voicebox Credit containing usage information. */
+  getVoiceboxCredit?: Maybe<VoiceboxCredit>;
   grafanaHighLevelDashboardSettings?: Maybe<GrafanaDashboardSettings>;
   listApiTokens?: Maybe<Array<Maybe<ApiToken>>>;
   listConnections?: Maybe<Array<Maybe<Connection>>>;
@@ -718,6 +750,11 @@ export type QueryGetUserConnectionsArgs = {
 export type QueryGetUserSearchDetailsArgs = {
   filters?: InputMaybe<UserSearchFiltersInput>;
   token: Scalars['String'];
+};
+
+/** Root Query Type */
+export type QueryGetUserVoiceboxCreditArgs = {
+  user_id: Scalars['String'];
 };
 
 /** Root Query Type */
@@ -939,6 +976,7 @@ export type User = {
   is_authenticated: Scalars['Boolean'];
   is_blocked_email?: Maybe<Scalars['Boolean']>;
   is_databricks_user?: Maybe<Scalars['Boolean']>;
+  is_designer_storage_enabled?: Maybe<Scalars['Boolean']>;
   is_ephemeral?: Maybe<Scalars['Boolean']>;
   is_partner_user?: Maybe<Scalars['Boolean']>;
   is_staff?: Maybe<Scalars['Boolean']>;
@@ -962,6 +1000,7 @@ export type User = {
 };
 
 export type UserFeaturesInput = {
+  is_designer_storage_enabled?: InputMaybe<Scalars['Boolean']>;
   is_static_voicebox?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
@@ -973,6 +1012,7 @@ export type UserSearchDetails = {
 };
 
 export type UserSearchFiltersInput = {
+  is_designer_storage_enabled?: InputMaybe<Scalars['Boolean']>;
   is_staff?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
@@ -1020,12 +1060,21 @@ export type VoiceboxConversation = {
   /** Message history ordered oldest to newest. */
   message_history?: Maybe<Array<Maybe<VoiceboxMessage>>>;
   name?: Maybe<Scalars['String']>;
+  /** user message count */
+  number_user_messages?: Maybe<Scalars['Int']>;
   updated?: Maybe<Scalars['Datetime']>;
 };
 
 export type VoiceboxConversationsFilterInput = {
   connection_id?: InputMaybe<Scalars['String']>;
   include_designer?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** A user's Voicebox Credit */
+export type VoiceboxCredit = {
+  __typename?: 'VoiceboxCredit';
+  limit: Scalars['Int'];
+  usage: Scalars['Int'];
 };
 
 /** A Message within a Voicebox conversation. */
@@ -1050,6 +1099,25 @@ export type AddShareMutation = {
   addShare?: { __typename?: 'Share'; short_url?: string | null } | null;
 };
 
+export type CreateDesignerProjectMutationVariables = Exact<{
+  name: Scalars['String'];
+  content: Scalars['Base64Bytes'];
+}>;
+
+export type CreateDesignerProjectMutation = {
+  __typename?: 'Mutation';
+  createDesignerProject: string;
+};
+
+export type DeleteDesignerProjectMutationVariables = Exact<{
+  project_id: Scalars['ID'];
+}>;
+
+export type DeleteDesignerProjectMutation = {
+  __typename?: 'Mutation';
+  deleteDesignerProject: string;
+};
+
 export type GetConnectionByIndexQueryVariables = Exact<{
   index: Scalars['Int'];
 }>;
@@ -1067,6 +1135,47 @@ export type GetConnectionByIndexQuery = {
     name: string;
     index: number;
   } | null;
+};
+
+export type GetDesignerProjectQueryVariables = Exact<{
+  project_id: Scalars['ID'];
+}>;
+
+export type GetDesignerProjectQuery = {
+  __typename?: 'Query';
+  getDesignerProject: {
+    __typename?: 'DesignerProject';
+    id: string;
+    name: string;
+    content: any;
+    created_at: string;
+    updated_at: string;
+    owner: { __typename?: 'User'; id?: string | null; username: string };
+    roles: Array<{
+      __typename?: 'DesignerProjectRole';
+      role: DesignerProjectRoleChoices;
+      user: { __typename?: 'User'; id?: string | null; username: string };
+    }>;
+  };
+};
+
+export type GetDesignerProjectsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetDesignerProjectsQuery = {
+  __typename?: 'Query';
+  getDesignerProjects: Array<{
+    __typename?: 'DesignerProject';
+    id: string;
+    name: string;
+    created_at: string;
+    updated_at: string;
+    owner: { __typename?: 'User'; id?: string | null; username: string };
+    roles: Array<{
+      __typename?: 'DesignerProjectRole';
+      role: DesignerProjectRoleChoices;
+      user: { __typename?: 'User'; id?: string | null; username: string };
+    }>;
+  }>;
 };
 
 export type GetVoiceboxConversationQueryVariables = Exact<{
@@ -1175,7 +1284,18 @@ export type ProfileQuery = {
     is_staff?: boolean | null;
     is_static_voicebox?: boolean | null;
     is_voicebox_enabled?: boolean | null;
+    is_designer_storage_enabled?: boolean | null;
   } | null;
+};
+
+export type RenameDesignerProjectMutationVariables = Exact<{
+  project_id: Scalars['ID'];
+  name: Scalars['String'];
+}>;
+
+export type RenameDesignerProjectMutation = {
+  __typename?: 'Mutation';
+  renameDesignerProject: string;
 };
 
 export type TrackEventMutationVariables = Exact<{
@@ -1191,11 +1311,31 @@ export type TrackEventMutation = {
   } | null;
 };
 
+export type UpdateDesignerProjectMutationVariables = Exact<{
+  project_id: Scalars['ID'];
+  content: Scalars['Base64Bytes'];
+}>;
+
+export type UpdateDesignerProjectMutation = {
+  __typename?: 'Mutation';
+  updateDesignerProject: string;
+};
+
 export const AddShareDocument = `
     mutation addShare($input: ShareInput!) {
   addShare(input: $input) {
     short_url
   }
+}
+    `;
+export const CreateDesignerProjectDocument = `
+    mutation createDesignerProject($name: String!, $content: Base64Bytes!) {
+  createDesignerProject(name: $name, content: $content)
+}
+    `;
+export const DeleteDesignerProjectDocument = `
+    mutation deleteDesignerProject($project_id: ID!) {
+  deleteDesignerProject(project_id: $project_id)
 }
     `;
 export const GetConnectionByIndexDocument = `
@@ -1209,6 +1349,49 @@ export const GetConnectionByIndexDocument = `
     id
     name
     index
+  }
+}
+    `;
+export const GetDesignerProjectDocument = `
+    query getDesignerProject($project_id: ID!) {
+  getDesignerProject(project_id: $project_id) {
+    id
+    name
+    content
+    created_at
+    updated_at
+    owner {
+      id
+      username
+    }
+    roles {
+      role
+      user {
+        id
+        username
+      }
+    }
+  }
+}
+    `;
+export const GetDesignerProjectsDocument = `
+    query getDesignerProjects {
+  getDesignerProjects {
+    id
+    name
+    created_at
+    updated_at
+    owner {
+      id
+      username
+    }
+    roles {
+      role
+      user {
+        id
+        username
+      }
+    }
   }
 }
     `;
@@ -1295,7 +1478,13 @@ export const ProfileDocument = `
     is_staff
     is_static_voicebox
     is_voicebox_enabled
+    is_designer_storage_enabled
   }
+}
+    `;
+export const RenameDesignerProjectDocument = `
+    mutation renameDesignerProject($project_id: ID!, $name: String!) {
+  renameDesignerProject(project_id: $project_id, name: $name)
 }
     `;
 export const TrackEventDocument = `
@@ -1304,6 +1493,11 @@ export const TrackEventDocument = `
     success
     error
   }
+}
+    `;
+export const UpdateDesignerProjectDocument = `
+    mutation updateDesignerProject($project_id: ID!, $content: Base64Bytes!) {
+  updateDesignerProject(project_id: $project_id, content: $content)
 }
     `;
 
@@ -1338,6 +1532,36 @@ export function getSdk(
         'mutation'
       );
     },
+    createDesignerProject(
+      variables: CreateDesignerProjectMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<CreateDesignerProjectMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreateDesignerProjectMutation>(
+            CreateDesignerProjectDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'createDesignerProject',
+        'mutation'
+      );
+    },
+    deleteDesignerProject(
+      variables: DeleteDesignerProjectMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<DeleteDesignerProjectMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteDesignerProjectMutation>(
+            DeleteDesignerProjectDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'deleteDesignerProject',
+        'mutation'
+      );
+    },
     getConnectionByIndex(
       variables: GetConnectionByIndexQueryVariables,
       requestHeaders?: Dom.RequestInit['headers']
@@ -1350,6 +1574,36 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'getConnectionByIndex',
+        'query'
+      );
+    },
+    getDesignerProject(
+      variables: GetDesignerProjectQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<GetDesignerProjectQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetDesignerProjectQuery>(
+            GetDesignerProjectDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getDesignerProject',
+        'query'
+      );
+    },
+    getDesignerProjects(
+      variables?: GetDesignerProjectsQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<GetDesignerProjectsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetDesignerProjectsQuery>(
+            GetDesignerProjectsDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getDesignerProjects',
         'query'
       );
     },
@@ -1412,6 +1666,21 @@ export function getSdk(
         'query'
       );
     },
+    renameDesignerProject(
+      variables: RenameDesignerProjectMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<RenameDesignerProjectMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<RenameDesignerProjectMutation>(
+            RenameDesignerProjectDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'renameDesignerProject',
+        'mutation'
+      );
+    },
     trackEvent(
       variables: TrackEventMutationVariables,
       requestHeaders?: Dom.RequestInit['headers']
@@ -1423,6 +1692,21 @@ export function getSdk(
             ...wrappedRequestHeaders,
           }),
         'trackEvent',
+        'mutation'
+      );
+    },
+    updateDesignerProject(
+      variables: UpdateDesignerProjectMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<UpdateDesignerProjectMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<UpdateDesignerProjectMutation>(
+            UpdateDesignerProjectDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'updateDesignerProject',
         'mutation'
       );
     },

@@ -16,6 +16,26 @@ jest.mock('../cookies', () => ({
 
 const addShare = jest.fn(async () => ({ addShare: null }));
 const getConnectionByIndex = jest.fn(async () => ({ connection: null }));
+const createDesignerProject = jest.fn(async () => ({
+  createDesignerProject: 'id',
+}));
+const deleteDesignerProject = jest.fn(async () => ({
+  deleteDesignerProject: 'id',
+}));
+const getDesignerProject = jest.fn(async () => {
+  return {
+    getDesignerProject: {
+      id: 'id',
+      name: 'name',
+      content: 'content',
+      created_at: 'created_at',
+      updated_at: 'updated_at',
+      owner: { id: 'id', username: 'username' },
+      roles: [],
+    },
+  };
+});
+const getDesignerProjects = jest.fn(async () => ({ getDesignerProjects: [] }));
 const getVoiceboxConversation = jest.fn(async () => ({
   getVoiceboxConversation: null,
 }));
@@ -25,18 +45,30 @@ const listVoiceboxConversations = jest.fn(async () => ({
   voiceboxConversationCount: null,
 }));
 const profile = jest.fn(async () => ({ profile: null }));
+const renameDesignerProject = jest.fn(async () => ({
+  renameDesignerProject: 'id',
+}));
 const trackEvent = jest.fn(async () => ({ trackEvent: null }));
+const updateDesignerProject = jest.fn(async () => ({
+  updateDesignerProject: 'id',
+}));
 
 describe('getPortalSdk', () => {
   beforeEach(() => {
     jest.spyOn(portalSdkImport, 'getSdk').mockReturnValue({
       addShare,
       getConnectionByIndex,
+      createDesignerProject,
+      deleteDesignerProject,
+      getDesignerProject,
+      getDesignerProjects,
       getVoiceboxConversation,
       listConnections,
       listVoiceboxConversations,
       profile,
+      renameDesignerProject,
       trackEvent,
+      updateDesignerProject,
     });
   });
 

@@ -23,5 +23,6 @@ query profile {
     is_staff
     is_static_voicebox
     is_voicebox_enabled
+    is_designer_storage_enabled
   }
 }

@@ -62,6 +62,36 @@ export const getPortalSdk = () => {
       const result = await sdk.getConnectionByIndex({ index });
       return result.connection || null;
     },
+    createDesignerProject: async (name: string, content: string) => {
+      const result = await sdk.createDesignerProject({ name, content });
+      return result.createDesignerProject || null;
+    },
+    deleteDesignerProject: async (projectId: string) => {
+      const result = await sdk.deleteDesignerProject({ project_id: projectId });
+      return result.deleteDesignerProject || null;
+    },
+    getDesignerProject: async (projectId: string) => {
+      const result = await sdk.getDesignerProject({ project_id: projectId });
+      return result.getDesignerProject || null;
+    },
+    getDesignerProjects: async () => {
+      const result = await sdk.getDesignerProjects();
+      return result.getDesignerProjects || null;
+    },
+    renameDesignerProject: async (projectId: string, name: string) => {
+      const result = await sdk.renameDesignerProject({
+        project_id: projectId,
+        name,
+      });
+      return result.renameDesignerProject || null;
+    },
+    updateDesignerProject: async (projectId: string, content: string) => {
+      const result = await sdk.updateDesignerProject({
+        project_id: projectId,
+        content,
+      });
+      return result.updateDesignerProject || null;
+    },
     getVoiceboxConversation: async (conversationId: string) => {
       const result = await sdk.getVoiceboxConversation({
         conversation_id: conversationId,
