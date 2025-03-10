@@ -1,0 +1,3 @@
+mutation archiveDesignerProject($project_id: ID!) {
+  archiveDesignerProject(project_id: $project_id)
+}

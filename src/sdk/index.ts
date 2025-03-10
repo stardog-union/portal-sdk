@@ -156,6 +156,7 @@ export type CreateVoiceboxAppInput = {
 export type CustomerSsoSettings = {
   __typename?: 'CustomerSsoSettings';
   azureProviders: Array<Maybe<AzureProvider>>;
+  pingProviders: Array<Maybe<PingProvider>>;
 };
 
 export type DeleteApiTokenInput = {
@@ -307,6 +308,7 @@ export type Mutation = {
   addInvitation?: Maybe<GenericResponse>;
   addSSOConnection?: Maybe<SsoConnectionRedirectResponse>;
   addShare?: Maybe<Share>;
+  archiveDesignerProject: Scalars['ID'];
   cancelCloud?: Maybe<GenericResponse>;
   changeDesignerProjectRole: Scalars['ID'];
   checkoutCart?: Maybe<BillingSession>;
@@ -317,7 +319,6 @@ export type Mutation = {
   deleteApiToken?: Maybe<GenericResponse>;
   deleteCloud?: Maybe<DeletionResponse>;
   deleteConnection?: Maybe<DeletionResponse>;
-  deleteDesignerProject: Scalars['ID'];
   deleteVoiceboxApp?: Maybe<GenericResponse>;
   deleteVoiceboxConversation?: Maybe<GenericResponse>;
   editApiToken?: Maybe<GenericResponse>;
@@ -335,6 +336,7 @@ export type Mutation = {
   removePartnerConnection?: Maybe<GenericResponse>;
   renameDesignerProject: Scalars['ID'];
   resendEmail?: Maybe<GenericResponse>;
+  restoreDesignerProject: Scalars['ID'];
   /** Revoke an outgoing Designer project invitation, or reject an invitation sent to you. */
   revokeDesignerProjectInvitation: Scalars['ID'];
   /** Revoke a given role, or leave a role given to you. */
@@ -386,6 +388,11 @@ export type MutationAddShareArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationArchiveDesignerProjectArgs = {
+  project_id: Scalars['ID'];
+};
+
+/** Root Mutation Type */
 export type MutationCancelCloudArgs = {
   input: CancelCloudInput;
 };
@@ -431,11 +438,6 @@ export type MutationDeleteCloudArgs = {
 /** Root Mutation Type */
 export type MutationDeleteConnectionArgs = {
   name: Scalars['String'];
-};
-
-/** Root Mutation Type */
-export type MutationDeleteDesignerProjectArgs = {
-  project_id: Scalars['ID'];
 };
 
 /** Root Mutation Type */
@@ -495,6 +497,11 @@ export type MutationRenameDesignerProjectArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationRestoreDesignerProjectArgs = {
+  project_id: Scalars['ID'];
+};
+
+/** Root Mutation Type */
 export type MutationRevokeDesignerProjectInvitationArgs = {
   invitation_id?: InputMaybe<Scalars['ID']>;
 };
@@ -519,6 +526,7 @@ export type MutationTrackEventArgs = {
 /** Root Mutation Type */
 export type MutationUpdateDesignerProjectArgs = {
   content: Scalars['Base64Bytes'];
+  name?: InputMaybe<Scalars['String']>;
   project_id: Scalars['ID'];
 };
 
@@ -588,6 +596,11 @@ export type PartnerConnectionDetail = {
   user_email?: Maybe<Scalars['String']>;
   user_first_name?: Maybe<Scalars['String']>;
   workspace_url?: Maybe<Scalars['String']>;
+};
+
+export type PingProvider = {
+  __typename?: 'PingProvider';
+  customerName: Scalars['String'];
 };
 
 export type ProfileInput = {
@@ -853,6 +866,7 @@ export type Settings = {
   keycloakAuth: Scalars['Boolean'];
   openidAuth: Scalars['Boolean'];
   passwordAuth: Scalars['Boolean'];
+  pingAuth: Scalars['Boolean'];
   portal: Scalars['Boolean'];
   stardogEndpoint: Scalars['String'];
   studioVersion: Scalars['String'];
@@ -1099,6 +1113,15 @@ export type AddShareMutation = {
   addShare?: { __typename?: 'Share'; short_url?: string | null } | null;
 };
 
+export type ArchiveDesignerProjectMutationVariables = Exact<{
+  project_id: Scalars['ID'];
+}>;
+
+export type ArchiveDesignerProjectMutation = {
+  __typename?: 'Mutation';
+  archiveDesignerProject: string;
+};
+
 export type CreateDesignerProjectMutationVariables = Exact<{
   name: Scalars['String'];
   content: Scalars['Base64Bytes'];
@@ -1107,15 +1130,6 @@ export type CreateDesignerProjectMutationVariables = Exact<{
 export type CreateDesignerProjectMutation = {
   __typename?: 'Mutation';
   createDesignerProject: string;
-};
-
-export type DeleteDesignerProjectMutationVariables = Exact<{
-  project_id: Scalars['ID'];
-}>;
-
-export type DeleteDesignerProjectMutation = {
-  __typename?: 'Mutation';
-  deleteDesignerProject: string;
 };
 
 export type GetConnectionByIndexQueryVariables = Exact<{
@@ -1298,6 +1312,15 @@ export type RenameDesignerProjectMutation = {
   renameDesignerProject: string;
 };
 
+export type RestoreDesignerProjectMutationVariables = Exact<{
+  project_id: Scalars['ID'];
+}>;
+
+export type RestoreDesignerProjectMutation = {
+  __typename?: 'Mutation';
+  restoreDesignerProject: string;
+};
+
 export type TrackEventMutationVariables = Exact<{
   input: TrackEventInput;
 }>;
@@ -1314,6 +1337,7 @@ export type TrackEventMutation = {
 export type UpdateDesignerProjectMutationVariables = Exact<{
   project_id: Scalars['ID'];
   content: Scalars['Base64Bytes'];
+  name?: InputMaybe<Scalars['String']>;
 }>;
 
 export type UpdateDesignerProjectMutation = {
@@ -1328,14 +1352,14 @@ export const AddShareDocument = `
   }
 }
     `;
+export const ArchiveDesignerProjectDocument = `
+    mutation archiveDesignerProject($project_id: ID!) {
+  archiveDesignerProject(project_id: $project_id)
+}
+    `;
 export const CreateDesignerProjectDocument = `
     mutation createDesignerProject($name: String!, $content: Base64Bytes!) {
   createDesignerProject(name: $name, content: $content)
-}
-    `;
-export const DeleteDesignerProjectDocument = `
-    mutation deleteDesignerProject($project_id: ID!) {
-  deleteDesignerProject(project_id: $project_id)
 }
     `;
 export const GetConnectionByIndexDocument = `
@@ -1487,6 +1511,11 @@ export const RenameDesignerProjectDocument = `
   renameDesignerProject(project_id: $project_id, name: $name)
 }
     `;
+export const RestoreDesignerProjectDocument = `
+    mutation restoreDesignerProject($project_id: ID!) {
+  restoreDesignerProject(project_id: $project_id)
+}
+    `;
 export const TrackEventDocument = `
     mutation trackEvent($input: TrackEventInput!) {
   trackEvent(input: $input) {
@@ -1496,8 +1525,8 @@ export const TrackEventDocument = `
 }
     `;
 export const UpdateDesignerProjectDocument = `
-    mutation updateDesignerProject($project_id: ID!, $content: Base64Bytes!) {
-  updateDesignerProject(project_id: $project_id, content: $content)
+    mutation updateDesignerProject($project_id: ID!, $content: Base64Bytes!, $name: String) {
+  updateDesignerProject(project_id: $project_id, content: $content, name: $name)
 }
     `;
 
@@ -1532,6 +1561,21 @@ export function getSdk(
         'mutation'
       );
     },
+    archiveDesignerProject(
+      variables: ArchiveDesignerProjectMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<ArchiveDesignerProjectMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<ArchiveDesignerProjectMutation>(
+            ArchiveDesignerProjectDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'archiveDesignerProject',
+        'mutation'
+      );
+    },
     createDesignerProject(
       variables: CreateDesignerProjectMutationVariables,
       requestHeaders?: Dom.RequestInit['headers']
@@ -1544,21 +1588,6 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'createDesignerProject',
-        'mutation'
-      );
-    },
-    deleteDesignerProject(
-      variables: DeleteDesignerProjectMutationVariables,
-      requestHeaders?: Dom.RequestInit['headers']
-    ): Promise<DeleteDesignerProjectMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<DeleteDesignerProjectMutation>(
-            DeleteDesignerProjectDocument,
-            variables,
-            { ...requestHeaders, ...wrappedRequestHeaders }
-          ),
-        'deleteDesignerProject',
         'mutation'
       );
     },
@@ -1678,6 +1707,21 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'renameDesignerProject',
+        'mutation'
+      );
+    },
+    restoreDesignerProject(
+      variables: RestoreDesignerProjectMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<RestoreDesignerProjectMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<RestoreDesignerProjectMutation>(
+            RestoreDesignerProjectDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'restoreDesignerProject',
         'mutation'
       );
     },

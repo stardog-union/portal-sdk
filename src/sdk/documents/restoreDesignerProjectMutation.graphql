@@ -1,0 +1,3 @@
+mutation restoreDesignerProject($project_id: ID!) {
+  restoreDesignerProject(project_id: $project_id)
+}

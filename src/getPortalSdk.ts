@@ -66,9 +66,17 @@ export const getPortalSdk = () => {
       const result = await sdk.createDesignerProject({ name, content });
       return result.createDesignerProject || null;
     },
-    deleteDesignerProject: async (projectId: string) => {
-      const result = await sdk.deleteDesignerProject({ project_id: projectId });
-      return result.deleteDesignerProject || null;
+    archiveDesignerProject: async (projectId: string) => {
+      const result = await sdk.archiveDesignerProject({
+        project_id: projectId,
+      });
+      return result.archiveDesignerProject || null;
+    },
+    restoreDesignerProject: async (projectId: string) => {
+      const result = await sdk.restoreDesignerProject({
+        project_id: projectId,
+      });
+      return result.restoreDesignerProject || null;
     },
     getDesignerProject: async (projectId: string) => {
       const result = await sdk.getDesignerProject({ project_id: projectId });

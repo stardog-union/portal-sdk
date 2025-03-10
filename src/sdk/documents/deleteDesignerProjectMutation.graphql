@@ -1,3 +1,0 @@
-mutation deleteDesignerProject($project_id: ID!) {
-  deleteDesignerProject(project_id: $project_id)
-}
