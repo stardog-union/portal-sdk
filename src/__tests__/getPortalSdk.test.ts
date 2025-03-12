@@ -19,8 +19,11 @@ const getConnectionByIndex = jest.fn(async () => ({ connection: null }));
 const createDesignerProject = jest.fn(async () => ({
   createDesignerProject: 'id',
 }));
-const deleteDesignerProject = jest.fn(async () => ({
-  deleteDesignerProject: 'id',
+const archiveDesignerProject = jest.fn(async () => ({
+  archiveDesignerProject: 'id',
+}));
+const restoreDesignerProject = jest.fn(async () => ({
+  restoreDesignerProject: 'id',
 }));
 const getDesignerProject = jest.fn(async () => {
   return {
@@ -59,7 +62,7 @@ describe('getPortalSdk', () => {
       addShare,
       getConnectionByIndex,
       createDesignerProject,
-      deleteDesignerProject,
+      archiveDesignerProject,
       getDesignerProject,
       getDesignerProjects,
       getVoiceboxConversation,
@@ -67,6 +70,7 @@ describe('getPortalSdk', () => {
       listVoiceboxConversations,
       profile,
       renameDesignerProject,
+      restoreDesignerProject,
       trackEvent,
       updateDesignerProject,
     });
