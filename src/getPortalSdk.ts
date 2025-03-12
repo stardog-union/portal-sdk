@@ -93,10 +93,15 @@ export const getPortalSdk = () => {
       });
       return result.renameDesignerProject || null;
     },
-    updateDesignerProject: async (projectId: string, content: string) => {
+    updateDesignerProject: async (
+      projectId: string,
+      content: string,
+      name?: string
+    ) => {
       const result = await sdk.updateDesignerProject({
         project_id: projectId,
         content,
+        name,
       });
       return result.updateDesignerProject || null;
     },
