@@ -156,6 +156,7 @@ export type CreateVoiceboxAppInput = {
 export type CustomerSsoSettings = {
   __typename?: 'CustomerSsoSettings';
   azureProviders: Array<Maybe<AzureProvider>>;
+  oktaProviders: Array<Maybe<OktaProvider>>;
   pingProviders: Array<Maybe<PingProvider>>;
 };
 
@@ -575,6 +576,11 @@ export type OAuthToken = {
   user: User;
 };
 
+export type OktaProvider = {
+  __typename?: 'OktaProvider';
+  customerName: Scalars['String'];
+};
+
 /** To page through response. */
 export type PagingInput = {
   limit?: InputMaybe<Scalars['Int']>;
@@ -864,10 +870,12 @@ export type Settings = {
   googleAuth: Scalars['Boolean'];
   homeFooterLinks: Scalars['Boolean'];
   keycloakAuth: Scalars['Boolean'];
+  oktaAuth: Scalars['Boolean'];
   openidAuth: Scalars['Boolean'];
   passwordAuth: Scalars['Boolean'];
   pingAuth: Scalars['Boolean'];
   portal: Scalars['Boolean'];
+  sharedUserAuth: Scalars['Boolean'];
   stardogEndpoint: Scalars['String'];
   studioVersion: Scalars['String'];
 };
@@ -1002,6 +1010,8 @@ export type User = {
   is_verified?: Maybe<Scalars['Boolean']>;
   is_voicebox_api_access_enabled?: Maybe<Scalars['Boolean']>;
   is_voicebox_enabled?: Maybe<Scalars['Boolean']>;
+  is_voicebox_powered_suggestions_enabled?: Maybe<Scalars['Boolean']>;
+  is_voicebox_three_enabled?: Maybe<Scalars['Boolean']>;
   last_login?: Maybe<Scalars['String']>;
   last_name?: Maybe<Scalars['String']>;
   needs_stardog_free?: Maybe<Scalars['Boolean']>;
@@ -1019,6 +1029,8 @@ export type UserFeaturesInput = {
   is_static_voicebox?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
+  is_voicebox_powered_suggestions_enabled?: InputMaybe<Scalars['Boolean']>;
+  is_voicebox_three_enabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UserSearchDetails = {
@@ -1301,6 +1313,8 @@ export type ProfileQuery = {
     is_static_voicebox?: boolean | null;
     is_voicebox_enabled?: boolean | null;
     is_designer_storage_enabled?: boolean | null;
+    is_voicebox_powered_suggestions_enabled?: boolean | null;
+    is_voicebox_three_enabled?: boolean | null;
   } | null;
 };
 
@@ -1506,6 +1520,8 @@ export const ProfileDocument = `
     is_static_voicebox
     is_voicebox_enabled
     is_designer_storage_enabled
+    is_voicebox_powered_suggestions_enabled
+    is_voicebox_three_enabled
   }
 }
     `;
