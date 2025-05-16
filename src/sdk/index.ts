@@ -1313,6 +1313,8 @@ export type ProfileQuery = {
     is_static_voicebox?: boolean | null;
     is_voicebox_enabled?: boolean | null;
     is_designer_storage_enabled?: boolean | null;
+    is_voicebox_powered_suggestions_enabled?: boolean | null;
+    is_voicebox_three_enabled?: boolean | null;
   } | null;
 };
 
@@ -1518,6 +1520,8 @@ export const ProfileDocument = `
     is_static_voicebox
     is_voicebox_enabled
     is_designer_storage_enabled
+    is_voicebox_powered_suggestions_enabled
+    is_voicebox_three_enabled
   }
 }
     `;
