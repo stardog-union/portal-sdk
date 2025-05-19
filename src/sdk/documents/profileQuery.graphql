@@ -24,5 +24,7 @@ query profile {
     is_static_voicebox
     is_voicebox_enabled
     is_designer_storage_enabled
+    is_voicebox_powered_suggestions_enabled
+    is_voicebox_three_enabled
   }
 }
