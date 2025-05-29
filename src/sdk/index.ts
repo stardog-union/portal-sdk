@@ -954,6 +954,7 @@ export type SystemVoiceboxMessageContext = {
   followup_examples?: Maybe<Array<Maybe<Scalars['String']>>>;
   id: Scalars['ID'];
   message_type?: Maybe<Scalars['String']>;
+  pending?: Maybe<Scalars['Boolean']>;
   success?: Maybe<Scalars['Boolean']>;
 };
 
@@ -1233,6 +1234,7 @@ export type GetVoiceboxConversationQuery = {
         __typename?: 'SystemVoiceboxMessageContext';
         followup_examples?: Array<string | null> | null;
         message_type?: string | null;
+        pending?: boolean | null;
         success?: boolean | null;
         actions?: Array<{
           __typename?: 'VoicboxSystemMessageAction';
@@ -1460,6 +1462,7 @@ export const GetVoiceboxConversationDocument = `
           value
         }
         message_type
+        pending
         success
       }
     }
