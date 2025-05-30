@@ -62,8 +62,16 @@ export const getPortalSdk = () => {
       const result = await sdk.getConnectionByIndex({ index });
       return result.connection || null;
     },
-    createDesignerProject: async (name: string, content: string) => {
-      const result = await sdk.createDesignerProject({ name, content });
+    createDesignerProject: async (
+      name: string,
+      content: string,
+      connectionId?: string
+    ) => {
+      const result = await sdk.createDesignerProject({
+        name,
+        content,
+        connection_id: connectionId,
+      });
       return result.createDesignerProject || null;
     },
     archiveDesignerProject: async (projectId: string) => {
@@ -96,12 +104,14 @@ export const getPortalSdk = () => {
     updateDesignerProject: async (
       projectId: string,
       content: string,
-      name?: string
+      name?: string,
+      connectionId?: string
     ) => {
       const result = await sdk.updateDesignerProject({
         project_id: projectId,
         content,
         name,
+        connection_id: connectionId,
       });
       return result.updateDesignerProject || null;
     },

@@ -3,6 +3,7 @@ query getDesignerProject($project_id: ID!) {
     id
     name
     content
+    connection_id
     created_at
     updated_at
     owner {

@@ -2,6 +2,7 @@ query getDesignerProjects {
   getDesignerProjects {
     id
     name
+    connection_id
     created_at
     updated_at
     owner {
