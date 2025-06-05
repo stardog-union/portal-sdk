@@ -1,3 +1,11 @@
-mutation createDesignerProject($name: String!, $content: Base64Bytes!) {
-  createDesignerProject(name: $name, content: $content)
+mutation createDesignerProject(
+  $name: String!
+  $content: Base64Bytes!
+  $connection_id: String
+) {
+  createDesignerProject(
+    name: $name
+    content: $content
+    connection_id: $connection_id
+  )
 }

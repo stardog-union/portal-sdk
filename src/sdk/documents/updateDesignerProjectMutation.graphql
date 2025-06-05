@@ -2,6 +2,12 @@ mutation updateDesignerProject(
   $project_id: ID!
   $content: Base64Bytes!
   $name: String
+  $connection_id: String
 ) {
-  updateDesignerProject(project_id: $project_id, content: $content, name: $name)
+  updateDesignerProject(
+    project_id: $project_id
+    content: $content
+    name: $name
+    connection_id: $connection_id
+  )
 }
