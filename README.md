@@ -8,7 +8,7 @@ This is a collection of tools to share information between the front end applica
 
 Prerequisites for install
 
-- [Node.js](https://nodejs.org/) 18.
+- [Node.js](https://nodejs.org/) 22.
 - [Yarn](https://yarnpkg.com/en/) 1.2.0+.
 
 Simply run:
