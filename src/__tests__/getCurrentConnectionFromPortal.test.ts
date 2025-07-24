@@ -54,7 +54,6 @@ describe('getCurrentConnectionFromPortal', () => {
       endpoint: 'endpoint',
       token: 'token',
       username: 'hi',
-      useBrowserAuth: false,
     };
     getConnectionByIndex.mockReturnValue(connection);
 
@@ -64,7 +63,6 @@ describe('getCurrentConnectionFromPortal', () => {
       name: '',
       password: '',
       token: 'token',
-      useBrowserAuth: false,
       username: 'hi',
     });
   });

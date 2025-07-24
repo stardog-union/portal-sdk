@@ -2,7 +2,6 @@ query getConnectionByIndex($index: Int!) {
   connection: getConnectionByIndex(index: $index) {
     # getCurrentConnectionFromPortal
     token
-    useBrowserAuth
     username
 
     # useStardogConnectionFromPortalIndex (bones)

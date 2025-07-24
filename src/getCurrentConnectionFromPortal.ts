@@ -7,7 +7,6 @@ export interface BaseConnection {
   name: string;
   password: string;
   token?: string;
-  useBrowserAuth?: boolean;
   username: string;
 }
 
@@ -36,7 +35,6 @@ export const getCurrentConnectionFromPortal =
       name: '',
       password: '',
       token: connection.token ?? undefined,
-      useBrowserAuth: connection.useBrowserAuth ?? undefined,
       username: connection.username ?? '',
     };
   };
