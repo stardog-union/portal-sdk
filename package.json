@@ -9,7 +9,7 @@
   "homepage": "https://github.com/stardog-union/portal-sdk#readme",
   "engines": {
     "node": ">=22",
-    "yarn": ">=1.2.0"
+    "yarn": ">=1.22"
   },
   "scripts": {
     "build": "rm -rf ./dist/ && tsc --build ./tsconfig.build.json",
