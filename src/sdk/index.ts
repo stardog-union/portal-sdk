@@ -126,6 +126,7 @@ export type Connection = {
   stripeSubscriptionOrder?: Maybe<ProvisionedOrder>;
   token?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
+  /** @deprecated useBrowserAuth is deprecated. Check if username and token are empty to determine if browser authentication is used. */
   useBrowserAuth?: Maybe<Scalars['Boolean']>;
   useConnectionSSO?: Maybe<Scalars['Boolean']>;
   useSSO?: Maybe<Scalars['Boolean']>;
@@ -1160,7 +1161,6 @@ export type GetConnectionByIndexQuery = {
   connection?: {
     __typename?: 'Connection';
     token?: string | null;
-    useBrowserAuth?: boolean | null;
     username?: string | null;
     endpoint: string;
     dashboard?: string | null;
@@ -1266,7 +1266,6 @@ export type ListConnectionsQuery = {
     index: number;
     name: string;
     token?: string | null;
-    useBrowserAuth?: boolean | null;
     username?: string | null;
   } | null> | null;
 };
@@ -1396,7 +1395,6 @@ export const GetConnectionByIndexDocument = `
     query getConnectionByIndex($index: Int!) {
   connection: getConnectionByIndex(index: $index) {
     token
-    useBrowserAuth
     username
     endpoint
     dashboard
@@ -1492,7 +1490,6 @@ export const ListConnectionsDocument = `
     index
     name
     token
-    useBrowserAuth
     username
   }
 }
