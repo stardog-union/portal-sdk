@@ -8,8 +8,8 @@
   "author": "Stardog Union <help@stardog.com>",
   "homepage": "https://github.com/stardog-union/portal-sdk#readme",
   "engines": {
-    "node": ">=18",
-    "yarn": ">=1.2.0"
+    "node": ">=22",
+    "yarn": ">=1.22"
   },
   "scripts": {
     "build": "rm -rf ./dist/ && tsc --build ./tsconfig.build.json",
@@ -27,7 +27,7 @@
     "@graphql-codegen/typescript-operations": "^2.5.13",
     "@types/cookiebot-sdk": "^2.43.4",
     "@types/jest": "^29.2.5",
-    "@types/node": "^18",
+    "@types/node": "^22",
     "graphql": "^16.8.1",
     "graphql-request": "^5.1.0",
     "graphql-tag": "^2.12.6",
