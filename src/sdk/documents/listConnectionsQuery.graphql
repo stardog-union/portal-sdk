@@ -7,7 +7,6 @@ query listConnections {
     index
     name
     token
-    useBrowserAuth
     username
   }
 }
