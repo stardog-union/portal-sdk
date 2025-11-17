@@ -26,6 +26,7 @@ export type Scalars = {
 
 export type AddConnectionInput = {
   endpoint: Scalars['String'];
+  internalEndpoint?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   token?: InputMaybe<Scalars['String']>;
   useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
@@ -35,6 +36,7 @@ export type AddConnectionInput = {
 
 export type AddSsoConnectionInput = {
   connection_name: Scalars['String'];
+  internalEndpoint?: InputMaybe<Scalars['String']>;
   provider_name: Scalars['String'];
   stardog_endpoint: Scalars['String'];
 };
@@ -95,6 +97,14 @@ export type CloudCleanupInput = {
   userName?: InputMaybe<Scalars['String']>;
 };
 
+/** Filters for the cloud report query */
+export type CloudFilters = {
+  flavor?: InputMaybe<Scalars['String']>;
+  ownerInactiveDays?: InputMaybe<Scalars['Int']>;
+  search?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['String']>;
+};
+
 /** Stardog Cloud Flavor and Size info */
 export type CloudFlavor = {
   __typename?: 'CloudFlavor';
@@ -108,6 +118,23 @@ export type CloudFlavor = {
   vcpus?: Maybe<Scalars['Float']>;
 };
 
+/** Cloud report data with filtered results and statistics */
+export type CloudReportData = {
+  __typename?: 'CloudReportData';
+  clouds?: Maybe<Array<Maybe<StardogCloud>>>;
+  queueCounts?: Maybe<QueueCounts>;
+  stats?: Maybe<CloudReportStats>;
+};
+
+/** Statistics for the cloud report */
+export type CloudReportStats = {
+  __typename?: 'CloudReportStats';
+  resultCount?: Maybe<Scalars['Int']>;
+  resultInactiveCount?: Maybe<Scalars['Int']>;
+  totalAllocated?: Maybe<Scalars['Int']>;
+  totalInactive?: Maybe<Scalars['Int']>;
+};
+
 /** Saved Connection info for a Stardog instance */
 export type Connection = {
   __typename?: 'Connection';
@@ -116,6 +143,7 @@ export type Connection = {
   endpoint: Scalars['String'];
   id: Scalars['ID'];
   index: Scalars['Int'];
+  internalEndpoint?: Maybe<Scalars['String']>;
   isAllocating?: Maybe<Scalars['Boolean']>;
   isStardogCloud?: Maybe<Scalars['Boolean']>;
   isStardogFree?: Maybe<Scalars['Boolean']>;
@@ -220,6 +248,7 @@ export type EditApiTokenInput = {
 export type EditConnectionInput = {
   endpoint?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
+  internalEndpoint?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   token?: InputMaybe<Scalars['String']>;
   useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
@@ -651,6 +680,7 @@ export type Query = {
   checkCloudQueue?: Maybe<QueueCounts>;
   customerSsoSettings?: Maybe<CustomerSsoSettings>;
   generateToken?: Maybe<OAuthToken>;
+  getCloudReport?: Maybe<CloudReportData>;
   getConnection?: Maybe<Connection>;
   getConnectionByIndex?: Maybe<Connection>;
   /** Retrieve a single Designer project. */
@@ -712,6 +742,11 @@ export type QueryApiTokenCountArgs = {
 /** Root Query Type */
 export type QueryGenerateTokenArgs = {
   endpoint: Scalars['String'];
+};
+
+/** Root Query Type */
+export type QueryGetCloudReportArgs = {
+  filters?: InputMaybe<CloudFilters>;
 };
 
 /** Root Query Type */
@@ -831,6 +866,7 @@ export type QueueCounts = {
   medium_count?: Maybe<Scalars['Float']>;
   micro_count?: Maybe<Scalars['Float']>;
   small_count?: Maybe<Scalars['Float']>;
+  small_vbx_count?: Maybe<Scalars['Float']>;
 };
 
 /** Quota limits and usage for a given user. */
@@ -858,6 +894,7 @@ export type SsoConnectionRegistration = {
   display_provider_name: Scalars['String'];
   provider_name: Scalars['String'];
   stardog_endpoint?: Maybe<Scalars['String']>;
+  stardog_internal_endpoint?: Maybe<Scalars['String']>;
 };
 
 /** Settings, these are settings that control the front end display */
@@ -866,15 +903,15 @@ export type Settings = {
   auth0Auth: Scalars['Boolean'];
   azureAuth: Scalars['Boolean'];
   baseURL: Scalars['String'];
+  copyConnectionTokenButtonEnabled: Scalars['Boolean'];
   dataMarketplace: Scalars['Boolean'];
   designerVersion: Scalars['String'];
+  duoAuth: Scalars['Boolean'];
   explorerVersion: Scalars['String'];
   friendlyName: Scalars['String'];
-  geoaxisAuth: Scalars['Boolean'];
   googleAuth: Scalars['Boolean'];
   homeFooterLinks: Scalars['Boolean'];
   kerberosAuth: Scalars['Boolean'];
-  keycloakAuth: Scalars['Boolean'];
   oktaAuth: Scalars['Boolean'];
   openidAuth: Scalars['Boolean'];
   passwordAuth: Scalars['Boolean'];
@@ -910,10 +947,13 @@ export type StardogCloud = {
   __typename?: 'StardogCloud';
   bi_endpoint?: Maybe<Scalars['String']>;
   created?: Maybe<Scalars['String']>;
+  days_to_cleanup?: Maybe<Scalars['Int']>;
+  days_to_inactive?: Maybe<Scalars['Int']>;
   endpoint?: Maybe<Scalars['String']>;
   flavor?: Maybe<CloudFlavor>;
   id?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
+  notification_date?: Maybe<Scalars['String']>;
   owner?: Maybe<User>;
   payment_ref?: Maybe<Scalars['String']>;
   price_ref?: Maybe<Scalars['String']>;
@@ -1017,6 +1057,8 @@ export type User = {
   is_voicebox_api_access_enabled?: Maybe<Scalars['Boolean']>;
   is_voicebox_enabled?: Maybe<Scalars['Boolean']>;
   is_voicebox_powered_suggestions_enabled?: Maybe<Scalars['Boolean']>;
+  is_voicebox_think_mode_enabled?: Maybe<Scalars['Boolean']>;
+  /** @deprecated is_voicebox_three_enabled is deprecated. Use is_voicebox_think_mode_enabled instead. */
   is_voicebox_three_enabled?: Maybe<Scalars['Boolean']>;
   last_login?: Maybe<Scalars['String']>;
   last_name?: Maybe<Scalars['String']>;
@@ -1035,8 +1077,6 @@ export type UserFeaturesInput = {
   is_static_voicebox?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
-  is_voicebox_powered_suggestions_enabled?: InputMaybe<Scalars['Boolean']>;
-  is_voicebox_three_enabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UserSearchDetails = {
@@ -1060,6 +1100,7 @@ export type UserVoiceboxMessageContext = {
   model?: Maybe<Scalars['String']>;
   named_graphs?: Maybe<Array<Maybe<Scalars['String']>>>;
   reasoning?: Maybe<Scalars['Boolean']>;
+  think_mode?: Maybe<Scalars['String']>;
 };
 
 export type VoicboxSystemMessageAction = {
@@ -1236,6 +1277,7 @@ export type GetVoiceboxConversationQuery = {
         named_graphs?: Array<string | null> | null;
         model?: string | null;
         reasoning?: boolean | null;
+        think_mode?: string | null;
       } | null;
       system_message_context?: {
         __typename?: 'SystemVoiceboxMessageContext';
@@ -1289,6 +1331,7 @@ export type ListVoiceboxConversationsQuery = {
         named_graphs?: Array<string | null> | null;
         model?: string | null;
         reasoning?: boolean | null;
+        think_mode?: string | null;
       } | null;
     } | null;
   } | null> | null;
@@ -1322,7 +1365,7 @@ export type ProfileQuery = {
     is_voicebox_enabled?: boolean | null;
     is_designer_storage_enabled?: boolean | null;
     is_voicebox_powered_suggestions_enabled?: boolean | null;
-    is_voicebox_three_enabled?: boolean | null;
+    is_voicebox_think_mode_enabled?: boolean | null;
   } | null;
 };
 
@@ -1465,6 +1508,7 @@ export const GetVoiceboxConversationDocument = `
         named_graphs
         model
         reasoning
+        think_mode
       }
       system_message_context {
         followup_examples
@@ -1506,6 +1550,7 @@ export const ListVoiceboxConversationsDocument = `
         named_graphs
         model
         reasoning
+        think_mode
       }
     }
   }
@@ -1535,7 +1580,7 @@ export const ProfileDocument = `
     is_voicebox_enabled
     is_designer_storage_enabled
     is_voicebox_powered_suggestions_enabled
-    is_voicebox_three_enabled
+    is_voicebox_think_mode_enabled
   }
 }
     `;

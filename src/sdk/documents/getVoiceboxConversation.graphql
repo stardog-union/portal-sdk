@@ -13,6 +13,7 @@ query getVoiceboxConversation($conversation_id: String!) {
         named_graphs
         model
         reasoning
+        think_mode
       }
       system_message_context {
         followup_examples
