@@ -9,6 +9,7 @@ query listVoiceboxConversations($paging: PagingInput) {
         named_graphs
         model
         reasoning
+        think_mode
       }
     }
   }
