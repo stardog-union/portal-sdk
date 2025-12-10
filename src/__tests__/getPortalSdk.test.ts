@@ -1,4 +1,5 @@
 import { getConnectionCookie } from '../cookies';
+import { getCurrentConnectionInfo } from '../getCurrentConnectionInfo';
 import {
   ClientTypeList,
   TrackingEventList,
@@ -14,16 +15,24 @@ jest.mock('../cookies', () => ({
   getConnectionCookie: jest.fn(),
 }));
 
-const addShare = jest.fn(async () => ({ addShare: null }));
-const getConnectionByIndex = jest.fn(async () => ({ connection: null }));
-const createDesignerProject = jest.fn(async () => ({
-  createDesignerProject: 'id',
+jest.mock('../getCurrentConnectionInfo', () => ({
+  getCurrentConnectionInfo: jest.fn(),
 }));
+
+const addShare = jest.fn(async () => ({ addShare: null }));
 const archiveDesignerProject = jest.fn(async () => ({
   archiveDesignerProject: 'id',
 }));
-const restoreDesignerProject = jest.fn(async () => ({
-  restoreDesignerProject: 'id',
+const createDesignerProject = jest.fn(async () => ({
+  createDesignerProject: 'id',
+}));
+const getConnectionByIndex = jest.fn(async () => ({
+  connection: {
+    endpoint: 'endpoint',
+    id: 'id',
+    name: 'name',
+    index: 0,
+  },
 }));
 const getDesignerProject = jest.fn(async () => {
   return {
@@ -43,6 +52,7 @@ const getVoiceboxConversation = jest.fn(async () => ({
   getVoiceboxConversation: null,
 }));
 const listConnections = jest.fn(async () => ({ listConnections: [null] }));
+const listOrganizations = jest.fn(async () => ({ listOrganizations: [null] }));
 const listVoiceboxConversations = jest.fn(async () => ({
   listVoiceboxConversations: null,
   voiceboxConversationCount: null,
@@ -50,6 +60,9 @@ const listVoiceboxConversations = jest.fn(async () => ({
 const profile = jest.fn(async () => ({ profile: null }));
 const renameDesignerProject = jest.fn(async () => ({
   renameDesignerProject: 'id',
+}));
+const restoreDesignerProject = jest.fn(async () => ({
+  restoreDesignerProject: 'id',
 }));
 const trackEvent = jest.fn(async () => ({ trackEvent: null }));
 const updateDesignerProject = jest.fn(async () => ({
@@ -60,13 +73,14 @@ describe('getPortalSdk', () => {
   beforeEach(() => {
     jest.spyOn(portalSdkImport, 'getSdk').mockReturnValue({
       addShare,
-      getConnectionByIndex,
-      createDesignerProject,
       archiveDesignerProject,
+      createDesignerProject,
+      getConnectionByIndex,
       getDesignerProject,
       getDesignerProjects,
       getVoiceboxConversation,
       listConnections,
+      listOrganizations,
       listVoiceboxConversations,
       profile,
       renameDesignerProject,
@@ -102,34 +116,122 @@ describe('getPortalSdk', () => {
 
   it('calls portal-sdk functions and gets return values', async () => {
     const sdk = getPortalSdk();
-    const input = {
-      endpoint: 'endpoint',
-      expires: 100,
-      service: 'service',
-      target_path: 'target_path',
+
+    const addShareInput = {
+      input: {
+        endpoint: 'endpoint',
+        expires: 100,
+        service: 'service',
+        target_path: 'target_path',
+      },
     };
-    await sdk?.addShare(input);
-    expect(addShare).toHaveBeenCalledWith({ input });
-    const eventInput = {
-      event: TrackingEventList.DESIGNER_CREATE_DATA_SOURCE,
-      client_type: ClientTypeList.HUBSPOT,
+    await sdk?.addShare(addShareInput.input);
+    expect(addShare).toHaveBeenCalledWith(addShareInput);
+
+    const createDesignerProjectInput = {
+      name: 'name',
+      content: 'content',
+      connection_id: 'connectionId',
     };
-    await sdk?.trackEvent(eventInput);
-    expect(trackEvent).toHaveBeenCalled();
+    await sdk?.createDesignerProject(
+      createDesignerProjectInput.name,
+      createDesignerProjectInput.content,
+      createDesignerProjectInput.connection_id
+    );
+    expect(createDesignerProject).toHaveBeenCalledWith(
+      createDesignerProjectInput
+    );
+
+    const archiveDesignerProjectInput = { project_id: 'projectId' };
+    await sdk?.archiveDesignerProject(archiveDesignerProjectInput.project_id);
+    expect(archiveDesignerProject).toHaveBeenCalledWith(
+      archiveDesignerProjectInput
+    );
+
+    const getDesignerProjectInput = { project_id: 'projectId' };
+    await sdk?.getDesignerProject(getDesignerProjectInput.project_id);
+    expect(getDesignerProject).toHaveBeenCalledWith(getDesignerProjectInput);
+
+    await sdk?.getDesignerProjects();
+    expect(getDesignerProjects).toHaveBeenCalled();
+
+    const getVoiceboxConversationInput = { conversation_id: 'conversationId' };
+    await sdk?.getVoiceboxConversation(
+      getVoiceboxConversationInput.conversation_id
+    );
+    expect(getVoiceboxConversation).toHaveBeenCalledWith(
+      getVoiceboxConversationInput
+    );
+    await sdk?.listOrganizations();
+    expect(listOrganizations).toHaveBeenCalled();
+
+    await sdk?.listVoiceboxConversations();
+    expect(listVoiceboxConversations).toHaveBeenCalled();
 
     await sdk?.profile();
     expect(profile).toHaveBeenCalled();
 
-    await sdk?.listConnections();
-    expect(listConnections).toHaveBeenCalled();
+    const renameDesignerProjectInput = {
+      project_id: 'projectId',
+      name: 'name',
+    };
+    await sdk?.renameDesignerProject(
+      renameDesignerProjectInput.project_id,
+      renameDesignerProjectInput.name
+    );
+    expect(renameDesignerProject).toHaveBeenCalledWith(
+      renameDesignerProjectInput
+    );
 
-    await sdk?.getConnectionByIndex(0);
-    expect(getConnectionByIndex).toHaveBeenCalledWith({ index: 0 });
+    const restoreDesignerProjectInput = { project_id: 'projectId' };
+    await sdk?.restoreDesignerProject(restoreDesignerProjectInput.project_id);
+    expect(restoreDesignerProject).toHaveBeenCalledWith(
+      restoreDesignerProjectInput
+    );
 
-    listConnections.mockResolvedValueOnce({ listConnections: null as any });
-    const emptyConnectionsSdk = getPortalSdk();
+    await sdk?.trackEvent({
+      event: TrackingEventList.DESIGNER_CREATE_DATA_SOURCE,
+      client_type: ClientTypeList.HUBSPOT,
+    });
+    expect(trackEvent).toHaveBeenCalled();
 
-    await emptyConnectionsSdk?.listConnections();
+    const updateDesignerProjectInput = {
+      project_id: 'projectId',
+      content: 'content',
+      name: 'name',
+      connection_id: 'connectionId',
+    };
+    await sdk?.updateDesignerProject(
+      updateDesignerProjectInput.project_id,
+      updateDesignerProjectInput.content,
+      updateDesignerProjectInput.name,
+      updateDesignerProjectInput.connection_id
+    );
+    expect(updateDesignerProject).toHaveBeenCalledWith(
+      updateDesignerProjectInput
+    );
+  });
+
+  it('calls the connection portal-sdk function only when there is an org domain', async () => {
+    const sdk = getPortalSdk();
+
+    (getCurrentConnectionInfo as jest.Mock).mockReturnValue(null);
+
+    expect(await sdk?.getConnectionByIndex(0)).toBeNull();
+    expect(getConnectionByIndex).not.toHaveBeenCalled();
+
+    expect(await sdk?.listConnections()).toBeNull();
+    expect(listConnections).not.toHaveBeenCalled();
+
+    (getCurrentConnectionInfo as jest.Mock).mockReturnValue({
+      connectionIndex: 1,
+      organizationDomain: 'orgDomain',
+    });
+
+    expect(await sdk?.getConnectionByIndex(0)).not.toBeNull();
+    expect(getConnectionByIndex).toHaveBeenCalled();
+
+    expect(await sdk?.listConnections()).not.toBeNull();
     expect(listConnections).toHaveBeenCalled();
   });
 });
