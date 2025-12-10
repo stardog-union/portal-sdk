@@ -1,5 +1,5 @@
-query listConnections {
-  listConnections {
+query listConnections($org: String) {
+  listConnections(org: $org) {
     # same fields as getConnectionByIndex
     dashboard
     endpoint

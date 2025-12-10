@@ -1,6 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 
 import { getConnectionCookie } from './cookies';
+import { getCurrentConnectionInfo } from './getCurrentConnectionInfo';
 import { ShareInput, getSdk } from './sdk';
 
 export enum TrackingEventList {
@@ -59,7 +60,15 @@ export const getPortalSdk = () => {
       return result.addShare || null;
     },
     getConnectionByIndex: async (index: number) => {
-      const result = await sdk.getConnectionByIndex({ index });
+      const urlInfo = getCurrentConnectionInfo(window);
+      if (!urlInfo) {
+        return null;
+      }
+
+      const result = await sdk.getConnectionByIndex({
+        index,
+        org: urlInfo.organizationDomain,
+      });
       return result.connection || null;
     },
     createDesignerProject: async (
@@ -135,15 +144,35 @@ export const getPortalSdk = () => {
       };
     },
     listConnections: async () => {
-      const result = await sdk.listConnections();
+      const urlInfo = getCurrentConnectionInfo(window);
+      if (!urlInfo) {
+        return null;
+      }
+
+      const result = await sdk.listConnections({
+        org: urlInfo.organizationDomain,
+      });
       if (!result.listConnections) {
         return null;
       }
+
       return result.listConnections.filter(
         (
           connection
         ): connection is NonNullable<(typeof result.listConnections)[0]> =>
           connection !== null
+      );
+    },
+    listOrganizations: async () => {
+      const result = await sdk.listOrganizations();
+      if (!result.listOrganizations) {
+        return null;
+      }
+      return result.listOrganizations.filter(
+        (
+          organization
+        ): organization is NonNullable<(typeof result.listOrganizations)[0]> =>
+          organization !== null
       );
     },
     listVoiceboxConversations: async () => {

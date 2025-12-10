@@ -149,6 +149,7 @@ export type Connection = {
   isStardogFree?: Maybe<Scalars['Boolean']>;
   isWaitingForPayment?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
+  org_domain?: Maybe<Scalars['String']>;
   shouldShowDesigner?: Maybe<Scalars['Boolean']>;
   stripeSubscription?: Maybe<PurchaseSession>;
   stripeSubscriptionOrder?: Maybe<ProvisionedOrder>;
@@ -158,7 +159,6 @@ export type Connection = {
   useBrowserAuth?: Maybe<Scalars['Boolean']>;
   useConnectionSSO?: Maybe<Scalars['Boolean']>;
   useSSO?: Maybe<Scalars['Boolean']>;
-  user?: Maybe<User>;
   username?: Maybe<Scalars['String']>;
 };
 
@@ -402,6 +402,7 @@ export type MutationAcceptInvitationArgs = {
 /** Root Mutation Type */
 export type MutationAddConnectionArgs = {
   input: AddConnectionInput;
+  org?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Mutation Type */
@@ -470,7 +471,8 @@ export type MutationDeleteCloudArgs = {
 
 /** Root Mutation Type */
 export type MutationDeleteConnectionArgs = {
-  name: Scalars['String'];
+  id: Scalars['String'];
+  org?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Mutation Type */
@@ -491,6 +493,7 @@ export type MutationEditApiTokenArgs = {
 /** Root Mutation Type */
 export type MutationEditConnectionArgs = {
   input: EditConnectionInput;
+  org?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Mutation Type */
@@ -614,6 +617,13 @@ export type OktaProvider = {
   customerName: Scalars['String'];
 };
 
+export type Organization = {
+  __typename?: 'Organization';
+  domain?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
 /** To page through response. */
 export type PagingInput = {
   limit?: InputMaybe<Scalars['Int']>;
@@ -681,7 +691,7 @@ export type Query = {
   customerSsoSettings?: Maybe<CustomerSsoSettings>;
   generateToken?: Maybe<OAuthToken>;
   getCloudReport?: Maybe<CloudReportData>;
-  getConnection?: Maybe<Connection>;
+  getConnectionById?: Maybe<Connection>;
   getConnectionByIndex?: Maybe<Connection>;
   /** Retrieve a single Designer project. */
   getDesignerProject: DesignerProject;
@@ -712,6 +722,7 @@ export type Query = {
   listConnections?: Maybe<Array<Maybe<Connection>>>;
   listConnectionsByEndpoint?: Maybe<Array<Maybe<Connection>>>;
   listInactiveClouds?: Maybe<Array<Maybe<StardogCloud>>>;
+  listOrganizations?: Maybe<Array<Maybe<Organization>>>;
   listStardogCloud?: Maybe<Array<Maybe<StardogCloud>>>;
   /** Retrieve Voicebox Applications owned by the authenticated user. */
   listVoiceboxApps?: Maybe<Array<Maybe<VoiceboxApp>>>;
@@ -741,7 +752,7 @@ export type QueryApiTokenCountArgs = {
 
 /** Root Query Type */
 export type QueryGenerateTokenArgs = {
-  endpoint: Scalars['String'];
+  connection_id: Scalars['String'];
 };
 
 /** Root Query Type */
@@ -750,13 +761,15 @@ export type QueryGetCloudReportArgs = {
 };
 
 /** Root Query Type */
-export type QueryGetConnectionArgs = {
-  name: Scalars['String'];
+export type QueryGetConnectionByIdArgs = {
+  id: Scalars['String'];
+  org?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
 export type QueryGetConnectionByIndexArgs = {
   index: Scalars['Int'];
+  org?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
@@ -827,8 +840,14 @@ export type QueryListApiTokensArgs = {
 };
 
 /** Root Query Type */
+export type QueryListConnectionsArgs = {
+  org?: InputMaybe<Scalars['String']>;
+};
+
+/** Root Query Type */
 export type QueryListConnectionsByEndpointArgs = {
   endpoint: Scalars['String'];
+  org?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
@@ -1195,6 +1214,7 @@ export type CreateDesignerProjectMutation = {
 
 export type GetConnectionByIndexQueryVariables = Exact<{
   index: Scalars['Int'];
+  org?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetConnectionByIndexQuery = {
@@ -1296,7 +1316,9 @@ export type GetVoiceboxConversationQuery = {
   } | null;
 };
 
-export type ListConnectionsQueryVariables = Exact<{ [key: string]: never }>;
+export type ListConnectionsQueryVariables = Exact<{
+  org?: InputMaybe<Scalars['String']>;
+}>;
 
 export type ListConnectionsQuery = {
   __typename?: 'Query';
@@ -1309,6 +1331,18 @@ export type ListConnectionsQuery = {
     name: string;
     token?: string | null;
     username?: string | null;
+  } | null> | null;
+};
+
+export type ListOrganizationsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ListOrganizationsQuery = {
+  __typename?: 'Query';
+  listOrganizations?: Array<{
+    __typename?: 'Organization';
+    id: string;
+    name: string;
+    domain?: string | null;
   } | null> | null;
 };
 
@@ -1435,8 +1469,8 @@ export const CreateDesignerProjectDocument = `
 }
     `;
 export const GetConnectionByIndexDocument = `
-    query getConnectionByIndex($index: Int!) {
-  connection: getConnectionByIndex(index: $index) {
+    query getConnectionByIndex($index: Int!, $org: String) {
+  connection: getConnectionByIndex(index: $index, org: $org) {
     token
     username
     endpoint
@@ -1526,8 +1560,8 @@ export const GetVoiceboxConversationDocument = `
 }
     `;
 export const ListConnectionsDocument = `
-    query listConnections {
-  listConnections {
+    query listConnections($org: String) {
+  listConnections(org: $org) {
     dashboard
     endpoint
     id
@@ -1535,6 +1569,15 @@ export const ListConnectionsDocument = `
     name
     token
     username
+  }
+}
+    `;
+export const ListOrganizationsDocument = `
+    query listOrganizations {
+  listOrganizations {
+    id
+    name
+    domain
   }
 }
     `;
@@ -1746,6 +1789,21 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'listConnections',
+        'query'
+      );
+    },
+    listOrganizations(
+      variables?: ListOrganizationsQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<ListOrganizationsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<ListOrganizationsQuery>(
+            ListOrganizationsDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'listOrganizations',
         'query'
       );
     },
