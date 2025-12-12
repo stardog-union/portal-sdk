@@ -212,26 +212,21 @@ describe('getPortalSdk', () => {
     );
   });
 
-  it('calls the connection portal-sdk function only when there is an org domain', async () => {
-    const sdk = getPortalSdk();
+  describe.each([
+    ['with user info', { connectionIndex: 1, organizationDomain: undefined }],
+    ['with org info', { connectionIndex: 1, organizationDomain: 'orgDomain' }],
+    ['without info', null],
+  ])('for %s', (_, info) => {
+    it('calls the connection portal-sdk function with the org domain', async () => {
+      const sdk = getPortalSdk();
 
-    (getCurrentConnectionInfo as jest.Mock).mockReturnValue(null);
+      (getCurrentConnectionInfo as jest.Mock).mockReturnValue(info);
 
-    expect(await sdk?.getConnectionByIndex(0)).toBeNull();
-    expect(getConnectionByIndex).not.toHaveBeenCalled();
+      expect(await sdk?.getConnectionByIndex(0)).not.toBeNull();
+      expect(getConnectionByIndex).toHaveBeenCalled();
 
-    expect(await sdk?.listConnections()).toBeNull();
-    expect(listConnections).not.toHaveBeenCalled();
-
-    (getCurrentConnectionInfo as jest.Mock).mockReturnValue({
-      connectionIndex: 1,
-      organizationDomain: 'orgDomain',
+      expect(await sdk?.listConnections()).not.toBeNull();
+      expect(listConnections).toHaveBeenCalled();
     });
-
-    expect(await sdk?.getConnectionByIndex(0)).not.toBeNull();
-    expect(getConnectionByIndex).toHaveBeenCalled();
-
-    expect(await sdk?.listConnections()).not.toBeNull();
-    expect(listConnections).toHaveBeenCalled();
   });
 });

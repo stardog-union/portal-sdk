@@ -20,7 +20,7 @@ describe('getCurrentConnectionInfo', () => {
   describe.each([
     ['personal org', '/u', undefined],
     ['public org', '/o/stardog', 'stardog'],
-  ])('for %s', (label, prefix, orgDomain) => {
+  ])('for %s', (_, prefix, orgDomain) => {
     it('returns the correct organizationDomain, connectionIndex and product for a valid url', () => {
       const info = getCurrentConnectionInfoForPathname(`${prefix}/9/explorer/`);
       expect(info).toBeTruthy();
