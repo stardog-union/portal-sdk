@@ -3,5 +3,6 @@ query listOrganizations {
     id
     name
     domain
+    role
   }
 }

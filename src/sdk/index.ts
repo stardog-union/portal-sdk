@@ -28,6 +28,7 @@ export type AddConnectionInput = {
   endpoint: Scalars['String'];
   internalEndpoint?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
+  org?: InputMaybe<Scalars['String']>;
   token?: InputMaybe<Scalars['String']>;
   useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
   useSSO?: InputMaybe<Scalars['Boolean']>;
@@ -194,6 +195,11 @@ export type DeleteApiTokenInput = {
   id: Scalars['ID'];
 };
 
+export type DeleteConnectionInput = {
+  id: Scalars['ID'];
+  org?: InputMaybe<Scalars['String']>;
+};
+
 /** Generic deletion response type to handle reporting success. */
 export type DeletionResponse = {
   __typename?: 'DeletionResponse';
@@ -250,6 +256,7 @@ export type EditConnectionInput = {
   id: Scalars['ID'];
   internalEndpoint?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
+  org?: InputMaybe<Scalars['String']>;
   token?: InputMaybe<Scalars['String']>;
   useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
   useSSO?: InputMaybe<Scalars['Boolean']>;
@@ -402,7 +409,6 @@ export type MutationAcceptInvitationArgs = {
 /** Root Mutation Type */
 export type MutationAddConnectionArgs = {
   input: AddConnectionInput;
-  org?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Mutation Type */
@@ -471,8 +477,7 @@ export type MutationDeleteCloudArgs = {
 
 /** Root Mutation Type */
 export type MutationDeleteConnectionArgs = {
-  id: Scalars['String'];
-  org?: InputMaybe<Scalars['String']>;
+  input: DeleteConnectionInput;
 };
 
 /** Root Mutation Type */
@@ -493,7 +498,6 @@ export type MutationEditApiTokenArgs = {
 /** Root Mutation Type */
 export type MutationEditConnectionArgs = {
   input: EditConnectionInput;
-  org?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Mutation Type */
@@ -622,6 +626,7 @@ export type Organization = {
   domain?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  role?: Maybe<Scalars['String']>;
 };
 
 /** To page through response. */
@@ -1343,6 +1348,7 @@ export type ListOrganizationsQuery = {
     id: string;
     name: string;
     domain?: string | null;
+    role?: string | null;
   } | null> | null;
 };
 
@@ -1578,6 +1584,7 @@ export const ListOrganizationsDocument = `
     id
     name
     domain
+    role
   }
 }
     `;
