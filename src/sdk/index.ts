@@ -35,6 +35,26 @@ export type AddConnectionInput = {
   username?: InputMaybe<Scalars['String']>;
 };
 
+export type AddInvitationResult = {
+  __typename?: 'AddInvitationResult';
+  email: Scalars['String'];
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
+export type AddInvitationsResponse = {
+  __typename?: 'AddInvitationsResponse';
+  error?: Maybe<Scalars['String']>;
+  results: Array<AddInvitationResult>;
+};
+
+export type AddOrganizationInput = {
+  admins?: InputMaybe<Array<Scalars['String']>>;
+  description?: InputMaybe<Scalars['String']>;
+  domain: Scalars['String'];
+  name: Scalars['String'];
+};
+
 export type AddSsoConnectionInput = {
   connection_name: Scalars['String'];
   internalEndpoint?: InputMaybe<Scalars['String']>;
@@ -119,6 +139,12 @@ export type CloudFlavor = {
   vcpus?: Maybe<Scalars['Float']>;
 };
 
+export type CloudInvitationInput = {
+  email: Scalars['String'];
+  endpoint: Scalars['String'];
+  role: Scalars['String'];
+};
+
 /** Cloud report data with filtered results and statistics */
 export type CloudReportData = {
   __typename?: 'CloudReportData';
@@ -152,6 +178,8 @@ export type Connection = {
   name: Scalars['String'];
   org_domain?: Maybe<Scalars['String']>;
   shouldShowDesigner?: Maybe<Scalars['Boolean']>;
+  /** SSO provider information (only present for SSO connections) */
+  ssoProvider?: Maybe<SsoProviderInfo>;
   stripeSubscription?: Maybe<PurchaseSession>;
   stripeSubscriptionOrder?: Maybe<ProvisionedOrder>;
   token?: Maybe<Scalars['String']>;
@@ -161,6 +189,12 @@ export type Connection = {
   useConnectionSSO?: Maybe<Scalars['Boolean']>;
   useSSO?: Maybe<Scalars['Boolean']>;
   username?: Maybe<Scalars['String']>;
+};
+
+export type ConnectionInvitationsInput = {
+  connection_id: Scalars['ID'];
+  connection_role?: InputMaybe<Scalars['String']>;
+  emails: Array<Scalars['String']>;
 };
 
 export type CreateApiTokenInput = {
@@ -198,6 +232,23 @@ export type DeleteApiTokenInput = {
 export type DeleteConnectionInput = {
   id: Scalars['ID'];
   org?: InputMaybe<Scalars['String']>;
+};
+
+export type DeleteInvitationResult = {
+  __typename?: 'DeleteInvitationResult';
+  error?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  success: Scalars['Boolean'];
+};
+
+export type DeleteInvitationsResponse = {
+  __typename?: 'DeleteInvitationsResponse';
+  error?: Maybe<Scalars['String']>;
+  results: Array<DeleteInvitationResult>;
+};
+
+export type DeleteOrganizationInput = {
+  domain: Scalars['String'];
 };
 
 /** Generic deletion response type to handle reporting success. */
@@ -263,6 +314,12 @@ export type EditConnectionInput = {
   username?: InputMaybe<Scalars['String']>;
 };
 
+export type EditOrganizationInput = {
+  description?: InputMaybe<Scalars['String']>;
+  domain: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
+};
+
 export type EditVoiceboxConversationInput = {
   id: Scalars['ID'];
   name?: InputMaybe<Scalars['String']>;
@@ -296,16 +353,20 @@ export type GrafanaDashboardSettings = {
   slug: Scalars['String'];
 };
 
-/** Invitation to join a Stardog Cloud instance */
+/** Invitation to join a Stardog Cloud instance, connection, or organization. */
 export type Invitation = {
   __typename?: 'Invitation';
   accepted?: Maybe<Scalars['Boolean']>;
+  connection?: Maybe<Connection>;
+  connection_role?: Maybe<Scalars['String']>;
   created?: Maybe<Scalars['Datetime']>;
   email?: Maybe<Scalars['String']>;
   endpoint?: Maybe<Scalars['String']>;
   existing_user?: Maybe<User>;
   expires?: Maybe<Scalars['Datetime']>;
   id?: Maybe<Scalars['ID']>;
+  organization?: Maybe<Organization>;
+  organization_role?: Maybe<Scalars['String']>;
   role?: Maybe<Scalars['String']>;
   sender?: Maybe<User>;
 };
@@ -314,15 +375,13 @@ export type InvitationFlagInput = {
   id: Scalars['ID'];
 };
 
-export type InvitationInput = {
-  email: Scalars['String'];
-  endpoint: Scalars['String'];
-  role: Scalars['String'];
-};
-
 export type ItemCount = {
   __typename?: 'ItemCount';
   count?: Maybe<Scalars['Int']>;
+};
+
+export type LeaveOrganizationInput = {
+  domain: Scalars['String'];
 };
 
 export type LogoutSsoConnectionInput = {
@@ -343,8 +402,11 @@ export type Mutation = {
   /** Accept an incoming Designer project invitation. */
   acceptDesignerProjectInvitation: Scalars['ID'];
   acceptInvitation?: Maybe<GenericResponse>;
+  addCloudInvitation?: Maybe<GenericResponse>;
   addConnection?: Maybe<Connection>;
-  addInvitation?: Maybe<GenericResponse>;
+  addConnectionInvitations?: Maybe<AddInvitationsResponse>;
+  addOrganization?: Maybe<Organization>;
+  addOrganizationInvitations?: Maybe<AddInvitationsResponse>;
   addSSOConnection?: Maybe<SsoConnectionRedirectResponse>;
   addShare?: Maybe<Share>;
   archiveDesignerProject: Scalars['ID'];
@@ -358,10 +420,13 @@ export type Mutation = {
   deleteApiToken?: Maybe<GenericResponse>;
   deleteCloud?: Maybe<DeletionResponse>;
   deleteConnection?: Maybe<DeletionResponse>;
+  deleteInvitations?: Maybe<DeleteInvitationsResponse>;
+  deleteOrganization?: Maybe<GenericResponse>;
   deleteVoiceboxApp?: Maybe<GenericResponse>;
   deleteVoiceboxConversation?: Maybe<GenericResponse>;
   editApiToken?: Maybe<GenericResponse>;
   editConnection?: Maybe<Connection>;
+  editOrganization?: Maybe<Organization>;
   editVoiceboxConversation?: Maybe<GenericResponse>;
   /**
    * Update a user's Voicebox credit. Can be used for example to reset their usage.
@@ -370,8 +435,10 @@ export type Mutation = {
   editVoiceboxCredit?: Maybe<GenericResponse>;
   generateConfiguration?: Maybe<ExampleConfig>;
   getStripeSessionUrl?: Maybe<BillingSession>;
+  leaveOrganization?: Maybe<GenericResponse>;
   logoutSSOConnection?: Maybe<GenericResponse>;
   reauthenticateSSOConnection?: Maybe<SsoConnectionRedirectResponse>;
+  removeOrganizationMembers?: Maybe<OrganizationMembersResponse>;
   removePartnerConnection?: Maybe<GenericResponse>;
   renameDesignerProject: Scalars['ID'];
   resendEmail?: Maybe<GenericResponse>;
@@ -388,6 +455,7 @@ export type Mutation = {
   sendDesignerProjectInvitation: Scalars['ID'];
   trackEvent?: Maybe<GenericResponse>;
   updateDesignerProject: Scalars['ID'];
+  updateOrganizationMembersRole?: Maybe<OrganizationMembersResponse>;
   updatePartnerConnection?: Maybe<GenericResponse>;
   updateProfile?: Maybe<User>;
   updateUserFeatures?: Maybe<User>;
@@ -407,13 +475,28 @@ export type MutationAcceptInvitationArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationAddCloudInvitationArgs = {
+  input: CloudInvitationInput;
+};
+
+/** Root Mutation Type */
 export type MutationAddConnectionArgs = {
   input: AddConnectionInput;
 };
 
 /** Root Mutation Type */
-export type MutationAddInvitationArgs = {
-  input: InvitationInput;
+export type MutationAddConnectionInvitationsArgs = {
+  input: ConnectionInvitationsInput;
+};
+
+/** Root Mutation Type */
+export type MutationAddOrganizationArgs = {
+  input: AddOrganizationInput;
+};
+
+/** Root Mutation Type */
+export type MutationAddOrganizationInvitationsArgs = {
+  input: OrganizationInvitationsInput;
 };
 
 /** Root Mutation Type */
@@ -481,6 +564,16 @@ export type MutationDeleteConnectionArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationDeleteInvitationsArgs = {
+  ids: Array<Scalars['ID']>;
+};
+
+/** Root Mutation Type */
+export type MutationDeleteOrganizationArgs = {
+  input: DeleteOrganizationInput;
+};
+
+/** Root Mutation Type */
 export type MutationDeleteVoiceboxAppArgs = {
   id: Scalars['ID'];
 };
@@ -501,6 +594,11 @@ export type MutationEditConnectionArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationEditOrganizationArgs = {
+  input: EditOrganizationInput;
+};
+
+/** Root Mutation Type */
 export type MutationEditVoiceboxConversationArgs = {
   input: EditVoiceboxConversationInput;
 };
@@ -516,6 +614,11 @@ export type MutationGenerateConfigurationArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationLeaveOrganizationArgs = {
+  input: LeaveOrganizationInput;
+};
+
+/** Root Mutation Type */
 export type MutationLogoutSsoConnectionArgs = {
   input: LogoutSsoConnectionInput;
 };
@@ -523,6 +626,12 @@ export type MutationLogoutSsoConnectionArgs = {
 /** Root Mutation Type */
 export type MutationReauthenticateSsoConnectionArgs = {
   input: ReauthenticateSsoConnectionInput;
+};
+
+/** Root Mutation Type */
+export type MutationRemoveOrganizationMembersArgs = {
+  emails: Array<Scalars['String']>;
+  org: Scalars['String'];
 };
 
 /** Root Mutation Type */
@@ -569,6 +678,13 @@ export type MutationUpdateDesignerProjectArgs = {
   content: Scalars['Base64Bytes'];
   name?: InputMaybe<Scalars['String']>;
   project_id: Scalars['ID'];
+};
+
+/** Root Mutation Type */
+export type MutationUpdateOrganizationMembersRoleArgs = {
+  emails: Array<Scalars['String']>;
+  new_role: Scalars['String'];
+  org: Scalars['String'];
 };
 
 /** Root Mutation Type */
@@ -623,10 +739,46 @@ export type OktaProvider = {
 
 export type Organization = {
   __typename?: 'Organization';
+  description?: Maybe<Scalars['String']>;
   domain?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   name: Scalars['String'];
   role?: Maybe<Scalars['String']>;
+};
+
+export type OrganizationInvitation = {
+  __typename?: 'OrganizationInvitation';
+  accepted?: Maybe<Scalars['Boolean']>;
+  created?: Maybe<Scalars['Datetime']>;
+  email: Scalars['String'];
+  expired?: Maybe<Scalars['Boolean']>;
+  id: Scalars['ID'];
+  organization_role: Scalars['String'];
+};
+
+export type OrganizationInvitationsInput = {
+  emails: Array<Scalars['String']>;
+  organization_domain: Scalars['String'];
+  organization_role: Scalars['String'];
+};
+
+export type OrganizationMember = {
+  __typename?: 'OrganizationMember';
+  role: Scalars['String'];
+  user: User;
+};
+
+export type OrganizationMemberResult = {
+  __typename?: 'OrganizationMemberResult';
+  email: Scalars['String'];
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
+export type OrganizationMembersResponse = {
+  __typename?: 'OrganizationMembersResponse';
+  error?: Maybe<Scalars['String']>;
+  results: Array<OrganizationMemberResult>;
 };
 
 /** To page through response. */
@@ -705,6 +857,9 @@ export type Query = {
   /** List all Designer projects you own, as well as any projects shared with you. */
   getDesignerProjects: Array<DesignerProject>;
   getInvitation?: Maybe<Invitation>;
+  getOrganization?: Maybe<Organization>;
+  getOrganizationInvitations?: Maybe<Array<Maybe<OrganizationInvitation>>>;
+  getOrganizationMembers?: Maybe<Array<Maybe<OrganizationMember>>>;
   getSSOConnectionRegistry?: Maybe<Array<Maybe<SsoConnectionRegistration>>>;
   getShareByShortHash?: Maybe<Share>;
   getStardogCloud?: Maybe<StardogCloud>;
@@ -757,7 +912,7 @@ export type QueryApiTokenCountArgs = {
 
 /** Root Query Type */
 export type QueryGenerateTokenArgs = {
-  connection_id: Scalars['String'];
+  endpoint: Scalars['String'];
 };
 
 /** Root Query Type */
@@ -785,6 +940,21 @@ export type QueryGetDesignerProjectArgs = {
 /** Root Query Type */
 export type QueryGetInvitationArgs = {
   id: Scalars['ID'];
+};
+
+/** Root Query Type */
+export type QueryGetOrganizationArgs = {
+  org?: InputMaybe<Scalars['String']>;
+};
+
+/** Root Query Type */
+export type QueryGetOrganizationInvitationsArgs = {
+  org?: InputMaybe<Scalars['String']>;
+};
+
+/** Root Query Type */
+export type QueryGetOrganizationMembersArgs = {
+  org?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
@@ -964,6 +1134,19 @@ export type ShareInput = {
   expires: Scalars['Int'];
   service: Scalars['String'];
   target_path: Scalars['String'];
+};
+
+/** SSO provider information for a connection */
+export type SsoProviderInfo = {
+  __typename?: 'SsoProviderInfo';
+  /** The OAuth client ID stored on this connection */
+  clientId?: Maybe<Scalars['String']>;
+  /** Whether the stored client_id matches a registered SSO provider */
+  isValid: Scalars['Boolean'];
+  /** The unique identifier portion of the provider name (e.g., 'devenv' from 'devenv-azure') */
+  providerName?: Maybe<Scalars['String']>;
+  /** The provider type (e.g., 'azure', 'okta', 'ping') */
+  providerType?: Maybe<Scalars['String']>;
 };
 
 /** Stardog Cloud, represents an instance of Cloud that is owned by the user */

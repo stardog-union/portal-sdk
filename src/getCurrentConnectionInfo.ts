@@ -27,7 +27,7 @@ export const getCurrentConnectionInfo = (
   window: Window
 ): ConnectionInfo | null => {
   const publicOrgMatch = window.location.pathname.match(
-    /^\/o\/([a-z]+)\/([0-9]+|demo)(?:\/(.*))?$/
+    /^\/o\/([a-z0-9-]+)\/([0-9]+|demo)(?:\/(.*))?$/
   );
   const personalOrgMatch = window.location.pathname.match(
     /^\/u\/([0-9]+|demo)(?:\/(.*))?$/
