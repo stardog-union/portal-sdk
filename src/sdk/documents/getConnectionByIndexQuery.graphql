@@ -1,5 +1,5 @@
-query getConnectionByIndex($index: Int!, $org: String) {
-  connection: getConnectionByIndex(index: $index, org: $org) {
+query getConnectionByIndex($index: Int!, $org_domain: String) {
+  connection: getConnectionByIndex(index: $index, org_domain: $org_domain) {
     # getCurrentConnectionFromPortal
     token
     username

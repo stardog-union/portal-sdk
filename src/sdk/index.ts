@@ -28,7 +28,7 @@ export type AddConnectionInput = {
   endpoint: Scalars['String'];
   internalEndpoint?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
   token?: InputMaybe<Scalars['String']>;
   useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
   useSSO?: InputMaybe<Scalars['Boolean']>;
@@ -231,7 +231,7 @@ export type DeleteApiTokenInput = {
 
 export type DeleteConnectionInput = {
   id: Scalars['ID'];
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 export type DeleteInvitationResult = {
@@ -307,7 +307,7 @@ export type EditConnectionInput = {
   id: Scalars['ID'];
   internalEndpoint?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
   token?: InputMaybe<Scalars['String']>;
   useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
   useSSO?: InputMaybe<Scalars['Boolean']>;
@@ -316,7 +316,6 @@ export type EditConnectionInput = {
 
 export type EditOrganizationInput = {
   description?: InputMaybe<Scalars['String']>;
-  domain: Scalars['String'];
   name?: InputMaybe<Scalars['String']>;
 };
 
@@ -454,6 +453,7 @@ export type Mutation = {
    */
   sendDesignerProjectInvitation: Scalars['ID'];
   trackEvent?: Maybe<GenericResponse>;
+  transferOrganizationOwnership?: Maybe<GenericResponse>;
   updateDesignerProject: Scalars['ID'];
   updateOrganizationMembersRole?: Maybe<OrganizationMembersResponse>;
   updatePartnerConnection?: Maybe<GenericResponse>;
@@ -596,6 +596,7 @@ export type MutationEditConnectionArgs = {
 /** Root Mutation Type */
 export type MutationEditOrganizationArgs = {
   input: EditOrganizationInput;
+  org_domain: Scalars['String'];
 };
 
 /** Root Mutation Type */
@@ -631,7 +632,7 @@ export type MutationReauthenticateSsoConnectionArgs = {
 /** Root Mutation Type */
 export type MutationRemoveOrganizationMembersArgs = {
   emails: Array<Scalars['String']>;
-  org: Scalars['String'];
+  org_domain: Scalars['String'];
 };
 
 /** Root Mutation Type */
@@ -673,6 +674,12 @@ export type MutationTrackEventArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationTransferOrganizationOwnershipArgs = {
+  email: Scalars['String'];
+  org_domain: Scalars['String'];
+};
+
+/** Root Mutation Type */
 export type MutationUpdateDesignerProjectArgs = {
   connection_id?: InputMaybe<Scalars['String']>;
   content: Scalars['Base64Bytes'];
@@ -684,7 +691,7 @@ export type MutationUpdateDesignerProjectArgs = {
 export type MutationUpdateOrganizationMembersRoleArgs = {
   emails: Array<Scalars['String']>;
   new_role: Scalars['String'];
-  org: Scalars['String'];
+  org_domain: Scalars['String'];
 };
 
 /** Root Mutation Type */
@@ -923,13 +930,13 @@ export type QueryGetCloudReportArgs = {
 /** Root Query Type */
 export type QueryGetConnectionByIdArgs = {
   id: Scalars['String'];
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
 export type QueryGetConnectionByIndexArgs = {
   index: Scalars['Int'];
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
@@ -944,17 +951,17 @@ export type QueryGetInvitationArgs = {
 
 /** Root Query Type */
 export type QueryGetOrganizationArgs = {
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
 export type QueryGetOrganizationInvitationsArgs = {
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
 export type QueryGetOrganizationMembersArgs = {
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
@@ -1016,13 +1023,13 @@ export type QueryListApiTokensArgs = {
 
 /** Root Query Type */
 export type QueryListConnectionsArgs = {
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
 export type QueryListConnectionsByEndpointArgs = {
   endpoint: Scalars['String'];
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
@@ -1402,7 +1409,7 @@ export type CreateDesignerProjectMutation = {
 
 export type GetConnectionByIndexQueryVariables = Exact<{
   index: Scalars['Int'];
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetConnectionByIndexQuery = {
@@ -1505,7 +1512,7 @@ export type GetVoiceboxConversationQuery = {
 };
 
 export type ListConnectionsQueryVariables = Exact<{
-  org?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 }>;
 
 export type ListConnectionsQuery = {
@@ -1658,8 +1665,8 @@ export const CreateDesignerProjectDocument = `
 }
     `;
 export const GetConnectionByIndexDocument = `
-    query getConnectionByIndex($index: Int!, $org: String) {
-  connection: getConnectionByIndex(index: $index, org: $org) {
+    query getConnectionByIndex($index: Int!, $org_domain: String) {
+  connection: getConnectionByIndex(index: $index, org_domain: $org_domain) {
     token
     username
     endpoint
@@ -1749,8 +1756,8 @@ export const GetVoiceboxConversationDocument = `
 }
     `;
 export const ListConnectionsDocument = `
-    query listConnections($org: String) {
-  listConnections(org: $org) {
+    query listConnections($org_domain: String) {
+  listConnections(org_domain: $org_domain) {
     dashboard
     endpoint
     id

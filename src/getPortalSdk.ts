@@ -63,7 +63,7 @@ export const getPortalSdk = () => {
       const urlInfo = getCurrentConnectionInfo(window);
       const result = await sdk.getConnectionByIndex({
         index,
-        org: urlInfo?.organizationDomain,
+        org_domain: urlInfo?.organizationDomain,
       });
       return result.connection || null;
     },
@@ -142,7 +142,7 @@ export const getPortalSdk = () => {
     listConnections: async () => {
       const urlInfo = getCurrentConnectionInfo(window);
       const result = await sdk.listConnections({
-        org: urlInfo?.organizationDomain,
+        org_domain: urlInfo?.organizationDomain,
       });
       if (!result.listConnections) {
         return null;
