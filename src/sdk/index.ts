@@ -19,6 +19,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   Base64Bytes: any;
+  Date: any;
   Datetime: string;
   NonNegativeInt: any;
   PositiveInt: any;
@@ -29,6 +30,8 @@ export type AddConnectionInput = {
   internalEndpoint?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   org_domain?: InputMaybe<Scalars['String']>;
+  /** Scope for SSO token exchange when authenticating via org SSO */
+  ssoTokenExchangeScope?: InputMaybe<Scalars['String']>;
   token?: InputMaybe<Scalars['String']>;
   useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
   useSSO?: InputMaybe<Scalars['Boolean']>;
@@ -45,7 +48,16 @@ export type AddInvitationResult = {
 export type AddInvitationsResponse = {
   __typename?: 'AddInvitationsResponse';
   error?: Maybe<Scalars['String']>;
-  results: Array<AddInvitationResult>;
+  results?: Maybe<Array<AddInvitationResult>>;
+};
+
+export type AddMemberConnectionInput = {
+  endpoint: Scalars['String'];
+  internalEndpoint?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  org_domain: Scalars['String'];
+  token?: InputMaybe<Scalars['String']>;
+  username: Scalars['String'];
 };
 
 export type AddOrganizationInput = {
@@ -180,6 +192,8 @@ export type Connection = {
   shouldShowDesigner?: Maybe<Scalars['Boolean']>;
   /** SSO provider information (only present for SSO connections) */
   ssoProvider?: Maybe<SsoProviderInfo>;
+  /** Scope for SSO token exchange when authenticating via org SSO */
+  ssoTokenExchangeScope?: Maybe<Scalars['String']>;
   stripeSubscription?: Maybe<PurchaseSession>;
   stripeSubscriptionOrder?: Maybe<ProvisionedOrder>;
   token?: Maybe<Scalars['String']>;
@@ -191,9 +205,36 @@ export type Connection = {
   username?: Maybe<Scalars['String']>;
 };
 
+/** Connection access record granting access to a user or organization */
+export type ConnectionAccess = {
+  __typename?: 'ConnectionAccess';
+  connection: Connection;
+  id: Scalars['ID'];
+  organization?: Maybe<Organization>;
+  organization_is_enabled?: Maybe<Scalars['Boolean']>;
+  stardog_roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+  user?: Maybe<User>;
+  user_is_private?: Maybe<Scalars['Boolean']>;
+};
+
+/** Connection invitation for granting access to a user for a personal connection */
+export type ConnectionInvitation = {
+  __typename?: 'ConnectionInvitation';
+  accepted?: Maybe<Scalars['Boolean']>;
+  connection_roles?: Maybe<Array<Scalars['String']>>;
+  created?: Maybe<Scalars['Datetime']>;
+  email: Scalars['String'];
+  expired?: Maybe<Scalars['Boolean']>;
+  id: Scalars['ID'];
+};
+
+/**
+ * Input for creating connection invitations.
+ * Connection must belong to a personal organization.
+ */
 export type ConnectionInvitationsInput = {
   connection_id: Scalars['ID'];
-  connection_role?: InputMaybe<Scalars['String']>;
+  connection_roles?: InputMaybe<Array<Scalars['String']>>;
   emails: Array<Scalars['String']>;
 };
 
@@ -206,6 +247,32 @@ export type CreateApiTokenInput = {
 export type CreateApiTokenResult = {
   __typename?: 'CreateApiTokenResult';
   secret: Scalars['String'];
+};
+
+/** Input for creating a Microsoft Entra SSO configuration */
+export type CreateOrganizationMicrosoftEntraSsoConfigInput = {
+  /** OAuth client ID from Microsoft Entra */
+  clientId: Scalars['String'];
+  /** OAuth client secret from Microsoft Entra */
+  clientSecret: Scalars['String'];
+  /** OIDC discovery endpoint URL (.well-known/openid-configuration) */
+  discoveryUrl: Scalars['String'];
+  /** Whether SSO login is enabled (defaults to true) */
+  isEnabled?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Input for creating an Okta SSO configuration */
+export type CreateOrganizationOktaSsoConfigInput = {
+  /** OAuth client ID from Okta */
+  clientId: Scalars['String'];
+  /** OAuth client secret from Okta */
+  clientSecret: Scalars['String'];
+  /** OIDC discovery endpoint URL (.well-known/openid-configuration) */
+  discoveryUrl: Scalars['String'];
+  /** Whether SSO login is enabled (defaults to true) */
+  isEnabled?: InputMaybe<Scalars['Boolean']>;
+  /** Authorization server audience (required for Okta token exchange) */
+  oktaAuthorizationServerAudience: Scalars['String'];
 };
 
 export type CreateVoiceboxAppInput = {
@@ -244,11 +311,19 @@ export type DeleteInvitationResult = {
 export type DeleteInvitationsResponse = {
   __typename?: 'DeleteInvitationsResponse';
   error?: Maybe<Scalars['String']>;
-  results: Array<DeleteInvitationResult>;
+  results?: Maybe<Array<DeleteInvitationResult>>;
 };
 
-export type DeleteOrganizationInput = {
-  domain: Scalars['String'];
+export type DeleteMembersConnectionAccessInput = {
+  connectionId: Scalars['ID'];
+  emails: Array<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
+};
+
+export type DeleteUsersConnectionAccessInput = {
+  connectionId: Scalars['ID'];
+  emails: Array<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Generic deletion response type to handle reporting success. */
@@ -308,6 +383,8 @@ export type EditConnectionInput = {
   internalEndpoint?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   org_domain?: InputMaybe<Scalars['String']>;
+  /** Scope for SSO token exchange when authenticating via org SSO */
+  ssoTokenExchangeScope?: InputMaybe<Scalars['String']>;
   token?: InputMaybe<Scalars['String']>;
   useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
   useSSO?: InputMaybe<Scalars['Boolean']>;
@@ -328,6 +405,18 @@ export type EditVoiceboxCreditInput = {
   limit?: InputMaybe<Scalars['NonNegativeInt']>;
   usage?: InputMaybe<Scalars['NonNegativeInt']>;
   user_id: Scalars['ID'];
+};
+
+/** Aggregated usage for an endpoint (all users combined) */
+export type EndpointUsageRecord = {
+  __typename?: 'EndpointUsageRecord';
+  date?: Maybe<Scalars['String']>;
+  endpoint: Scalars['String'];
+  module: Scalars['String'];
+  month?: Maybe<Scalars['Int']>;
+  quarter?: Maybe<Scalars['Int']>;
+  totalUnitsConsumed: Scalars['Float'];
+  year?: Maybe<Scalars['Int']>;
 };
 
 /** Example Configuration for jwt.yaml and stardog.properties */
@@ -352,12 +441,19 @@ export type GrafanaDashboardSettings = {
   slug: Scalars['String'];
 };
 
-/** Invitation to join a Stardog Cloud instance, connection, or organization. */
+/**
+ * Invitation to join a Stardog Cloud instance, connection, or organization.
+ *
+ * Three mutually exclusive invitation types:
+ * - Cloud invitation: Legacy invitation to a cloud instance (endpoint + role)
+ * - Connection invitation: Grants access to a connection owned by a personal organization
+ * - Organization invitation: Invites user to join a public organization as a member
+ */
 export type Invitation = {
   __typename?: 'Invitation';
   accepted?: Maybe<Scalars['Boolean']>;
   connection?: Maybe<Connection>;
-  connection_role?: Maybe<Scalars['String']>;
+  connection_roles?: Maybe<Array<Scalars['String']>>;
   created?: Maybe<Scalars['Datetime']>;
   email?: Maybe<Scalars['String']>;
   endpoint?: Maybe<Scalars['String']>;
@@ -379,10 +475,6 @@ export type ItemCount = {
   count?: Maybe<Scalars['Int']>;
 };
 
-export type LeaveOrganizationInput = {
-  domain: Scalars['String'];
-};
-
 export type LogoutSsoConnectionInput = {
   connection_id: Scalars['String'];
 };
@@ -395,6 +487,19 @@ export type MarketplaceSettings = {
   marketplaceUsername: Scalars['String'];
 };
 
+export type ModifyConnectionAccessResponse = {
+  __typename?: 'ModifyConnectionAccessResponse';
+  error?: Maybe<Scalars['String']>;
+  results?: Maybe<Array<ModifyConnectionAccessResult>>;
+};
+
+export type ModifyConnectionAccessResult = {
+  __typename?: 'ModifyConnectionAccessResult';
+  email: Scalars['String'];
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
 /** Root Mutation Type */
 export type Mutation = {
   __typename?: 'Mutation';
@@ -404,6 +509,7 @@ export type Mutation = {
   addCloudInvitation?: Maybe<GenericResponse>;
   addConnection?: Maybe<Connection>;
   addConnectionInvitations?: Maybe<AddInvitationsResponse>;
+  addMemberConnection?: Maybe<Connection>;
   addOrganization?: Maybe<Organization>;
   addOrganizationInvitations?: Maybe<AddInvitationsResponse>;
   addSSOConnection?: Maybe<SsoConnectionRedirectResponse>;
@@ -414,13 +520,30 @@ export type Mutation = {
   checkoutCart?: Maybe<BillingSession>;
   createApiToken?: Maybe<CreateApiTokenResult>;
   createDesignerProject: Scalars['ID'];
+  /**
+   * Create Microsoft Entra SSO configuration for an organization.
+   * Requires admin or owner role. Organization must have is_sso_allowed=True.
+   */
+  createOrganizationMicrosoftEntraSSOConfig?: Maybe<OrganizationMicrosoftEntraSsoConfig>;
+  /**
+   * Create Okta SSO configuration for an organization.
+   * Requires admin or owner role. Organization must have is_sso_allowed=True.
+   */
+  createOrganizationOktaSSOConfig?: Maybe<OrganizationOktaSsoConfig>;
   createVoiceboxApp?: Maybe<GenericResponse>;
   deleteAccount?: Maybe<DeletionResponse>;
   deleteApiToken?: Maybe<GenericResponse>;
   deleteCloud?: Maybe<DeletionResponse>;
   deleteConnection?: Maybe<DeletionResponse>;
   deleteInvitations?: Maybe<DeleteInvitationsResponse>;
+  deleteMembersConnectionAccess?: Maybe<ModifyConnectionAccessResponse>;
   deleteOrganization?: Maybe<GenericResponse>;
+  /**
+   * Delete SSO configuration for an organization.
+   * Requires admin or owner role.
+   */
+  deleteOrganizationSSOConfig?: Maybe<GenericResponse>;
+  deleteUsersConnectionAccess?: Maybe<ModifyConnectionAccessResponse>;
   deleteVoiceboxApp?: Maybe<GenericResponse>;
   deleteVoiceboxConversation?: Maybe<GenericResponse>;
   editApiToken?: Maybe<GenericResponse>;
@@ -455,10 +578,23 @@ export type Mutation = {
   trackEvent?: Maybe<GenericResponse>;
   transferOrganizationOwnership?: Maybe<GenericResponse>;
   updateDesignerProject: Scalars['ID'];
+  updateMembersConnectionAccess?: Maybe<ModifyConnectionAccessResponse>;
+  updateOrganizationConnectionAccess?: Maybe<GenericResponse>;
   updateOrganizationMembersRole?: Maybe<OrganizationMembersResponse>;
+  /**
+   * Update Microsoft Entra SSO configuration for an organization.
+   * Requires admin or owner role.
+   */
+  updateOrganizationMicrosoftEntraSSOConfig?: Maybe<OrganizationMicrosoftEntraSsoConfig>;
+  /**
+   * Update Okta SSO configuration for an organization.
+   * Requires admin or owner role.
+   */
+  updateOrganizationOktaSSOConfig?: Maybe<OrganizationOktaSsoConfig>;
   updatePartnerConnection?: Maybe<GenericResponse>;
   updateProfile?: Maybe<User>;
   updateUserFeatures?: Maybe<User>;
+  updateUsersConnectionAccess?: Maybe<ModifyConnectionAccessResponse>;
   updateVoiceboxApp?: Maybe<GenericResponse>;
   upgradeCloud?: Maybe<BillingSession>;
   verifyInvitation?: Maybe<GenericResponse>;
@@ -487,6 +623,11 @@ export type MutationAddConnectionArgs = {
 /** Root Mutation Type */
 export type MutationAddConnectionInvitationsArgs = {
   input: ConnectionInvitationsInput;
+};
+
+/** Root Mutation Type */
+export type MutationAddMemberConnectionArgs = {
+  input: AddMemberConnectionInput;
 };
 
 /** Root Mutation Type */
@@ -544,6 +685,18 @@ export type MutationCreateDesignerProjectArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationCreateOrganizationMicrosoftEntraSsoConfigArgs = {
+  domain: Scalars['String'];
+  input: CreateOrganizationMicrosoftEntraSsoConfigInput;
+};
+
+/** Root Mutation Type */
+export type MutationCreateOrganizationOktaSsoConfigArgs = {
+  domain: Scalars['String'];
+  input: CreateOrganizationOktaSsoConfigInput;
+};
+
+/** Root Mutation Type */
 export type MutationCreateVoiceboxAppArgs = {
   input: CreateVoiceboxAppInput;
 };
@@ -569,8 +722,23 @@ export type MutationDeleteInvitationsArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationDeleteMembersConnectionAccessArgs = {
+  input: DeleteMembersConnectionAccessInput;
+};
+
+/** Root Mutation Type */
 export type MutationDeleteOrganizationArgs = {
-  input: DeleteOrganizationInput;
+  org_domain: Scalars['String'];
+};
+
+/** Root Mutation Type */
+export type MutationDeleteOrganizationSsoConfigArgs = {
+  domain: Scalars['String'];
+};
+
+/** Root Mutation Type */
+export type MutationDeleteUsersConnectionAccessArgs = {
+  input: DeleteUsersConnectionAccessInput;
 };
 
 /** Root Mutation Type */
@@ -616,7 +784,7 @@ export type MutationGenerateConfigurationArgs = {
 
 /** Root Mutation Type */
 export type MutationLeaveOrganizationArgs = {
-  input: LeaveOrganizationInput;
+  org_domain: Scalars['String'];
 };
 
 /** Root Mutation Type */
@@ -688,10 +856,32 @@ export type MutationUpdateDesignerProjectArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationUpdateMembersConnectionAccessArgs = {
+  input: UpdateMembersConnectionAccessInput;
+};
+
+/** Root Mutation Type */
+export type MutationUpdateOrganizationConnectionAccessArgs = {
+  input: UpdateOrganizationConnectionAccessInput;
+};
+
+/** Root Mutation Type */
 export type MutationUpdateOrganizationMembersRoleArgs = {
   emails: Array<Scalars['String']>;
   new_role: Scalars['String'];
   org_domain: Scalars['String'];
+};
+
+/** Root Mutation Type */
+export type MutationUpdateOrganizationMicrosoftEntraSsoConfigArgs = {
+  domain: Scalars['String'];
+  input: UpdateOrganizationMicrosoftEntraSsoConfigInput;
+};
+
+/** Root Mutation Type */
+export type MutationUpdateOrganizationOktaSsoConfigArgs = {
+  domain: Scalars['String'];
+  input: UpdateOrganizationOktaSsoConfigInput;
 };
 
 /** Root Mutation Type */
@@ -708,6 +898,11 @@ export type MutationUpdateProfileArgs = {
 export type MutationUpdateUserFeaturesArgs = {
   input: UserFeaturesInput;
   user_id: Scalars['ID'];
+};
+
+/** Root Mutation Type */
+export type MutationUpdateUsersConnectionAccessArgs = {
+  input: UpdateUsersConnectionAccessInput;
 };
 
 /** Root Mutation Type */
@@ -749,8 +944,12 @@ export type Organization = {
   description?: Maybe<Scalars['String']>;
   domain?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  /** Whether this organization can configure SSO (premium feature) */
+  isSsoAllowed: Scalars['Boolean'];
   name: Scalars['String'];
   role?: Maybe<Scalars['String']>;
+  /** SSO configuration for this organization (null if not configured) */
+  ssoConfig?: Maybe<OrganizationSsoConfig>;
 };
 
 export type OrganizationInvitation = {
@@ -763,6 +962,10 @@ export type OrganizationInvitation = {
   organization_role: Scalars['String'];
 };
 
+/**
+ * Input for creating organization invitations.
+ * Organization must be a public organization.
+ */
 export type OrganizationInvitationsInput = {
   emails: Array<Scalars['String']>;
   organization_domain: Scalars['String'];
@@ -785,7 +988,56 @@ export type OrganizationMemberResult = {
 export type OrganizationMembersResponse = {
   __typename?: 'OrganizationMembersResponse';
   error?: Maybe<Scalars['String']>;
-  results: Array<OrganizationMemberResult>;
+  results?: Maybe<Array<OrganizationMemberResult>>;
+};
+
+/** Microsoft Entra SSO configuration for an organization. */
+export type OrganizationMicrosoftEntraSsoConfig = OrganizationSsoConfig & {
+  __typename?: 'OrganizationMicrosoftEntraSSOConfig';
+  clientId: Scalars['String'];
+  createdAt: Scalars['Datetime'];
+  discoveryUrl: Scalars['String'];
+  hasClientSecret: Scalars['Boolean'];
+  id: Scalars['ID'];
+  isEnabled: Scalars['Boolean'];
+  loginUrl: Scalars['String'];
+  providerType: SsoProviderType;
+  updatedAt: Scalars['Datetime'];
+};
+
+/** Okta SSO configuration for an organization. */
+export type OrganizationOktaSsoConfig = OrganizationSsoConfig & {
+  __typename?: 'OrganizationOktaSSOConfig';
+  clientId: Scalars['String'];
+  createdAt: Scalars['Datetime'];
+  discoveryUrl: Scalars['String'];
+  hasClientSecret: Scalars['Boolean'];
+  id: Scalars['ID'];
+  isEnabled: Scalars['Boolean'];
+  loginUrl: Scalars['String'];
+  /** Authorization server audience for token exchange */
+  oktaAuthorizationServerAudience: Scalars['String'];
+  providerType: SsoProviderType;
+  updatedAt: Scalars['Datetime'];
+};
+
+/**
+ * Base SSO configuration interface for an organization.
+ * Allows organization members to log in via the organization's identity provider.
+ */
+export type OrganizationSsoConfig = {
+  clientId: Scalars['String'];
+  createdAt: Scalars['Datetime'];
+  discoveryUrl: Scalars['String'];
+  /** Whether a client secret is configured (never exposes the actual secret) */
+  hasClientSecret: Scalars['Boolean'];
+  id: Scalars['ID'];
+  /** Whether SSO login is currently enabled for this organization */
+  isEnabled: Scalars['Boolean'];
+  /** Organization-specific login URL */
+  loginUrl: Scalars['String'];
+  providerType: SsoProviderType;
+  updatedAt: Scalars['Datetime'];
 };
 
 /** To page through response. */
@@ -863,6 +1115,7 @@ export type Query = {
   getDesignerProjectInvitations: Array<DesignerProjectInvitation>;
   /** List all Designer projects you own, as well as any projects shared with you. */
   getDesignerProjects: Array<DesignerProject>;
+  getEndpointUsage?: Maybe<Array<Maybe<EndpointUsageRecord>>>;
   getInvitation?: Maybe<Invitation>;
   getOrganization?: Maybe<Organization>;
   getOrganizationInvitations?: Maybe<Array<Maybe<OrganizationInvitation>>>;
@@ -889,8 +1142,11 @@ export type Query = {
   listConnections?: Maybe<Array<Maybe<Connection>>>;
   listConnectionsByEndpoint?: Maybe<Array<Maybe<Connection>>>;
   listInactiveClouds?: Maybe<Array<Maybe<StardogCloud>>>;
+  listOrganizationConnectionAccess?: Maybe<Array<Maybe<ConnectionAccess>>>;
   listOrganizations?: Maybe<Array<Maybe<Organization>>>;
   listStardogCloud?: Maybe<Array<Maybe<StardogCloud>>>;
+  listUserConnectionAccess?: Maybe<Array<Maybe<ConnectionAccess>>>;
+  listUserConnectionInvitations?: Maybe<Array<Maybe<ConnectionInvitation>>>;
   /** Retrieve Voicebox Applications owned by the authenticated user. */
   listVoiceboxApps?: Maybe<Array<Maybe<VoiceboxApp>>>;
   /**
@@ -942,6 +1198,16 @@ export type QueryGetConnectionByIndexArgs = {
 /** Root Query Type */
 export type QueryGetDesignerProjectArgs = {
   project_id: Scalars['ID'];
+};
+
+/** Root Query Type */
+export type QueryGetEndpointUsageArgs = {
+  connectionId: Scalars['ID'];
+  endDate: Scalars['Date'];
+  modules?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  org_domain?: InputMaybe<Scalars['String']>;
+  startDate: Scalars['Date'];
+  timeGrain?: InputMaybe<TimeGrain>;
 };
 
 /** Root Query Type */
@@ -1038,8 +1304,24 @@ export type QueryListInactiveCloudsArgs = {
 };
 
 /** Root Query Type */
+export type QueryListOrganizationConnectionAccessArgs = {
+  id: Scalars['ID'];
+  org_domain: Scalars['String'];
+};
+
+/** Root Query Type */
 export type QueryListStardogCloudArgs = {
   inactive_days?: InputMaybe<Scalars['Int']>;
+};
+
+/** Root Query Type */
+export type QueryListUserConnectionAccessArgs = {
+  id: Scalars['ID'];
+};
+
+/** Root Query Type */
+export type QueryListUserConnectionInvitationsArgs = {
+  id: Scalars['ID'];
 };
 
 /** Root Query Type */
@@ -1097,6 +1379,12 @@ export type SsoConnectionRegistration = {
   stardog_endpoint?: Maybe<Scalars['String']>;
   stardog_internal_endpoint?: Maybe<Scalars['String']>;
 };
+
+/** SSO provider types supported for organization SSO configuration */
+export enum SsoProviderType {
+  MicrosoftEntra = 'MICROSOFT_ENTRA',
+  Okta = 'OKTA',
+}
 
 /** Settings, these are settings that control the front end display */
 export type Settings = {
@@ -1217,16 +1505,70 @@ export type SystemVoiceboxMessageContext = {
   success?: Maybe<Scalars['Boolean']>;
 };
 
+export enum TimeGrain {
+  Day = 'day',
+  Month = 'month',
+  Quarter = 'quarter',
+  Total = 'total',
+}
+
 export type TrackEventInput = {
   client_type?: InputMaybe<Scalars['String']>;
   event: Scalars['String'];
   properties?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateMembersConnectionAccessInput = {
+  connectionId: Scalars['ID'];
+  emails: Array<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
+  stardog_roles?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type UpdateOrganizationConnectionAccessInput = {
+  connectionId: Scalars['ID'];
+  org_domain: Scalars['String'];
+  organization_is_enabled: Scalars['Boolean'];
+  stardog_roles?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** Input for updating a Microsoft Entra SSO configuration */
+export type UpdateOrganizationMicrosoftEntraSsoConfigInput = {
+  /** OAuth client ID */
+  clientId?: InputMaybe<Scalars['String']>;
+  /** OAuth client secret (only updated if provided) */
+  clientSecret?: InputMaybe<Scalars['String']>;
+  /** OIDC discovery endpoint URL */
+  discoveryUrl?: InputMaybe<Scalars['String']>;
+  /** Whether SSO login is enabled */
+  isEnabled?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Input for updating an Okta SSO configuration */
+export type UpdateOrganizationOktaSsoConfigInput = {
+  /** OAuth client ID */
+  clientId?: InputMaybe<Scalars['String']>;
+  /** OAuth client secret (only updated if provided) */
+  clientSecret?: InputMaybe<Scalars['String']>;
+  /** OIDC discovery endpoint URL */
+  discoveryUrl?: InputMaybe<Scalars['String']>;
+  /** Whether SSO login is enabled */
+  isEnabled?: InputMaybe<Scalars['Boolean']>;
+  /** Authorization server audience */
+  oktaAuthorizationServerAudience?: InputMaybe<Scalars['String']>;
+};
+
 export type UpdatePartnerConnectionInput = {
   connection_id: Scalars['String'];
   databricks_connection_name: Scalars['String'];
   stardog_connection_id: Scalars['String'];
+};
+
+export type UpdateUsersConnectionAccessInput = {
+  connectionId: Scalars['ID'];
+  emails: Array<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
+  stardog_roles?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateVoiceboxAppInput = {
