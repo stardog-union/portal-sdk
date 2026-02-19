@@ -223,10 +223,15 @@ describe('getPortalSdk', () => {
       (getCurrentConnectionInfo as jest.Mock).mockReturnValue(info);
 
       expect(await sdk?.getConnectionByIndex(0)).not.toBeNull();
-      expect(getConnectionByIndex).toHaveBeenCalled();
+      expect(getConnectionByIndex).toHaveBeenCalledWith({
+        index: 0,
+        org_domain: info?.organizationDomain,
+      });
 
       expect(await sdk?.listConnections()).not.toBeNull();
-      expect(listConnections).toHaveBeenCalled();
+      expect(listConnections).toHaveBeenCalledWith({
+        org_domain: info?.organizationDomain,
+      });
     });
   });
 });
