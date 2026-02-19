@@ -20,6 +20,7 @@ describe('getCurrentConnectionInfo', () => {
   describe.each([
     ['personal org', '/u', undefined],
     ['public org', '/o/stardog', 'stardog'],
+    ['public org', '/o/with123numbers', 'with123numbers'],
   ])('for %s', (_, prefix, orgDomain) => {
     it('returns the correct organizationDomain, connectionIndex and product for a valid url', () => {
       const info = getCurrentConnectionInfoForPathname(`${prefix}/9/explorer/`);
@@ -80,11 +81,11 @@ describe('getCurrentConnectionInfo', () => {
       '/o/stardog/',
       '/o/stardog',
       // invalid org
-      '/o/123/demo/product',
-      '/o/123/demo/',
-      '/o/123/demo',
-      '/o/123/',
-      '/o/123',
+      '/o/invalid_org/demo/product',
+      '/o/invalid_org/demo/',
+      '/o/invalid_org/demo',
+      '/o/invalid_org/',
+      '/o/invalid_org',
       // invalid connection
       '/u/invalid/product',
       '/u/invalid/',
