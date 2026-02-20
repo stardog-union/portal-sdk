@@ -1,0 +1,8 @@
+query listOrganizations {
+  listOrganizations {
+    id
+    name
+    domain
+    role
+  }
+}
