@@ -11,150 +11,165 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>;
 };
+export type MakeEmpty<
+  T extends { [key: string]: unknown },
+  K extends keyof T
+> = { [_ in K]?: never };
+export type Incremental<T> =
+  | T
+  | {
+      [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
+    };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  Base64Bytes: any;
-  Date: any;
-  Datetime: string;
-  NonNegativeInt: any;
-  PositiveInt: any;
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
+  Base64Bytes: { input: any; output: any };
+  Date: { input: any; output: any };
+  Datetime: { input: string; output: string };
+  NonNegativeInt: { input: any; output: any };
+  PositiveInt: { input: any; output: any };
 };
 
 export type AddConnectionInput = {
-  endpoint: Scalars['String'];
-  internalEndpoint?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-  org_domain?: InputMaybe<Scalars['String']>;
+  endpoint: Scalars['String']['input'];
+  internalEndpoint?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  org_domain?: InputMaybe<Scalars['String']['input']>;
   /** Scope for SSO token exchange when authenticating via org SSO */
-  ssoTokenExchangeScope?: InputMaybe<Scalars['String']>;
-  token?: InputMaybe<Scalars['String']>;
-  useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
-  useSSO?: InputMaybe<Scalars['Boolean']>;
-  username?: InputMaybe<Scalars['String']>;
+  ssoTokenExchangeScope?: InputMaybe<Scalars['String']['input']>;
+  token?: InputMaybe<Scalars['String']['input']>;
+  useBrowserAuth?: InputMaybe<Scalars['Boolean']['input']>;
+  useSSO?: InputMaybe<Scalars['Boolean']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type AddInvitationResult = {
   __typename?: 'AddInvitationResult';
-  email: Scalars['String'];
-  error?: Maybe<Scalars['String']>;
-  success: Scalars['Boolean'];
+  email: Scalars['String']['output'];
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type AddInvitationsResponse = {
   __typename?: 'AddInvitationsResponse';
-  error?: Maybe<Scalars['String']>;
+  error?: Maybe<Scalars['String']['output']>;
   results?: Maybe<Array<AddInvitationResult>>;
 };
 
 export type AddMyOrgConnectionInput = {
-  endpoint: Scalars['String'];
-  internalEndpoint?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-  org_domain: Scalars['String'];
-  token?: InputMaybe<Scalars['String']>;
-  username: Scalars['String'];
+  endpoint: Scalars['String']['input'];
+  internalEndpoint?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  org_domain: Scalars['String']['input'];
+  token?: InputMaybe<Scalars['String']['input']>;
+  username: Scalars['String']['input'];
 };
 
 export type AddOrganizationInput = {
-  admins?: InputMaybe<Array<Scalars['String']>>;
-  description?: InputMaybe<Scalars['String']>;
-  domain: Scalars['String'];
-  name: Scalars['String'];
+  admins?: InputMaybe<Array<Scalars['String']['input']>>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  domain: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
+export type AddOrganizationResult = {
+  __typename?: 'AddOrganizationResult';
+  invitationResults?: Maybe<Array<AddInvitationResult>>;
+  organization?: Maybe<Organization>;
 };
 
 export type AddSsoConnectionInput = {
-  connection_name: Scalars['String'];
-  internalEndpoint?: InputMaybe<Scalars['String']>;
-  provider_name: Scalars['String'];
-  stardog_endpoint: Scalars['String'];
+  connection_name: Scalars['String']['input'];
+  internalEndpoint?: InputMaybe<Scalars['String']['input']>;
+  provider_name: Scalars['String']['input'];
+  stardog_endpoint: Scalars['String']['input'];
 };
 
 export type ApiToken = {
   __typename?: 'ApiToken';
-  created: Scalars['Datetime'];
-  expires: Scalars['Datetime'];
-  id: Scalars['ID'];
-  last_used?: Maybe<Scalars['Datetime']>;
-  name?: Maybe<Scalars['String']>;
-  prefix: Scalars['String'];
+  created: Scalars['Datetime']['output'];
+  expires: Scalars['Datetime']['output'];
+  id: Scalars['ID']['output'];
+  last_used?: Maybe<Scalars['Datetime']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  prefix: Scalars['String']['output'];
 };
 
 /** ArchivedCloud, represents an archived Stardog Cloud instance */
 export type ArchivedCloud = {
   __typename?: 'ArchivedCloud';
-  bi_endpoint?: Maybe<Scalars['String']>;
-  created?: Maybe<Scalars['String']>;
-  customer_ref?: Maybe<Scalars['String']>;
-  endpoint?: Maybe<Scalars['String']>;
-  flavor?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['ID']>;
-  name?: Maybe<Scalars['String']>;
-  payment_ref?: Maybe<Scalars['String']>;
-  region?: Maybe<Scalars['String']>;
+  bi_endpoint?: Maybe<Scalars['String']['output']>;
+  created?: Maybe<Scalars['String']['output']>;
+  customer_ref?: Maybe<Scalars['String']['output']>;
+  endpoint?: Maybe<Scalars['String']['output']>;
+  flavor?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  payment_ref?: Maybe<Scalars['String']['output']>;
+  region?: Maybe<Scalars['String']['output']>;
 };
 
 export type AzureProvider = {
   __typename?: 'AzureProvider';
-  customerName: Scalars['String'];
+  customerName: Scalars['String']['output'];
 };
 
 export type BillingSession = {
   __typename?: 'BillingSession';
-  session_id?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
+  session_id?: Maybe<Scalars['String']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
 };
 
 export type BillingSessionInput = {
-  name?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CancelCloudInput = {
-  cloud_id: Scalars['String'];
-  connection_id: Scalars['String'];
+  cloud_id: Scalars['String']['input'];
+  connection_id: Scalars['String']['input'];
 };
 
 export type CheckoutLineItem = {
-  flavor: Scalars['String'];
-  id: Scalars['String'];
-  name: Scalars['String'];
-  quantity?: InputMaybe<Scalars['Int']>;
+  flavor: Scalars['String']['input'];
+  id: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  quantity?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type CloudCleanupInput = {
-  cloudName?: InputMaybe<Scalars['String']>;
-  userName?: InputMaybe<Scalars['String']>;
+  cloudName?: InputMaybe<Scalars['String']['input']>;
+  userName?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Filters for the cloud report query */
 export type CloudFilters = {
-  flavor?: InputMaybe<Scalars['String']>;
-  ownerInactiveDays?: InputMaybe<Scalars['Int']>;
-  search?: InputMaybe<Scalars['String']>;
-  status?: InputMaybe<Scalars['String']>;
+  flavor?: InputMaybe<Scalars['String']['input']>;
+  ownerInactiveDays?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Stardog Cloud Flavor and Size info */
 export type CloudFlavor = {
   __typename?: 'CloudFlavor';
-  disk?: Maybe<Scalars['String']>;
-  iops?: Maybe<Scalars['Float']>;
-  is_cluster?: Maybe<Scalars['Boolean']>;
-  memory?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  nodes?: Maybe<Scalars['Float']>;
-  price?: Maybe<Scalars['Float']>;
-  vcpus?: Maybe<Scalars['Float']>;
+  disk?: Maybe<Scalars['String']['output']>;
+  iops?: Maybe<Scalars['Float']['output']>;
+  is_cluster?: Maybe<Scalars['Boolean']['output']>;
+  memory?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  nodes?: Maybe<Scalars['Float']['output']>;
+  price?: Maybe<Scalars['Float']['output']>;
+  vcpus?: Maybe<Scalars['Float']['output']>;
 };
 
 export type CloudInvitationInput = {
-  email: Scalars['String'];
-  endpoint: Scalars['String'];
-  role: Scalars['String'];
+  email: Scalars['String']['input'];
+  endpoint: Scalars['String']['input'];
+  role: Scalars['String']['input'];
 };
 
 /** Cloud report data with filtered results and statistics */
@@ -168,64 +183,65 @@ export type CloudReportData = {
 /** Statistics for the cloud report */
 export type CloudReportStats = {
   __typename?: 'CloudReportStats';
-  resultCount?: Maybe<Scalars['Int']>;
-  resultInactiveCount?: Maybe<Scalars['Int']>;
-  totalAllocated?: Maybe<Scalars['Int']>;
-  totalInactive?: Maybe<Scalars['Int']>;
+  resultCount?: Maybe<Scalars['Int']['output']>;
+  resultInactiveCount?: Maybe<Scalars['Int']['output']>;
+  totalAllocated?: Maybe<Scalars['Int']['output']>;
+  totalInactive?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Saved Connection info for a Stardog instance */
 export type Connection = {
   __typename?: 'Connection';
+  access?: Maybe<ConnectionAccess>;
   cloud?: Maybe<StardogCloud>;
-  dashboard?: Maybe<Scalars['String']>;
-  endpoint: Scalars['String'];
-  id: Scalars['ID'];
-  index: Scalars['Int'];
-  internalEndpoint?: Maybe<Scalars['String']>;
-  isAllocating?: Maybe<Scalars['Boolean']>;
-  isStardogCloud?: Maybe<Scalars['Boolean']>;
-  isStardogFree?: Maybe<Scalars['Boolean']>;
-  isWaitingForPayment?: Maybe<Scalars['Boolean']>;
-  name: Scalars['String'];
-  org_domain?: Maybe<Scalars['String']>;
-  shouldShowDesigner?: Maybe<Scalars['Boolean']>;
+  dashboard?: Maybe<Scalars['String']['output']>;
+  endpoint: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  index: Scalars['Int']['output'];
+  internalEndpoint?: Maybe<Scalars['String']['output']>;
+  isAllocating?: Maybe<Scalars['Boolean']['output']>;
+  isStardogCloud?: Maybe<Scalars['Boolean']['output']>;
+  isStardogFree?: Maybe<Scalars['Boolean']['output']>;
+  isWaitingForPayment?: Maybe<Scalars['Boolean']['output']>;
+  name: Scalars['String']['output'];
+  organization?: Maybe<Organization>;
+  shouldShowDesigner?: Maybe<Scalars['Boolean']['output']>;
   /** SSO provider information (only present for SSO connections) */
   ssoProvider?: Maybe<SsoProviderInfo>;
   /** Scope for SSO token exchange when authenticating via org SSO */
-  ssoTokenExchangeScope?: Maybe<Scalars['String']>;
+  ssoTokenExchangeScope?: Maybe<Scalars['String']['output']>;
   stripeSubscription?: Maybe<PurchaseSession>;
   stripeSubscriptionOrder?: Maybe<ProvisionedOrder>;
-  token?: Maybe<Scalars['String']>;
-  type?: Maybe<Scalars['String']>;
+  token?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
   /** @deprecated useBrowserAuth is deprecated. Check if username and token are empty to determine if browser authentication is used. */
-  useBrowserAuth?: Maybe<Scalars['Boolean']>;
-  useConnectionSSO?: Maybe<Scalars['Boolean']>;
-  useSSO?: Maybe<Scalars['Boolean']>;
-  username?: Maybe<Scalars['String']>;
+  useBrowserAuth?: Maybe<Scalars['Boolean']['output']>;
+  useConnectionSSO?: Maybe<Scalars['Boolean']['output']>;
+  useSSO?: Maybe<Scalars['Boolean']['output']>;
+  username?: Maybe<Scalars['String']['output']>;
 };
 
 /** Connection access record granting access to a user or organization */
 export type ConnectionAccess = {
   __typename?: 'ConnectionAccess';
-  connection: Connection;
-  id: Scalars['ID'];
+  connection?: Maybe<Connection>;
+  id: Scalars['ID']['output'];
   organization?: Maybe<Organization>;
-  organization_is_enabled?: Maybe<Scalars['Boolean']>;
-  stardog_roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+  organization_is_enabled?: Maybe<Scalars['Boolean']['output']>;
+  stardog_roles?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   user?: Maybe<User>;
-  user_is_private?: Maybe<Scalars['Boolean']>;
+  user_is_private?: Maybe<Scalars['Boolean']['output']>;
 };
 
 /** Connection invitation for granting access to a user for a personal connection */
 export type ConnectionInvitation = {
   __typename?: 'ConnectionInvitation';
-  accepted?: Maybe<Scalars['Boolean']>;
-  connection_roles?: Maybe<Array<Scalars['String']>>;
-  created?: Maybe<Scalars['Datetime']>;
-  email: Scalars['String'];
-  expired?: Maybe<Scalars['Boolean']>;
-  id: Scalars['ID'];
+  accepted?: Maybe<Scalars['Boolean']['output']>;
+  connection_roles?: Maybe<Array<Scalars['String']['output']>>;
+  created?: Maybe<Scalars['Datetime']['output']>;
+  email: Scalars['String']['output'];
+  expired?: Maybe<Scalars['Boolean']['output']>;
+  id: Scalars['ID']['output'];
 };
 
 /**
@@ -233,55 +249,63 @@ export type ConnectionInvitation = {
  * Connection must belong to a personal organization.
  */
 export type ConnectionInvitationsInput = {
-  connection_id: Scalars['ID'];
-  connection_roles?: InputMaybe<Array<Scalars['String']>>;
-  emails: Array<Scalars['String']>;
+  connection_id: Scalars['ID']['input'];
+  connection_roles?: InputMaybe<Array<Scalars['String']['input']>>;
+  emails: Array<Scalars['String']['input']>;
 };
 
 export type CreateApiTokenInput = {
-  app_id?: InputMaybe<Scalars['ID']>;
-  expires_days: Scalars['PositiveInt'];
-  name: Scalars['String'];
+  app_id?: InputMaybe<Scalars['ID']['input']>;
+  expires_days: Scalars['PositiveInt']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type CreateApiTokenResult = {
   __typename?: 'CreateApiTokenResult';
-  secret: Scalars['String'];
+  secret: Scalars['String']['output'];
 };
 
 /** Input for creating a Microsoft Entra SSO configuration */
 export type CreateOrganizationMicrosoftEntraSsoConfigInput = {
   /** OAuth client ID from Microsoft Entra */
-  clientId: Scalars['String'];
+  clientId: Scalars['String']['input'];
   /** OAuth client secret from Microsoft Entra */
-  clientSecret: Scalars['String'];
+  clientSecret: Scalars['String']['input'];
   /** OIDC discovery endpoint URL (.well-known/openid-configuration) */
-  discoveryUrl: Scalars['String'];
+  discoveryUrl: Scalars['String']['input'];
+  /** Whether to end the user's IDP session on logout (RP-Initiated Logout) */
+  idpLogoutEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Whether SSO login is enabled (defaults to true) */
-  isEnabled?: InputMaybe<Scalars['Boolean']>;
+  isEnabled?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /** Input for creating an Okta SSO configuration */
 export type CreateOrganizationOktaSsoConfigInput = {
   /** OAuth client ID from Okta */
-  clientId: Scalars['String'];
+  clientId: Scalars['String']['input'];
   /** OAuth client secret from Okta */
-  clientSecret: Scalars['String'];
+  clientSecret: Scalars['String']['input'];
   /** OIDC discovery endpoint URL (.well-known/openid-configuration) */
-  discoveryUrl: Scalars['String'];
+  discoveryUrl: Scalars['String']['input'];
+  /** Whether to end the user's IDP session on logout (RP-Initiated Logout) */
+  idpLogoutEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Whether SSO login is enabled (defaults to true) */
-  isEnabled?: InputMaybe<Scalars['Boolean']>;
+  isEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Authorization server audience (required for Okta token exchange) */
-  oktaAuthorizationServerAudience: Scalars['String'];
+  oktaAuthorizationServerAudience: Scalars['String']['input'];
+  /** Client ID for the backend API Services app (for OBO token exchange) */
+  oktaBackendClientId: Scalars['String']['input'];
+  /** Client secret for the backend API Services app */
+  oktaBackendClientSecret: Scalars['String']['input'];
 };
 
 export type CreateVoiceboxAppInput = {
-  connection_id: Scalars['String'];
-  database?: InputMaybe<Scalars['String']>;
-  model?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-  named_graphs?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  reasoning?: InputMaybe<Scalars['Boolean']>;
+  connection_id: Scalars['String']['input'];
+  database?: InputMaybe<Scalars['String']['input']>;
+  model?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  named_graphs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  reasoning?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type CustomerSsoSettings = {
@@ -292,71 +316,71 @@ export type CustomerSsoSettings = {
 };
 
 export type DeleteApiTokenInput = {
-  app_id?: InputMaybe<Scalars['ID']>;
-  id: Scalars['ID'];
+  app_id?: InputMaybe<Scalars['ID']['input']>;
+  id: Scalars['ID']['input'];
 };
 
 export type DeleteConnectionInput = {
-  id: Scalars['ID'];
-  org_domain?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID']['input'];
+  org_domain?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DeleteInvitationResult = {
   __typename?: 'DeleteInvitationResult';
-  error?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  success: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type DeleteInvitationsResponse = {
   __typename?: 'DeleteInvitationsResponse';
-  error?: Maybe<Scalars['String']>;
+  error?: Maybe<Scalars['String']['output']>;
   results?: Maybe<Array<DeleteInvitationResult>>;
 };
 
 export type DeleteMyOrgConnectionInput = {
-  id: Scalars['ID'];
-  org_domain: Scalars['String'];
+  id: Scalars['ID']['input'];
+  org_domain: Scalars['String']['input'];
 };
 
 /** Generic deletion response type to handle reporting success. */
 export type DeletionResponse = {
   __typename?: 'DeletionResponse';
-  error?: Maybe<Scalars['String']>;
-  success: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type DesignerProject = {
   __typename?: 'DesignerProject';
-  connection_id?: Maybe<Scalars['String']>;
-  content: Scalars['Base64Bytes'];
-  created_at: Scalars['Datetime'];
-  id: Scalars['ID'];
-  name: Scalars['String'];
+  connection_id?: Maybe<Scalars['String']['output']>;
+  content: Scalars['Base64Bytes']['output'];
+  created_at: Scalars['Datetime']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
   owner: User;
   roles: Array<DesignerProjectRole>;
-  updated_at: Scalars['Datetime'];
+  updated_at: Scalars['Datetime']['output'];
 };
 
 export type DesignerProjectInvitation = {
   __typename?: 'DesignerProjectInvitation';
-  accepted_at?: Maybe<Scalars['Datetime']>;
-  created_at: Scalars['Datetime'];
-  id: Scalars['ID'];
+  accepted_at?: Maybe<Scalars['Datetime']['output']>;
+  created_at: Scalars['Datetime']['output'];
+  id: Scalars['ID']['output'];
   invitee: User;
-  is_accepted: Scalars['Boolean'];
+  is_accepted: Scalars['Boolean']['output'];
   project: DesignerProject;
   role: DesignerProjectRoleChoices;
-  updated_at: Scalars['Datetime'];
+  updated_at: Scalars['Datetime']['output'];
 };
 
 export type DesignerProjectRole = {
   __typename?: 'DesignerProjectRole';
-  created_at: Scalars['Datetime'];
-  id: Scalars['ID'];
+  created_at: Scalars['Datetime']['output'];
+  id: Scalars['ID']['output'];
   project: DesignerProject;
   role: DesignerProjectRoleChoices;
-  updated_at: Scalars['Datetime'];
+  updated_at: Scalars['Datetime']['output'];
   user: User;
 };
 
@@ -366,81 +390,81 @@ export enum DesignerProjectRoleChoices {
 }
 
 export type EditApiTokenInput = {
-  id: Scalars['ID'];
-  name?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type EditConnectionInput = {
-  endpoint?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
-  internalEndpoint?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  org_domain?: InputMaybe<Scalars['String']>;
+  endpoint?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  internalEndpoint?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  org_domain?: InputMaybe<Scalars['String']['input']>;
   /** Scope for SSO token exchange when authenticating via org SSO */
-  ssoTokenExchangeScope?: InputMaybe<Scalars['String']>;
-  token?: InputMaybe<Scalars['String']>;
-  useBrowserAuth?: InputMaybe<Scalars['Boolean']>;
-  useSSO?: InputMaybe<Scalars['Boolean']>;
-  username?: InputMaybe<Scalars['String']>;
+  ssoTokenExchangeScope?: InputMaybe<Scalars['String']['input']>;
+  token?: InputMaybe<Scalars['String']['input']>;
+  useBrowserAuth?: InputMaybe<Scalars['Boolean']['input']>;
+  useSSO?: InputMaybe<Scalars['Boolean']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type EditMyOrgConnectionInput = {
-  id: Scalars['ID'];
-  name?: InputMaybe<Scalars['String']>;
-  org_domain: Scalars['String'];
-  token?: InputMaybe<Scalars['String']>;
-  username?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  org_domain: Scalars['String']['input'];
+  token?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type EditOrganizationInput = {
-  description?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type EditVoiceboxConversationInput = {
-  id: Scalars['ID'];
-  name?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type EditVoiceboxCreditInput = {
-  limit?: InputMaybe<Scalars['NonNegativeInt']>;
-  usage?: InputMaybe<Scalars['NonNegativeInt']>;
-  user_id: Scalars['ID'];
+  limit?: InputMaybe<Scalars['NonNegativeInt']['input']>;
+  usage?: InputMaybe<Scalars['NonNegativeInt']['input']>;
+  user_id: Scalars['ID']['input'];
 };
 
 /** Aggregated usage for an endpoint (all users combined) */
 export type EndpointUsageRecord = {
   __typename?: 'EndpointUsageRecord';
-  date?: Maybe<Scalars['String']>;
-  endpoint: Scalars['String'];
-  module: Scalars['String'];
-  month?: Maybe<Scalars['Int']>;
-  quarter?: Maybe<Scalars['Int']>;
-  remarks?: Maybe<Scalars['String']>;
-  totalUnitsConsumed: Scalars['Float'];
-  year?: Maybe<Scalars['Int']>;
+  date?: Maybe<Scalars['String']['output']>;
+  endpoint: Scalars['String']['output'];
+  module: Scalars['String']['output'];
+  month?: Maybe<Scalars['Int']['output']>;
+  quarter?: Maybe<Scalars['Int']['output']>;
+  remarks?: Maybe<Scalars['String']['output']>;
+  totalUnitsConsumed: Scalars['Float']['output'];
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Example Configuration for jwt.yaml and stardog.properties */
 export type ExampleConfig = {
   __typename?: 'ExampleConfig';
-  id: Scalars['ID'];
-  jwt_config: Scalars['String'];
-  properties: Scalars['String'];
+  id: Scalars['ID']['output'];
+  jwt_config: Scalars['String']['output'];
+  properties: Scalars['String']['output'];
 };
 
 /** Generic response type to handle reporting success. */
 export type GenericResponse = {
   __typename?: 'GenericResponse';
-  error?: Maybe<Scalars['String']>;
-  success: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 /** Grafana settings generate Grafana dashboard URLs */
 export type GrafanaDashboardSettings = {
   __typename?: 'GrafanaDashboardSettings';
-  id: Scalars['String'];
-  slug: Scalars['String'];
+  id: Scalars['String']['output'];
+  slug: Scalars['String']['output'];
 };
 
 /**
@@ -453,80 +477,75 @@ export type GrafanaDashboardSettings = {
  */
 export type Invitation = {
   __typename?: 'Invitation';
-  accepted?: Maybe<Scalars['Boolean']>;
+  accepted?: Maybe<Scalars['Boolean']['output']>;
   connection?: Maybe<Connection>;
-  connection_roles?: Maybe<Array<Scalars['String']>>;
-  created?: Maybe<Scalars['Datetime']>;
-  email?: Maybe<Scalars['String']>;
-  endpoint?: Maybe<Scalars['String']>;
+  connection_roles?: Maybe<Array<Scalars['String']['output']>>;
+  created?: Maybe<Scalars['Datetime']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  endpoint?: Maybe<Scalars['String']['output']>;
   existing_user?: Maybe<User>;
-  expires?: Maybe<Scalars['Datetime']>;
-  id?: Maybe<Scalars['ID']>;
+  expires?: Maybe<Scalars['Datetime']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
   organization?: Maybe<Organization>;
-  /**
-   * SSO login URL for organization invitations when the organization has SSO configured and enabled.
-   * Returns null for non-organization invitations or when the organization doesn't have SSO enabled.
-   */
-  organizationSsoLoginUrl?: Maybe<Scalars['String']>;
-  organization_role?: Maybe<Scalars['String']>;
-  role?: Maybe<Scalars['String']>;
+  organization_role?: Maybe<Scalars['String']['output']>;
+  role?: Maybe<Scalars['String']['output']>;
   sender?: Maybe<User>;
 };
 
 export type InvitationFlagInput = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 export type ItemCount = {
   __typename?: 'ItemCount';
-  count?: Maybe<Scalars['Int']>;
+  count?: Maybe<Scalars['Int']['output']>;
 };
 
 export type LogoutSsoConnectionInput = {
-  connection_id: Scalars['String'];
+  connection_id: Scalars['String']['input'];
 };
 
 export type MarketplaceSettings = {
   __typename?: 'MarketplaceSettings';
-  marketplaceDatabase: Scalars['String'];
-  marketplaceEndpoint: Scalars['String'];
-  marketplacePassword: Scalars['String'];
-  marketplaceUsername: Scalars['String'];
+  marketplaceDatabase: Scalars['String']['output'];
+  marketplaceEndpoint: Scalars['String']['output'];
+  marketplacePassword: Scalars['String']['output'];
+  marketplaceUsername: Scalars['String']['output'];
 };
 
 export type ModifyConnectionAccessResponse = {
   __typename?: 'ModifyConnectionAccessResponse';
-  error?: Maybe<Scalars['String']>;
+  error?: Maybe<Scalars['String']['output']>;
   results?: Maybe<Array<ModifyConnectionAccessResult>>;
 };
 
 export type ModifyConnectionAccessResult = {
   __typename?: 'ModifyConnectionAccessResult';
-  email: Scalars['String'];
-  error?: Maybe<Scalars['String']>;
-  success: Scalars['Boolean'];
+  email: Scalars['String']['output'];
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 /** Root Mutation Type */
 export type Mutation = {
   __typename?: 'Mutation';
   /** Accept an incoming Designer project invitation. */
-  acceptDesignerProjectInvitation: Scalars['ID'];
+  acceptDesignerProjectInvitation: Scalars['ID']['output'];
   acceptInvitation?: Maybe<GenericResponse>;
   addCloudInvitation?: Maybe<GenericResponse>;
   addConnection?: Maybe<Connection>;
   addConnectionInvitations?: Maybe<AddInvitationsResponse>;
   addMyOrganizationConnection?: Maybe<Connection>;
-  addOrganization?: Maybe<Organization>;
+  addOrganization?: Maybe<AddOrganizationResult>;
   addOrganizationInvitations?: Maybe<AddInvitationsResponse>;
   addSSOConnection?: Maybe<SsoConnectionRedirectResponse>;
   addShare?: Maybe<Share>;
-  archiveDesignerProject: Scalars['ID'];
+  archiveDesignerProject: Scalars['ID']['output'];
   cancelCloud?: Maybe<GenericResponse>;
-  changeDesignerProjectRole: Scalars['ID'];
+  changeDesignerProjectRole: Scalars['ID']['output'];
   checkoutCart?: Maybe<BillingSession>;
   createApiToken?: Maybe<CreateApiTokenResult>;
-  createDesignerProject: Scalars['ID'];
+  createDesignerProject: Scalars['ID']['output'];
   /**
    * Create Microsoft Entra SSO configuration for an organization.
    * Requires admin or owner role. Organization must have is_sso_allowed=True.
@@ -570,14 +589,14 @@ export type Mutation = {
   removeMySharedConnection?: Maybe<GenericResponse>;
   removeOrganizationMembers?: Maybe<OrganizationMembersResponse>;
   removePartnerConnection?: Maybe<GenericResponse>;
-  renameDesignerProject: Scalars['ID'];
+  renameDesignerProject: Scalars['ID']['output'];
   renameMySharedConnection?: Maybe<GenericResponse>;
   resendEmail?: Maybe<GenericResponse>;
-  restoreDesignerProject: Scalars['ID'];
+  restoreDesignerProject: Scalars['ID']['output'];
   /** Revoke an outgoing Designer project invitation, or reject an invitation sent to you. */
-  revokeDesignerProjectInvitation: Scalars['ID'];
+  revokeDesignerProjectInvitation: Scalars['ID']['output'];
   /** Revoke a given role, or leave a role given to you. */
-  revokeDesignerProjectRole: Scalars['ID'];
+  revokeDesignerProjectRole: Scalars['ID']['output'];
   revokeMemberConnectionRoles?: Maybe<ModifyConnectionAccessResponse>;
   revokePersonalConnectionAccess?: Maybe<ModifyConnectionAccessResponse>;
   /**
@@ -585,7 +604,7 @@ export type Mutation = {
    *
    * (you cannot send an invitation to someone who already has a role)
    */
-  sendDesignerProjectInvitation: Scalars['ID'];
+  sendDesignerProjectInvitation: Scalars['ID']['output'];
   setMemberConnectionRoles?: Maybe<ModifyConnectionAccessResponse>;
   setOrganizationConnectionVisibility?: Maybe<GenericResponse>;
   syncPlatformSduUsage: SyncPlatformSduUsageResult;
@@ -601,7 +620,7 @@ export type Mutation = {
    * - The user can re-link their account later via the SSO linking flow
    */
   unlinkOrganizationSso?: Maybe<GenericResponse>;
-  updateDesignerProject: Scalars['ID'];
+  updateDesignerProject: Scalars['ID']['output'];
   updateOrganizationMembersRole?: Maybe<OrganizationMembersResponse>;
   /**
    * Update Microsoft Entra SSO configuration for an organization.
@@ -624,7 +643,7 @@ export type Mutation = {
 
 /** Root Mutation Type */
 export type MutationAcceptDesignerProjectInvitationArgs = {
-  invitation_id: Scalars['ID'];
+  invitation_id: Scalars['ID']['input'];
 };
 
 /** Root Mutation Type */
@@ -674,7 +693,7 @@ export type MutationAddShareArgs = {
 
 /** Root Mutation Type */
 export type MutationArchiveDesignerProjectArgs = {
-  project_id: Scalars['ID'];
+  project_id: Scalars['ID']['input'];
 };
 
 /** Root Mutation Type */
@@ -685,7 +704,7 @@ export type MutationCancelCloudArgs = {
 /** Root Mutation Type */
 export type MutationChangeDesignerProjectRoleArgs = {
   role: DesignerProjectRoleChoices;
-  role_id: Scalars['ID'];
+  role_id: Scalars['ID']['input'];
 };
 
 /** Root Mutation Type */
@@ -701,20 +720,20 @@ export type MutationCreateApiTokenArgs = {
 
 /** Root Mutation Type */
 export type MutationCreateDesignerProjectArgs = {
-  connection_id?: InputMaybe<Scalars['String']>;
-  content: Scalars['Base64Bytes'];
-  name: Scalars['String'];
+  connection_id?: InputMaybe<Scalars['String']['input']>;
+  content: Scalars['Base64Bytes']['input'];
+  name: Scalars['String']['input'];
 };
 
 /** Root Mutation Type */
 export type MutationCreateOrganizationMicrosoftEntraSsoConfigArgs = {
-  domain: Scalars['String'];
+  domain: Scalars['String']['input'];
   input: CreateOrganizationMicrosoftEntraSsoConfigInput;
 };
 
 /** Root Mutation Type */
 export type MutationCreateOrganizationOktaSsoConfigArgs = {
-  domain: Scalars['String'];
+  domain: Scalars['String']['input'];
   input: CreateOrganizationOktaSsoConfigInput;
 };
 
@@ -740,7 +759,7 @@ export type MutationDeleteConnectionArgs = {
 
 /** Root Mutation Type */
 export type MutationDeleteInvitationsArgs = {
-  ids: Array<Scalars['ID']>;
+  ids: Array<Scalars['ID']['input']>;
 };
 
 /** Root Mutation Type */
@@ -750,22 +769,22 @@ export type MutationDeleteMyOrganizationConnectionArgs = {
 
 /** Root Mutation Type */
 export type MutationDeleteOrganizationArgs = {
-  org_domain: Scalars['String'];
+  org_domain: Scalars['String']['input'];
 };
 
 /** Root Mutation Type */
 export type MutationDeleteOrganizationSsoConfigArgs = {
-  domain: Scalars['String'];
+  domain: Scalars['String']['input'];
 };
 
 /** Root Mutation Type */
 export type MutationDeleteVoiceboxAppArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 /** Root Mutation Type */
 export type MutationDeleteVoiceboxConversationArgs = {
-  conversation_id: Scalars['ID'];
+  conversation_id: Scalars['ID']['input'];
 };
 
 /** Root Mutation Type */
@@ -786,7 +805,7 @@ export type MutationEditMyOrganizationConnectionArgs = {
 /** Root Mutation Type */
 export type MutationEditOrganizationArgs = {
   input: EditOrganizationInput;
-  org_domain: Scalars['String'];
+  org_domain: Scalars['String']['input'];
 };
 
 /** Root Mutation Type */
@@ -801,12 +820,12 @@ export type MutationEditVoiceboxCreditArgs = {
 
 /** Root Mutation Type */
 export type MutationGenerateConfigurationArgs = {
-  endpoint: Scalars['String'];
+  endpoint: Scalars['String']['input'];
 };
 
 /** Root Mutation Type */
 export type MutationLeaveOrganizationArgs = {
-  org_domain: Scalars['String'];
+  org_domain: Scalars['String']['input'];
 };
 
 /** Root Mutation Type */
@@ -826,8 +845,8 @@ export type MutationRemoveMySharedConnectionArgs = {
 
 /** Root Mutation Type */
 export type MutationRemoveOrganizationMembersArgs = {
-  emails: Array<Scalars['String']>;
-  org_domain: Scalars['String'];
+  emails: Array<Scalars['String']['input']>;
+  org_domain: Scalars['String']['input'];
 };
 
 /** Root Mutation Type */
@@ -837,8 +856,8 @@ export type MutationRemovePartnerConnectionArgs = {
 
 /** Root Mutation Type */
 export type MutationRenameDesignerProjectArgs = {
-  name: Scalars['String'];
-  project_id: Scalars['ID'];
+  name: Scalars['String']['input'];
+  project_id: Scalars['ID']['input'];
 };
 
 /** Root Mutation Type */
@@ -848,17 +867,17 @@ export type MutationRenameMySharedConnectionArgs = {
 
 /** Root Mutation Type */
 export type MutationRestoreDesignerProjectArgs = {
-  project_id: Scalars['ID'];
+  project_id: Scalars['ID']['input'];
 };
 
 /** Root Mutation Type */
 export type MutationRevokeDesignerProjectInvitationArgs = {
-  invitation_id?: InputMaybe<Scalars['ID']>;
+  invitation_id?: InputMaybe<Scalars['ID']['input']>;
 };
 
 /** Root Mutation Type */
 export type MutationRevokeDesignerProjectRoleArgs = {
-  role_id: Scalars['ID'];
+  role_id: Scalars['ID']['input'];
 };
 
 /** Root Mutation Type */
@@ -873,8 +892,8 @@ export type MutationRevokePersonalConnectionAccessArgs = {
 
 /** Root Mutation Type */
 export type MutationSendDesignerProjectInvitationArgs = {
-  invitee_id: Scalars['ID'];
-  project_id: Scalars['ID'];
+  invitee_id: Scalars['ID']['input'];
+  project_id: Scalars['ID']['input'];
   role: DesignerProjectRoleChoices;
 };
 
@@ -890,7 +909,7 @@ export type MutationSetOrganizationConnectionVisibilityArgs = {
 
 /** Root Mutation Type */
 export type MutationSyncPlatformSduUsageArgs = {
-  connectionId: Scalars['ID'];
+  connectionId: Scalars['ID']['input'];
 };
 
 /** Root Mutation Type */
@@ -900,39 +919,39 @@ export type MutationTrackEventArgs = {
 
 /** Root Mutation Type */
 export type MutationTransferOrganizationOwnershipArgs = {
-  email: Scalars['String'];
-  org_domain: Scalars['String'];
+  email: Scalars['String']['input'];
+  org_domain: Scalars['String']['input'];
 };
 
 /** Root Mutation Type */
 export type MutationUnlinkOrganizationSsoArgs = {
-  domain: Scalars['String'];
+  domain: Scalars['String']['input'];
 };
 
 /** Root Mutation Type */
 export type MutationUpdateDesignerProjectArgs = {
-  connection_id?: InputMaybe<Scalars['String']>;
-  content: Scalars['Base64Bytes'];
-  name?: InputMaybe<Scalars['String']>;
-  project_id: Scalars['ID'];
+  connection_id?: InputMaybe<Scalars['String']['input']>;
+  content: Scalars['Base64Bytes']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  project_id: Scalars['ID']['input'];
 };
 
 /** Root Mutation Type */
 export type MutationUpdateOrganizationMembersRoleArgs = {
-  emails: Array<Scalars['String']>;
-  new_role: Scalars['String'];
-  org_domain: Scalars['String'];
+  emails: Array<Scalars['String']['input']>;
+  new_role: Scalars['String']['input'];
+  org_domain: Scalars['String']['input'];
 };
 
 /** Root Mutation Type */
 export type MutationUpdateOrganizationMicrosoftEntraSsoConfigArgs = {
-  domain: Scalars['String'];
+  domain: Scalars['String']['input'];
   input: UpdateOrganizationMicrosoftEntraSsoConfigInput;
 };
 
 /** Root Mutation Type */
 export type MutationUpdateOrganizationOktaSsoConfigArgs = {
-  domain: Scalars['String'];
+  domain: Scalars['String']['input'];
   input: UpdateOrganizationOktaSsoConfigInput;
 };
 
@@ -954,7 +973,7 @@ export type MutationUpdateProfileArgs = {
 /** Root Mutation Type */
 export type MutationUpdateUserFeaturesArgs = {
   input: UserFeaturesInput;
-  user_id: Scalars['ID'];
+  user_id: Scalars['ID']['input'];
 };
 
 /** Root Mutation Type */
@@ -964,7 +983,7 @@ export type MutationUpdateVoiceboxAppArgs = {
 
 /** Root Mutation Type */
 export type MutationUpgradeCloudArgs = {
-  connectionId: Scalars['ID'];
+  connectionId: Scalars['ID']['input'];
   item: CheckoutLineItem;
 };
 
@@ -979,41 +998,48 @@ export type MutationVerifyInvitationArgs = {
  */
 export type OAuthToken = {
   __typename?: 'OAuthToken';
-  access_token?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  id_token?: Maybe<Scalars['String']>;
-  scope?: Maybe<Scalars['String']>;
+  access_token?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  id_token?: Maybe<Scalars['String']['output']>;
+  scope?: Maybe<Scalars['String']['output']>;
   user: User;
 };
 
 export type OktaProvider = {
   __typename?: 'OktaProvider';
-  customerName: Scalars['String'];
+  customerName: Scalars['String']['output'];
 };
 
 export type Organization = {
   __typename?: 'Organization';
-  description?: Maybe<Scalars['String']>;
-  domain?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
+  description?: Maybe<Scalars['String']['output']>;
+  domain?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
   /** Whether this organization can configure SSO (premium feature) */
-  isSsoAllowed: Scalars['Boolean'];
-  name: Scalars['String'];
-  role?: Maybe<Scalars['String']>;
+  isSsoAllowed?: Maybe<Scalars['Boolean']['output']>;
+  name: Scalars['String']['output'];
+  owner?: Maybe<User>;
+  role?: Maybe<Scalars['String']['output']>;
   /** SSO configuration for this organization (null if not configured) */
   ssoConfig?: Maybe<OrganizationSsoConfig>;
   /** Current user's SSO identity link status for this organization */
-  ssoIdentity: OrganizationSsoIdentity;
+  ssoIdentity?: Maybe<OrganizationSsoIdentity>;
 };
 
 export type OrganizationInvitation = {
   __typename?: 'OrganizationInvitation';
-  accepted?: Maybe<Scalars['Boolean']>;
-  created?: Maybe<Scalars['Datetime']>;
-  email: Scalars['String'];
-  expired?: Maybe<Scalars['Boolean']>;
-  id: Scalars['ID'];
-  organization_role: Scalars['String'];
+  accepted?: Maybe<Scalars['Boolean']['output']>;
+  created?: Maybe<Scalars['Datetime']['output']>;
+  email: Scalars['String']['output'];
+  expired?: Maybe<Scalars['Boolean']['output']>;
+  id: Scalars['ID']['output'];
+  organization_role: Scalars['String']['output'];
+};
+
+/** Input for specifying connection access with optional Stardog roles. */
+export type OrganizationInvitationsConnectionAccessInput = {
+  connection_id: Scalars['ID']['input'];
+  stardog_roles?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /**
@@ -1021,60 +1047,71 @@ export type OrganizationInvitation = {
  * Organization must be a public organization.
  */
 export type OrganizationInvitationsInput = {
-  emails: Array<Scalars['String']>;
-  organization_domain: Scalars['String'];
-  organization_role: Scalars['String'];
+  connection_access?: InputMaybe<
+    Array<OrganizationInvitationsConnectionAccessInput>
+  >;
+  emails: Array<Scalars['String']['input']>;
+  organization_domain: Scalars['String']['input'];
+  organization_role: Scalars['String']['input'];
 };
 
 export type OrganizationMember = {
   __typename?: 'OrganizationMember';
-  role: Scalars['String'];
+  role: Scalars['String']['output'];
   user: User;
 };
 
 export type OrganizationMemberResult = {
   __typename?: 'OrganizationMemberResult';
-  email: Scalars['String'];
-  error?: Maybe<Scalars['String']>;
-  success: Scalars['Boolean'];
+  email: Scalars['String']['output'];
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type OrganizationMembersResponse = {
   __typename?: 'OrganizationMembersResponse';
-  error?: Maybe<Scalars['String']>;
+  error?: Maybe<Scalars['String']['output']>;
   results?: Maybe<Array<OrganizationMemberResult>>;
 };
 
 /** Microsoft Entra SSO configuration for an organization. */
 export type OrganizationMicrosoftEntraSsoConfig = OrganizationSsoConfig & {
   __typename?: 'OrganizationMicrosoftEntraSSOConfig';
-  clientId: Scalars['String'];
-  createdAt: Scalars['Datetime'];
-  discoveryUrl: Scalars['String'];
-  hasClientSecret: Scalars['Boolean'];
-  id: Scalars['ID'];
-  isEnabled: Scalars['Boolean'];
-  loginUrl: Scalars['String'];
+  clientId: Scalars['String']['output'];
+  createdAt: Scalars['Datetime']['output'];
+  discoveryUrl: Scalars['String']['output'];
+  hasClientSecret: Scalars['Boolean']['output'];
+  id: Scalars['ID']['output'];
+  idpLogoutEnabled: Scalars['Boolean']['output'];
+  isEnabled: Scalars['Boolean']['output'];
+  loginUrl: Scalars['String']['output'];
+  postLogoutRedirectUri: Scalars['String']['output'];
   providerType: SsoProviderType;
-  redirectUri: Scalars['String'];
-  updatedAt: Scalars['Datetime'];
+  redirectUri: Scalars['String']['output'];
+  updatedAt: Scalars['Datetime']['output'];
 };
 
 /** Okta SSO configuration for an organization. */
 export type OrganizationOktaSsoConfig = OrganizationSsoConfig & {
   __typename?: 'OrganizationOktaSSOConfig';
-  clientId: Scalars['String'];
-  createdAt: Scalars['Datetime'];
-  discoveryUrl: Scalars['String'];
-  hasClientSecret: Scalars['Boolean'];
-  id: Scalars['ID'];
-  isEnabled: Scalars['Boolean'];
-  loginUrl: Scalars['String'];
+  clientId: Scalars['String']['output'];
+  createdAt: Scalars['Datetime']['output'];
+  discoveryUrl: Scalars['String']['output'];
+  hasClientSecret: Scalars['Boolean']['output'];
+  /** Whether a backend client secret is configured */
+  hasOktaBackendClientSecret: Scalars['Boolean']['output'];
+  id: Scalars['ID']['output'];
+  idpLogoutEnabled: Scalars['Boolean']['output'];
+  isEnabled: Scalars['Boolean']['output'];
+  loginUrl: Scalars['String']['output'];
   /** Authorization server audience for token exchange */
-  oktaAuthorizationServerAudience: Scalars['String'];
+  oktaAuthorizationServerAudience: Scalars['String']['output'];
+  /** Client ID for the backend API Services app (for OBO token exchange) */
+  oktaBackendClientId: Scalars['String']['output'];
+  postLogoutRedirectUri: Scalars['String']['output'];
   providerType: SsoProviderType;
-  redirectUri: Scalars['String'];
-  updatedAt: Scalars['Datetime'];
+  redirectUri: Scalars['String']['output'];
+  updatedAt: Scalars['Datetime']['output'];
 };
 
 /**
@@ -1082,20 +1119,24 @@ export type OrganizationOktaSsoConfig = OrganizationSsoConfig & {
  * Allows organization members to log in via the organization's identity provider.
  */
 export type OrganizationSsoConfig = {
-  clientId: Scalars['String'];
-  createdAt: Scalars['Datetime'];
-  discoveryUrl: Scalars['String'];
+  clientId: Scalars['String']['output'];
+  createdAt: Scalars['Datetime']['output'];
+  discoveryUrl: Scalars['String']['output'];
   /** Whether a client secret is configured (never exposes the actual secret) */
-  hasClientSecret: Scalars['Boolean'];
-  id: Scalars['ID'];
+  hasClientSecret: Scalars['Boolean']['output'];
+  id: Scalars['ID']['output'];
+  /** Whether logging out also ends the user's IDP session (RP-Initiated Logout) */
+  idpLogoutEnabled: Scalars['Boolean']['output'];
   /** Whether SSO login is currently enabled for this organization */
-  isEnabled: Scalars['Boolean'];
+  isEnabled: Scalars['Boolean']['output'];
   /** Organization-specific login URL */
-  loginUrl: Scalars['String'];
+  loginUrl: Scalars['String']['output'];
+  /** URI the IDP redirects to after ending the user's session */
+  postLogoutRedirectUri: Scalars['String']['output'];
   providerType: SsoProviderType;
   /** Redirect URI to configure in your identity provider's redirect URI whitelist */
-  redirectUri: Scalars['String'];
-  updatedAt: Scalars['Datetime'];
+  redirectUri: Scalars['String']['output'];
+  updatedAt: Scalars['Datetime']['output'];
 };
 
 /**
@@ -1106,78 +1147,76 @@ export type OrganizationSsoConfig = {
 export type OrganizationSsoIdentity = {
   __typename?: 'OrganizationSSOIdentity';
   /** The user's identity subject from the SSO provider (only if linked) */
-  idpSubject?: Maybe<Scalars['String']>;
+  idpSubject?: Maybe<Scalars['String']['output']>;
   /** Whether the current user has linked their account to this org's SSO */
-  isLinked: Scalars['Boolean'];
-  /** URL to initiate SSO account linking (only if not linked and SSO is configured) */
-  linkUrl?: Maybe<Scalars['String']>;
+  isLinked: Scalars['Boolean']['output'];
   /** When the identity was linked (only if linked) */
-  linkedAt?: Maybe<Scalars['Datetime']>;
+  linkedAt?: Maybe<Scalars['Datetime']['output']>;
 };
 
 /** To page through response. */
 export type PagingInput = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** Databricks Partner Information */
 export type PartnerConnectionDetail = {
   __typename?: 'PartnerConnectionDetail';
-  cluster_id?: Maybe<Scalars['String']>;
-  connection_id?: Maybe<Scalars['String']>;
-  databricks_connection_name?: Maybe<Scalars['String']>;
-  databricks_personal_token_id?: Maybe<Scalars['String']>;
-  databricks_workspace_id?: Maybe<Scalars['String']>;
-  http_path?: Maybe<Scalars['String']>;
-  is_configured_resources?: Maybe<Scalars['Boolean']>;
-  jdbc_url?: Maybe<Scalars['String']>;
+  cluster_id?: Maybe<Scalars['String']['output']>;
+  connection_id?: Maybe<Scalars['String']['output']>;
+  databricks_connection_name?: Maybe<Scalars['String']['output']>;
+  databricks_personal_token_id?: Maybe<Scalars['String']['output']>;
+  databricks_workspace_id?: Maybe<Scalars['String']['output']>;
+  http_path?: Maybe<Scalars['String']['output']>;
+  is_configured_resources?: Maybe<Scalars['Boolean']['output']>;
+  jdbc_url?: Maybe<Scalars['String']['output']>;
   stardog_server_connection?: Maybe<Connection>;
-  user_email?: Maybe<Scalars['String']>;
-  user_first_name?: Maybe<Scalars['String']>;
-  workspace_url?: Maybe<Scalars['String']>;
+  user_email?: Maybe<Scalars['String']['output']>;
+  user_first_name?: Maybe<Scalars['String']['output']>;
+  workspace_url?: Maybe<Scalars['String']['output']>;
 };
 
 export type PingProvider = {
   __typename?: 'PingProvider';
-  customerName: Scalars['String'];
+  customerName: Scalars['String']['output'];
 };
 
 /** Latest platform SDU sync tracking status for a connection */
 export type PlatformTrackingStatus = {
   __typename?: 'PlatformTrackingStatus';
-  date?: Maybe<Scalars['String']>;
-  syncStatus: Scalars['String'];
-  updated?: Maybe<Scalars['String']>;
+  date?: Maybe<Scalars['String']['output']>;
+  syncStatus: Scalars['String']['output'];
+  updated?: Maybe<Scalars['String']['output']>;
 };
 
 export type ProfileInput = {
-  best_describes_company: Scalars['String'];
-  best_describes_role: Scalars['String'];
-  company: Scalars['String'];
-  familiarity_with_kgs: Scalars['String'];
-  first_name: Scalars['String'];
-  industry: Scalars['String'];
-  last_name: Scalars['String'];
-  phone?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
-  use_case: Scalars['String'];
+  best_describes_company: Scalars['String']['input'];
+  best_describes_role: Scalars['String']['input'];
+  company: Scalars['String']['input'];
+  familiarity_with_kgs: Scalars['String']['input'];
+  first_name: Scalars['String']['input'];
+  industry: Scalars['String']['input'];
+  last_name: Scalars['String']['input'];
+  phone?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  use_case: Scalars['String']['input'];
 };
 
 export type ProvisionedOrder = {
   __typename?: 'ProvisionedOrder';
-  payment_system?: Maybe<Scalars['String']>;
-  status?: Maybe<Scalars['String']>;
-  trial_days_remaining?: Maybe<Scalars['Int']>;
-  trial_days_total?: Maybe<Scalars['Int']>;
+  payment_system?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  trial_days_remaining?: Maybe<Scalars['Int']['output']>;
+  trial_days_total?: Maybe<Scalars['Int']['output']>;
 };
 
 export type PurchaseSession = {
   __typename?: 'PurchaseSession';
-  isExpired?: Maybe<Scalars['Boolean']>;
-  isWaitingForPayment?: Maybe<Scalars['Boolean']>;
-  status?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
+  isExpired?: Maybe<Scalars['Boolean']['output']>;
+  isWaitingForPayment?: Maybe<Scalars['Boolean']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
 };
 
 /** Root Query Type */
@@ -1185,7 +1224,7 @@ export type Query = {
   __typename?: 'Query';
   apiTokenCount?: Maybe<ItemCount>;
   /** Can the authenticated user edit another user's (or their own) Voicebox credit. */
-  canEditVoiceboxCredit?: Maybe<Scalars['Boolean']>;
+  canEditVoiceboxCredit?: Maybe<Scalars['Boolean']['output']>;
   checkCloudQueue?: Maybe<QueueCounts>;
   customerSsoSettings?: Maybe<CustomerSsoSettings>;
   generateToken?: Maybe<OAuthToken>;
@@ -1225,6 +1264,9 @@ export type Query = {
   listApiTokens?: Maybe<Array<Maybe<ApiToken>>>;
   listConnections?: Maybe<Array<Maybe<Connection>>>;
   listConnectionsByEndpoint?: Maybe<Array<Maybe<Connection>>>;
+  listDefaultOrganizationConnectionsAccess?: Maybe<
+    Array<Maybe<ConnectionAccess>>
+  >;
   listInactiveClouds?: Maybe<Array<Maybe<StardogCloud>>>;
   listOrganizationConnectionAccess?: Maybe<Array<Maybe<ConnectionAccess>>>;
   listOrganizations?: Maybe<Array<Maybe<Organization>>>;
@@ -1254,12 +1296,12 @@ export type Query = {
 
 /** Root Query Type */
 export type QueryApiTokenCountArgs = {
-  app_id?: InputMaybe<Scalars['ID']>;
+  app_id?: InputMaybe<Scalars['ID']['input']>;
 };
 
 /** Root Query Type */
 export type QueryGenerateTokenArgs = {
-  endpoint: Scalars['String'];
+  endpoint: Scalars['String']['input'];
 };
 
 /** Root Query Type */
@@ -1269,148 +1311,153 @@ export type QueryGetCloudReportArgs = {
 
 /** Root Query Type */
 export type QueryGetConnectionByIdArgs = {
-  id: Scalars['String'];
-  org_domain?: InputMaybe<Scalars['String']>;
+  id: Scalars['String']['input'];
+  org_domain?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Root Query Type */
 export type QueryGetConnectionByIndexArgs = {
-  index: Scalars['Int'];
-  org_domain?: InputMaybe<Scalars['String']>;
+  index: Scalars['Int']['input'];
+  org_domain?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Root Query Type */
 export type QueryGetDesignerProjectArgs = {
-  project_id: Scalars['ID'];
+  project_id: Scalars['ID']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetEndpointUsageArgs = {
-  connectionId: Scalars['ID'];
-  endDate?: InputMaybe<Scalars['Date']>;
-  modules?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  org_domain?: InputMaybe<Scalars['String']>;
-  startDate?: InputMaybe<Scalars['Date']>;
+  connectionId: Scalars['ID']['input'];
+  endDate?: InputMaybe<Scalars['Date']['input']>;
+  modules?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  org_domain?: InputMaybe<Scalars['String']['input']>;
+  startDate?: InputMaybe<Scalars['Date']['input']>;
   timeGrain?: InputMaybe<TimeGrain>;
 };
 
 /** Root Query Type */
 export type QueryGetInvitationArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetOrganizationArgs = {
-  org_domain?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Root Query Type */
 export type QueryGetOrganizationInvitationsArgs = {
-  org_domain?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Root Query Type */
 export type QueryGetOrganizationMembersArgs = {
-  org_domain?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Root Query Type */
 export type QueryGetPlatformTrackingStatusArgs = {
-  connectionId: Scalars['ID'];
+  connectionId: Scalars['ID']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetShareByShortHashArgs = {
-  shortHash: Scalars['String'];
+  shortHash: Scalars['String']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetStardogCloudArgs = {
-  pk: Scalars['String'];
+  pk: Scalars['String']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetStripeSubscriptionOrderArgs = {
-  cloudId: Scalars['ID'];
+  cloudId: Scalars['ID']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetUserArgs = {
-  user_id: Scalars['String'];
+  user_id: Scalars['String']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetUserArchivedCloudsArgs = {
-  user_id: Scalars['String'];
+  user_id: Scalars['String']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetUserCloudsArgs = {
-  user_id: Scalars['String'];
+  user_id: Scalars['String']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetUserConnectionsArgs = {
-  user_id: Scalars['String'];
+  user_id: Scalars['String']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetUserSearchDetailsArgs = {
   filters?: InputMaybe<UserSearchFiltersInput>;
-  token: Scalars['String'];
+  token: Scalars['String']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetUserVoiceboxCreditArgs = {
-  user_id: Scalars['String'];
+  user_id: Scalars['String']['input'];
 };
 
 /** Root Query Type */
 export type QueryGetVoiceboxConversationArgs = {
-  conversation_id: Scalars['String'];
+  conversation_id: Scalars['String']['input'];
 };
 
 /** Root Query Type */
 export type QueryListApiTokensArgs = {
-  app_id?: InputMaybe<Scalars['ID']>;
+  app_id?: InputMaybe<Scalars['ID']['input']>;
   paging?: InputMaybe<PagingInput>;
 };
 
 /** Root Query Type */
 export type QueryListConnectionsArgs = {
-  org_domain?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Root Query Type */
 export type QueryListConnectionsByEndpointArgs = {
-  endpoint: Scalars['String'];
-  org_domain?: InputMaybe<Scalars['String']>;
+  endpoint: Scalars['String']['input'];
+  org_domain?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Root Query Type */
+export type QueryListDefaultOrganizationConnectionsAccessArgs = {
+  org_domain: Scalars['String']['input'];
 };
 
 /** Root Query Type */
 export type QueryListInactiveCloudsArgs = {
-  flavor?: InputMaybe<Scalars['String']>;
+  flavor?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Root Query Type */
 export type QueryListOrganizationConnectionAccessArgs = {
-  id: Scalars['ID'];
-  org_domain: Scalars['String'];
+  id: Scalars['ID']['input'];
+  org_domain: Scalars['String']['input'];
 };
 
 /** Root Query Type */
 export type QueryListStardogCloudArgs = {
-  inactive_days?: InputMaybe<Scalars['Int']>;
+  inactive_days?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** Root Query Type */
 export type QueryListUserConnectionAccessArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 /** Root Query Type */
 export type QueryListUserConnectionInvitationsArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 /** Root Query Type */
@@ -1422,9 +1469,9 @@ export type QueryListVoiceboxConversationsArgs = {
 /** Root Query Type */
 export type QuerySearchUsersArgs = {
   filters?: InputMaybe<UserSearchFiltersInput>;
-  limit: Scalars['Int'];
-  offset: Scalars['Int'];
-  token: Scalars['String'];
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  token: Scalars['String']['input'];
 };
 
 /** Root Query Type */
@@ -1435,58 +1482,58 @@ export type QueryVoiceboxConversationCountArgs = {
 /** Contains the counts of available cloud resources to sell. */
 export type QueueCounts = {
   __typename?: 'QueueCounts';
-  medium_count?: Maybe<Scalars['Float']>;
-  micro_count?: Maybe<Scalars['Float']>;
-  small_count?: Maybe<Scalars['Float']>;
-  small_vbx_count?: Maybe<Scalars['Float']>;
+  medium_count?: Maybe<Scalars['Float']['output']>;
+  micro_count?: Maybe<Scalars['Float']['output']>;
+  small_count?: Maybe<Scalars['Float']['output']>;
+  small_vbx_count?: Maybe<Scalars['Float']['output']>;
 };
 
 /** Quota limits and usage for a given user. */
 export type Quota = {
   __typename?: 'Quota';
-  available?: Maybe<Scalars['Int']>;
-  total?: Maybe<Scalars['Int']>;
+  available?: Maybe<Scalars['Int']['output']>;
+  total?: Maybe<Scalars['Int']['output']>;
 };
 
 export type ReauthenticateSsoConnectionInput = {
-  connection_id: Scalars['String'];
+  connection_id: Scalars['String']['input'];
 };
 
 export type RemoveMySharedConnectionInput = {
-  connectionId: Scalars['ID'];
+  connectionId: Scalars['ID']['input'];
 };
 
 export type RemovePartnerConnectionInput = {
-  connection_id: Scalars['String'];
+  connection_id: Scalars['String']['input'];
 };
 
 export type RenameMySharedConnectionInput = {
-  connectionId: Scalars['ID'];
-  name: Scalars['String'];
+  connectionId: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type RevokeMemberConnectionRolesInput = {
-  connectionId: Scalars['ID'];
-  emails: Array<Scalars['String']>;
-  org_domain: Scalars['String'];
+  connectionId: Scalars['ID']['input'];
+  emails: Array<Scalars['String']['input']>;
+  org_domain: Scalars['String']['input'];
 };
 
 export type RevokePersonalConnectionAccessInput = {
-  connectionId: Scalars['ID'];
-  emails: Array<Scalars['String']>;
+  connectionId: Scalars['ID']['input'];
+  emails: Array<Scalars['String']['input']>;
 };
 
 export type SsoConnectionRedirectResponse = {
   __typename?: 'SSOConnectionRedirectResponse';
-  redirect_url: Scalars['String'];
+  redirect_url: Scalars['String']['output'];
 };
 
 export type SsoConnectionRegistration = {
   __typename?: 'SSOConnectionRegistration';
-  display_provider_name: Scalars['String'];
-  provider_name: Scalars['String'];
-  stardog_endpoint?: Maybe<Scalars['String']>;
-  stardog_internal_endpoint?: Maybe<Scalars['String']>;
+  display_provider_name: Scalars['String']['output'];
+  provider_name: Scalars['String']['output'];
+  stardog_endpoint?: Maybe<Scalars['String']['output']>;
+  stardog_internal_endpoint?: Maybe<Scalars['String']['output']>;
 };
 
 /** SSO provider types supported for organization SSO configuration */
@@ -1496,148 +1543,147 @@ export enum SsoProviderType {
 }
 
 export type SetMemberConnectionRolesInput = {
-  connectionId: Scalars['ID'];
-  emails: Array<Scalars['String']>;
-  org_domain: Scalars['String'];
-  stardog_roles?: InputMaybe<Array<Scalars['String']>>;
+  connectionId: Scalars['ID']['input'];
+  emails: Array<Scalars['String']['input']>;
+  org_domain: Scalars['String']['input'];
+  stardog_roles?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type SetOrgConnectionVisibilityInput = {
-  connectionId: Scalars['ID'];
-  org_domain: Scalars['String'];
-  organization_is_enabled: Scalars['Boolean'];
-  stardog_roles?: InputMaybe<Array<Scalars['String']>>;
+  connectionId: Scalars['ID']['input'];
+  org_domain: Scalars['String']['input'];
+  organization_is_enabled: Scalars['Boolean']['input'];
+  stardog_roles?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /** Settings, these are settings that control the front end display */
 export type Settings = {
   __typename?: 'Settings';
-  auth0Auth: Scalars['Boolean'];
-  azureAuth: Scalars['Boolean'];
-  baseURL: Scalars['String'];
-  copyConnectionTokenButtonEnabled: Scalars['Boolean'];
-  dataMarketplace: Scalars['Boolean'];
-  designerVersion: Scalars['String'];
-  duoAuth: Scalars['Boolean'];
-  explorerVersion: Scalars['String'];
-  friendlyName: Scalars['String'];
-  googleAuth: Scalars['Boolean'];
-  homeFooterLinks: Scalars['Boolean'];
-  kerberosAuth: Scalars['Boolean'];
-  oktaAuth: Scalars['Boolean'];
-  openidAuth: Scalars['Boolean'];
-  passwordAuth: Scalars['Boolean'];
-  pingAuth: Scalars['Boolean'];
-  portal: Scalars['Boolean'];
-  sharedUserAuth: Scalars['Boolean'];
-  stardogEndpoint: Scalars['String'];
-  studioVersion: Scalars['String'];
+  auth0Auth: Scalars['Boolean']['output'];
+  azureAuth: Scalars['Boolean']['output'];
+  baseURL: Scalars['String']['output'];
+  copyConnectionTokenButtonEnabled: Scalars['Boolean']['output'];
+  dataMarketplace: Scalars['Boolean']['output'];
+  designerVersion: Scalars['String']['output'];
+  duoAuth: Scalars['Boolean']['output'];
+  explorerVersion: Scalars['String']['output'];
+  friendlyName: Scalars['String']['output'];
+  googleAuth: Scalars['Boolean']['output'];
+  homeFooterLinks: Scalars['Boolean']['output'];
+  kerberosAuth: Scalars['Boolean']['output'];
+  oktaAuth: Scalars['Boolean']['output'];
+  openidAuth: Scalars['Boolean']['output'];
+  pingAuth: Scalars['Boolean']['output'];
+  portal: Scalars['Boolean']['output'];
+  sharedUserAuth: Scalars['Boolean']['output'];
+  stardogEndpoint: Scalars['String']['output'];
+  studioVersion: Scalars['String']['output'];
 };
 
 /** Share URL, short urls for sharing */
 export type Share = {
   __typename?: 'Share';
-  endpoint?: Maybe<Scalars['String']>;
-  expiration?: Maybe<Scalars['Datetime']>;
-  last_accessed?: Maybe<Scalars['Datetime']>;
-  lookup_count?: Maybe<Scalars['Int']>;
-  service?: Maybe<Scalars['String']>;
-  short_url?: Maybe<Scalars['String']>;
-  target_path?: Maybe<Scalars['String']>;
-  timestamp?: Maybe<Scalars['Datetime']>;
+  endpoint?: Maybe<Scalars['String']['output']>;
+  expiration?: Maybe<Scalars['Datetime']['output']>;
+  last_accessed?: Maybe<Scalars['Datetime']['output']>;
+  lookup_count?: Maybe<Scalars['Int']['output']>;
+  service?: Maybe<Scalars['String']['output']>;
+  short_url?: Maybe<Scalars['String']['output']>;
+  target_path?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['Datetime']['output']>;
 };
 
 export type ShareInput = {
-  endpoint: Scalars['String'];
-  expires: Scalars['Int'];
-  service: Scalars['String'];
-  target_path: Scalars['String'];
+  endpoint: Scalars['String']['input'];
+  expires: Scalars['Int']['input'];
+  service: Scalars['String']['input'];
+  target_path: Scalars['String']['input'];
 };
 
 /** SSO provider information for a connection */
 export type SsoProviderInfo = {
   __typename?: 'SsoProviderInfo';
   /** The OAuth client ID stored on this connection */
-  clientId?: Maybe<Scalars['String']>;
+  clientId?: Maybe<Scalars['String']['output']>;
   /** Whether the stored client_id matches a registered SSO provider */
-  isValid: Scalars['Boolean'];
+  isValid: Scalars['Boolean']['output'];
   /** The unique identifier portion of the provider name (e.g., 'devenv' from 'devenv-azure') */
-  providerName?: Maybe<Scalars['String']>;
+  providerName?: Maybe<Scalars['String']['output']>;
   /** The provider type (e.g., 'azure', 'okta', 'ping') */
-  providerType?: Maybe<Scalars['String']>;
+  providerType?: Maybe<Scalars['String']['output']>;
 };
 
 /** Stardog Cloud, represents an instance of Cloud that is owned by the user */
 export type StardogCloud = {
   __typename?: 'StardogCloud';
-  bi_endpoint?: Maybe<Scalars['String']>;
-  created?: Maybe<Scalars['String']>;
-  days_to_cleanup?: Maybe<Scalars['Int']>;
-  days_to_inactive?: Maybe<Scalars['Int']>;
-  endpoint?: Maybe<Scalars['String']>;
+  bi_endpoint?: Maybe<Scalars['String']['output']>;
+  created?: Maybe<Scalars['String']['output']>;
+  days_to_cleanup?: Maybe<Scalars['Int']['output']>;
+  days_to_inactive?: Maybe<Scalars['Int']['output']>;
+  endpoint?: Maybe<Scalars['String']['output']>;
   flavor?: Maybe<CloudFlavor>;
-  id?: Maybe<Scalars['ID']>;
-  name?: Maybe<Scalars['String']>;
-  notification_date?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  notification_date?: Maybe<Scalars['String']['output']>;
   owner?: Maybe<User>;
-  payment_ref?: Maybe<Scalars['String']>;
-  price_ref?: Maybe<Scalars['String']>;
-  region?: Maybe<Scalars['String']>;
-  status?: Maybe<Scalars['String']>;
-  updated?: Maybe<Scalars['String']>;
+  payment_ref?: Maybe<Scalars['String']['output']>;
+  price_ref?: Maybe<Scalars['String']['output']>;
+  region?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  updated?: Maybe<Scalars['String']['output']>;
 };
 
 /** Stripe Customer: If the user is a paying customer */
 export type StripeCustomer = {
   __typename?: 'StripeCustomer';
   cloud_quota?: Maybe<Quota>;
-  customer_id?: Maybe<Scalars['String']>;
-  is_cloud_quota_breached?: Maybe<Scalars['Boolean']>;
+  customer_id?: Maybe<Scalars['String']['output']>;
+  is_cloud_quota_breached?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type StripePrice = {
   __typename?: 'StripePrice';
-  amount?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['String']>;
-  nickname?: Maybe<Scalars['String']>;
+  amount?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  nickname?: Maybe<Scalars['String']['output']>;
   product_info?: Maybe<StripeProduct>;
-  stardog_billing_type?: Maybe<Scalars['String']>;
-  stardog_flavor?: Maybe<Scalars['String']>;
+  stardog_billing_type?: Maybe<Scalars['String']['output']>;
+  stardog_flavor?: Maybe<Scalars['String']['output']>;
 };
 
 export type StripeProduct = {
   __typename?: 'StripeProduct';
-  description?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
   metadata?: Maybe<StripeProductMetadata>;
-  name?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']['output']>;
 };
 
 export type StripeProductMetadata = {
   __typename?: 'StripeProductMetadata';
-  flavor?: Maybe<Scalars['String']>;
+  flavor?: Maybe<Scalars['String']['output']>;
 };
 
 /** Result of triggering a platform SDU sync for a connection */
 export type SyncPlatformSduUsageResult = {
   __typename?: 'SyncPlatformSduUsageResult';
-  connectionId?: Maybe<Scalars['String']>;
-  endDate?: Maybe<Scalars['String']>;
-  error?: Maybe<Scalars['String']>;
-  message?: Maybe<Scalars['String']>;
-  recordsStored?: Maybe<Scalars['Int']>;
-  startDate?: Maybe<Scalars['String']>;
-  status: Scalars['String'];
+  connectionId?: Maybe<Scalars['String']['output']>;
+  endDate?: Maybe<Scalars['String']['output']>;
+  error?: Maybe<Scalars['String']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  recordsStored?: Maybe<Scalars['Int']['output']>;
+  startDate?: Maybe<Scalars['String']['output']>;
+  status: Scalars['String']['output'];
 };
 
 export type SystemVoiceboxMessageContext = {
   __typename?: 'SystemVoiceboxMessageContext';
   actions?: Maybe<Array<Maybe<VoicboxSystemMessageAction>>>;
-  followup_examples?: Maybe<Array<Maybe<Scalars['String']>>>;
-  id: Scalars['ID'];
-  message_type?: Maybe<Scalars['String']>;
-  pending?: Maybe<Scalars['Boolean']>;
-  success?: Maybe<Scalars['Boolean']>;
+  followup_examples?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  id: Scalars['ID']['output'];
+  message_type?: Maybe<Scalars['String']['output']>;
+  pending?: Maybe<Scalars['Boolean']['output']>;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export enum TimeGrain {
@@ -1648,56 +1694,64 @@ export enum TimeGrain {
 }
 
 export type TrackEventInput = {
-  client_type?: InputMaybe<Scalars['String']>;
-  event: Scalars['String'];
-  properties?: InputMaybe<Scalars['String']>;
+  client_type?: InputMaybe<Scalars['String']['input']>;
+  event: Scalars['String']['input'];
+  properties?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Input for updating a Microsoft Entra SSO configuration */
 export type UpdateOrganizationMicrosoftEntraSsoConfigInput = {
   /** OAuth client ID */
-  clientId?: InputMaybe<Scalars['String']>;
+  clientId?: InputMaybe<Scalars['String']['input']>;
   /** OAuth client secret (only updated if provided) */
-  clientSecret?: InputMaybe<Scalars['String']>;
+  clientSecret?: InputMaybe<Scalars['String']['input']>;
   /** OIDC discovery endpoint URL */
-  discoveryUrl?: InputMaybe<Scalars['String']>;
+  discoveryUrl?: InputMaybe<Scalars['String']['input']>;
+  /** Whether to end the user's IDP session on logout (RP-Initiated Logout) */
+  idpLogoutEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Whether SSO login is enabled */
-  isEnabled?: InputMaybe<Scalars['Boolean']>;
+  isEnabled?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /** Input for updating an Okta SSO configuration */
 export type UpdateOrganizationOktaSsoConfigInput = {
   /** OAuth client ID */
-  clientId?: InputMaybe<Scalars['String']>;
+  clientId?: InputMaybe<Scalars['String']['input']>;
   /** OAuth client secret (only updated if provided) */
-  clientSecret?: InputMaybe<Scalars['String']>;
+  clientSecret?: InputMaybe<Scalars['String']['input']>;
   /** OIDC discovery endpoint URL */
-  discoveryUrl?: InputMaybe<Scalars['String']>;
+  discoveryUrl?: InputMaybe<Scalars['String']['input']>;
+  /** Whether to end the user's IDP session on logout (RP-Initiated Logout) */
+  idpLogoutEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Whether SSO login is enabled */
-  isEnabled?: InputMaybe<Scalars['Boolean']>;
+  isEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Authorization server audience */
-  oktaAuthorizationServerAudience?: InputMaybe<Scalars['String']>;
+  oktaAuthorizationServerAudience?: InputMaybe<Scalars['String']['input']>;
+  /** Client ID for the backend API Services app (for OBO token exchange) */
+  oktaBackendClientId?: InputMaybe<Scalars['String']['input']>;
+  /** Client secret for the backend API Services app (only updated if provided) */
+  oktaBackendClientSecret?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdatePartnerConnectionInput = {
-  connection_id: Scalars['String'];
-  databricks_connection_name: Scalars['String'];
-  stardog_connection_id: Scalars['String'];
+  connection_id: Scalars['String']['input'];
+  databricks_connection_name: Scalars['String']['input'];
+  stardog_connection_id: Scalars['String']['input'];
 };
 
 export type UpdatePersonalConnectionAccessInput = {
-  connectionId: Scalars['ID'];
-  emails: Array<Scalars['String']>;
-  stardog_roles?: InputMaybe<Array<Scalars['String']>>;
+  connectionId: Scalars['ID']['input'];
+  emails: Array<Scalars['String']['input']>;
+  stardog_roles?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type UpdateVoiceboxAppInput = {
-  database?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
-  model?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  named_graphs?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  reasoning?: InputMaybe<Scalars['Boolean']>;
+  database?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  model?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  named_graphs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  reasoning?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /**
@@ -1706,136 +1760,137 @@ export type UpdateVoiceboxAppInput = {
  */
 export type User = {
   __typename?: 'User';
-  best_describes_company?: Maybe<Scalars['String']>;
-  best_describes_role?: Maybe<Scalars['String']>;
-  can_provision_cloud?: Maybe<Scalars['Boolean']>;
-  company?: Maybe<Scalars['String']>;
-  date_joined?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  familiarity_with_kgs?: Maybe<Scalars['String']>;
-  first_name?: Maybe<Scalars['String']>;
-  has_stardog_free?: Maybe<Scalars['Boolean']>;
-  has_updated_profile?: Maybe<Scalars['Boolean']>;
-  id?: Maybe<Scalars['ID']>;
-  industry?: Maybe<Scalars['String']>;
-  is_authenticated: Scalars['Boolean'];
-  is_blocked_email?: Maybe<Scalars['Boolean']>;
-  is_databricks_user?: Maybe<Scalars['Boolean']>;
-  is_designer_storage_enabled?: Maybe<Scalars['Boolean']>;
-  is_ephemeral?: Maybe<Scalars['Boolean']>;
-  is_partner_user?: Maybe<Scalars['Boolean']>;
-  is_staff?: Maybe<Scalars['Boolean']>;
-  is_static_voicebox?: Maybe<Scalars['Boolean']>;
+  best_describes_company?: Maybe<Scalars['String']['output']>;
+  best_describes_role?: Maybe<Scalars['String']['output']>;
+  can_provision_cloud?: Maybe<Scalars['Boolean']['output']>;
+  company?: Maybe<Scalars['String']['output']>;
+  date_joined?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  familiarity_with_kgs?: Maybe<Scalars['String']['output']>;
+  first_name?: Maybe<Scalars['String']['output']>;
+  has_stardog_free?: Maybe<Scalars['Boolean']['output']>;
+  has_updated_profile?: Maybe<Scalars['Boolean']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  industry?: Maybe<Scalars['String']['output']>;
+  is_authenticated?: Maybe<Scalars['Boolean']['output']>;
+  is_blocked_email?: Maybe<Scalars['Boolean']['output']>;
+  is_collaboration_enabled?: Maybe<Scalars['Boolean']['output']>;
+  is_databricks_user?: Maybe<Scalars['Boolean']['output']>;
+  is_designer_storage_enabled?: Maybe<Scalars['Boolean']['output']>;
+  is_ephemeral?: Maybe<Scalars['Boolean']['output']>;
+  is_partner_user?: Maybe<Scalars['Boolean']['output']>;
+  is_staff?: Maybe<Scalars['Boolean']['output']>;
+  is_static_voicebox?: Maybe<Scalars['Boolean']['output']>;
   /** @deprecated is_studio_voicebox_enabled is deprecated. Use is_voicebox_enabled instead. */
-  is_studio_voicebox_enabled?: Maybe<Scalars['Boolean']>;
-  is_superuser?: Maybe<Scalars['Boolean']>;
-  is_verified?: Maybe<Scalars['Boolean']>;
-  is_voicebox_api_access_enabled?: Maybe<Scalars['Boolean']>;
-  is_voicebox_enabled?: Maybe<Scalars['Boolean']>;
-  is_voicebox_powered_suggestions_enabled?: Maybe<Scalars['Boolean']>;
-  is_voicebox_think_mode_enabled?: Maybe<Scalars['Boolean']>;
+  is_studio_voicebox_enabled?: Maybe<Scalars['Boolean']['output']>;
+  is_superuser?: Maybe<Scalars['Boolean']['output']>;
+  is_verified?: Maybe<Scalars['Boolean']['output']>;
+  is_voicebox_api_access_enabled?: Maybe<Scalars['Boolean']['output']>;
+  is_voicebox_enabled?: Maybe<Scalars['Boolean']['output']>;
+  is_voicebox_powered_suggestions_enabled?: Maybe<Scalars['Boolean']['output']>;
+  is_voicebox_think_mode_enabled?: Maybe<Scalars['Boolean']['output']>;
   /** @deprecated is_voicebox_three_enabled is deprecated. Use is_voicebox_think_mode_enabled instead. */
-  is_voicebox_three_enabled?: Maybe<Scalars['Boolean']>;
-  last_login?: Maybe<Scalars['String']>;
-  last_name?: Maybe<Scalars['String']>;
-  needs_stardog_free?: Maybe<Scalars['Boolean']>;
-  phone?: Maybe<Scalars['String']>;
+  is_voicebox_three_enabled?: Maybe<Scalars['Boolean']['output']>;
+  last_login?: Maybe<Scalars['String']['output']>;
+  last_name?: Maybe<Scalars['String']['output']>;
+  needs_stardog_free?: Maybe<Scalars['Boolean']['output']>;
+  phone?: Maybe<Scalars['String']['output']>;
   stripe_customer?: Maybe<StripeCustomer>;
-  sub?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-  use_case?: Maybe<Scalars['String']>;
-  userflow_signature?: Maybe<Scalars['String']>;
-  username: Scalars['String'];
+  sub?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  use_case?: Maybe<Scalars['String']['output']>;
+  userflow_signature?: Maybe<Scalars['String']['output']>;
+  username: Scalars['String']['output'];
 };
 
 export type UserFeaturesInput = {
-  is_designer_storage_enabled?: InputMaybe<Scalars['Boolean']>;
-  is_static_voicebox?: InputMaybe<Scalars['Boolean']>;
-  is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']>;
-  is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
+  is_designer_storage_enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  is_static_voicebox?: InputMaybe<Scalars['Boolean']['input']>;
+  is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  is_voicebox_enabled?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UserSearchDetails = {
   __typename?: 'UserSearchDetails';
-  total?: Maybe<Scalars['Int']>;
+  total?: Maybe<Scalars['Int']['output']>;
 };
 
 export type UserSearchFiltersInput = {
-  is_designer_storage_enabled?: InputMaybe<Scalars['Boolean']>;
-  is_staff?: InputMaybe<Scalars['Boolean']>;
-  is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']>;
-  is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
+  is_designer_storage_enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  is_staff?: InputMaybe<Scalars['Boolean']['input']>;
+  is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  is_voicebox_enabled?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UserVoiceboxMessageContext = {
   __typename?: 'UserVoiceboxMessageContext';
-  app?: Maybe<Scalars['String']>;
-  connection_id?: Maybe<Scalars['String']>;
-  database?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  model?: Maybe<Scalars['String']>;
-  named_graphs?: Maybe<Array<Maybe<Scalars['String']>>>;
-  reasoning?: Maybe<Scalars['Boolean']>;
-  think_mode?: Maybe<Scalars['String']>;
+  app?: Maybe<Scalars['String']['output']>;
+  connection_id?: Maybe<Scalars['String']['output']>;
+  database?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  model?: Maybe<Scalars['String']['output']>;
+  named_graphs?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  reasoning?: Maybe<Scalars['Boolean']['output']>;
+  think_mode?: Maybe<Scalars['String']['output']>;
 };
 
 export type VoicboxSystemMessageAction = {
   __typename?: 'VoicboxSystemMessageAction';
-  id: Scalars['ID'];
-  label?: Maybe<Scalars['String']>;
-  type?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['String']>;
+  id: Scalars['ID']['output'];
+  label?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
 };
 
 export type VoiceboxApp = {
   __typename?: 'VoiceboxApp';
-  connection_id: Scalars['String'];
-  database?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  model?: Maybe<Scalars['String']>;
-  name: Scalars['String'];
-  named_graphs?: Maybe<Array<Maybe<Scalars['String']>>>;
-  reasoning?: Maybe<Scalars['Boolean']>;
+  connection_id: Scalars['String']['output'];
+  database?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  model?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  named_graphs?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  reasoning?: Maybe<Scalars['Boolean']['output']>;
 };
 
 /** A user's conversation with Voicebox */
 export type VoiceboxConversation = {
   __typename?: 'VoiceboxConversation';
-  created?: Maybe<Scalars['Datetime']>;
+  created?: Maybe<Scalars['Datetime']['output']>;
   /** The first message in the conversation that was sent by the user. */
   first_user_message?: Maybe<VoiceboxMessage>;
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** The last message in the conversation that was sent by the user. */
   last_user_message?: Maybe<VoiceboxMessage>;
   /** Message history ordered oldest to newest. */
   message_history?: Maybe<Array<Maybe<VoiceboxMessage>>>;
-  name?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']['output']>;
   /** user message count */
-  number_user_messages?: Maybe<Scalars['Int']>;
-  updated?: Maybe<Scalars['Datetime']>;
+  number_user_messages?: Maybe<Scalars['Int']['output']>;
+  updated?: Maybe<Scalars['Datetime']['output']>;
 };
 
 export type VoiceboxConversationsFilterInput = {
-  connection_id?: InputMaybe<Scalars['String']>;
-  include_designer?: InputMaybe<Scalars['Boolean']>;
+  connection_id?: InputMaybe<Scalars['String']['input']>;
+  include_designer?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /** A user's Voicebox Credit */
 export type VoiceboxCredit = {
   __typename?: 'VoiceboxCredit';
-  limit: Scalars['Int'];
-  usage: Scalars['Int'];
+  limit: Scalars['Int']['output'];
+  usage: Scalars['Int']['output'];
 };
 
 /** A Message within a Voicebox conversation. */
 export type VoiceboxMessage = {
   __typename?: 'VoiceboxMessage';
-  comment?: Maybe<Scalars['String']>;
-  content?: Maybe<Scalars['String']>;
-  created?: Maybe<Scalars['Datetime']>;
-  id: Scalars['ID'];
-  score?: Maybe<Scalars['Float']>;
-  sender?: Maybe<Scalars['String']>;
+  comment?: Maybe<Scalars['String']['output']>;
+  content?: Maybe<Scalars['String']['output']>;
+  created?: Maybe<Scalars['Datetime']['output']>;
+  id: Scalars['ID']['output'];
+  score?: Maybe<Scalars['Float']['output']>;
+  sender?: Maybe<Scalars['String']['output']>;
   system_message_context?: Maybe<SystemVoiceboxMessageContext>;
   user_message_context?: Maybe<UserVoiceboxMessageContext>;
 };
@@ -1850,7 +1905,7 @@ export type AddShareMutation = {
 };
 
 export type ArchiveDesignerProjectMutationVariables = Exact<{
-  project_id: Scalars['ID'];
+  project_id: Scalars['ID']['input'];
 }>;
 
 export type ArchiveDesignerProjectMutation = {
@@ -1859,9 +1914,9 @@ export type ArchiveDesignerProjectMutation = {
 };
 
 export type CreateDesignerProjectMutationVariables = Exact<{
-  name: Scalars['String'];
-  content: Scalars['Base64Bytes'];
-  connection_id?: InputMaybe<Scalars['String']>;
+  name: Scalars['String']['input'];
+  content: Scalars['Base64Bytes']['input'];
+  connection_id?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type CreateDesignerProjectMutation = {
@@ -1870,8 +1925,8 @@ export type CreateDesignerProjectMutation = {
 };
 
 export type GetConnectionByIndexQueryVariables = Exact<{
-  index: Scalars['Int'];
-  org_domain?: InputMaybe<Scalars['String']>;
+  index: Scalars['Int']['input'];
+  org_domain?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type GetConnectionByIndexQuery = {
@@ -1889,7 +1944,7 @@ export type GetConnectionByIndexQuery = {
 };
 
 export type GetDesignerProjectQueryVariables = Exact<{
-  project_id: Scalars['ID'];
+  project_id: Scalars['ID']['input'];
 }>;
 
 export type GetDesignerProjectQuery = {
@@ -1932,7 +1987,7 @@ export type GetDesignerProjectsQuery = {
 };
 
 export type GetVoiceboxConversationQueryVariables = Exact<{
-  conversation_id: Scalars['String'];
+  conversation_id: Scalars['String']['input'];
 }>;
 
 export type GetVoiceboxConversationQuery = {
@@ -1974,7 +2029,7 @@ export type GetVoiceboxConversationQuery = {
 };
 
 export type ListConnectionsQueryVariables = Exact<{
-  org_domain?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type ListConnectionsQuery = {
@@ -2049,12 +2104,13 @@ export type ProfileQuery = {
     is_databricks_user?: boolean | null;
     title?: string | null;
     use_case?: string | null;
-    is_authenticated: boolean;
+    is_authenticated?: boolean | null;
     is_ephemeral?: boolean | null;
     userflow_signature?: string | null;
     is_staff?: boolean | null;
     is_static_voicebox?: boolean | null;
     is_voicebox_enabled?: boolean | null;
+    is_collaboration_enabled?: boolean | null;
     is_designer_storage_enabled?: boolean | null;
     is_voicebox_powered_suggestions_enabled?: boolean | null;
     is_voicebox_think_mode_enabled?: boolean | null;
@@ -2062,8 +2118,8 @@ export type ProfileQuery = {
 };
 
 export type RenameDesignerProjectMutationVariables = Exact<{
-  project_id: Scalars['ID'];
-  name: Scalars['String'];
+  project_id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
 }>;
 
 export type RenameDesignerProjectMutation = {
@@ -2072,7 +2128,7 @@ export type RenameDesignerProjectMutation = {
 };
 
 export type RestoreDesignerProjectMutationVariables = Exact<{
-  project_id: Scalars['ID'];
+  project_id: Scalars['ID']['input'];
 }>;
 
 export type RestoreDesignerProjectMutation = {
@@ -2094,10 +2150,10 @@ export type TrackEventMutation = {
 };
 
 export type UpdateDesignerProjectMutationVariables = Exact<{
-  project_id: Scalars['ID'];
-  content: Scalars['Base64Bytes'];
-  name?: InputMaybe<Scalars['String']>;
-  connection_id?: InputMaybe<Scalars['String']>;
+  project_id: Scalars['ID']['input'];
+  content: Scalars['Base64Bytes']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  connection_id?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type UpdateDesignerProjectMutation = {
@@ -2280,6 +2336,7 @@ export const ProfileDocument = `
     is_staff
     is_static_voicebox
     is_voicebox_enabled
+    is_collaboration_enabled
     is_designer_storage_enabled
     is_voicebox_powered_suggestions_enabled
     is_voicebox_think_mode_enabled
