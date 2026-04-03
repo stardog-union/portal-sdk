@@ -27,6 +27,8 @@ const mockCookiebot = (
   runScripts: jest.fn(),
   withdraw: jest.fn(),
   submitCustomConsent: jest.fn(),
+  getDomainUrlParam: jest.fn(),
+  setOutOfRegion: jest.fn(),
 
   ...args,
 });
