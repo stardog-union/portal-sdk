@@ -43,7 +43,6 @@
     "graphql-request": "~5.1.0"
   },
   "resolutions": {
-    "picomatch": "2.3.2",
     "immutable": "5.1.5",
     "lodash": "4.18.1"
   },
