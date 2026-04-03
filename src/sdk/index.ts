@@ -67,6 +67,12 @@ export type AddOrganizationInput = {
   name: Scalars['String'];
 };
 
+export type AddOrganizationResult = {
+  __typename?: 'AddOrganizationResult';
+  invitationResults?: Maybe<Array<AddInvitationResult>>;
+  organization?: Maybe<Organization>;
+};
+
 export type AddSsoConnectionInput = {
   connection_name: Scalars['String'];
   internalEndpoint?: InputMaybe<Scalars['String']>;
@@ -177,6 +183,7 @@ export type CloudReportStats = {
 /** Saved Connection info for a Stardog instance */
 export type Connection = {
   __typename?: 'Connection';
+  access?: Maybe<ConnectionAccess>;
   cloud?: Maybe<StardogCloud>;
   dashboard?: Maybe<Scalars['String']>;
   endpoint: Scalars['String'];
@@ -188,7 +195,7 @@ export type Connection = {
   isStardogFree?: Maybe<Scalars['Boolean']>;
   isWaitingForPayment?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
-  org_domain?: Maybe<Scalars['String']>;
+  organization?: Maybe<Organization>;
   shouldShowDesigner?: Maybe<Scalars['Boolean']>;
   /** SSO provider information (only present for SSO connections) */
   ssoProvider?: Maybe<SsoProviderInfo>;
@@ -208,7 +215,7 @@ export type Connection = {
 /** Connection access record granting access to a user or organization */
 export type ConnectionAccess = {
   __typename?: 'ConnectionAccess';
-  connection: Connection;
+  connection?: Maybe<Connection>;
   id: Scalars['ID'];
   organization?: Maybe<Organization>;
   organization_is_enabled?: Maybe<Scalars['Boolean']>;
@@ -257,6 +264,8 @@ export type CreateOrganizationMicrosoftEntraSsoConfigInput = {
   clientSecret: Scalars['String'];
   /** OIDC discovery endpoint URL (.well-known/openid-configuration) */
   discoveryUrl: Scalars['String'];
+  /** Whether to end the user's IDP session on logout (RP-Initiated Logout) */
+  idpLogoutEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Whether SSO login is enabled (defaults to true) */
   isEnabled?: InputMaybe<Scalars['Boolean']>;
 };
@@ -269,10 +278,16 @@ export type CreateOrganizationOktaSsoConfigInput = {
   clientSecret: Scalars['String'];
   /** OIDC discovery endpoint URL (.well-known/openid-configuration) */
   discoveryUrl: Scalars['String'];
+  /** Whether to end the user's IDP session on logout (RP-Initiated Logout) */
+  idpLogoutEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Whether SSO login is enabled (defaults to true) */
   isEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Authorization server audience (required for Okta token exchange) */
   oktaAuthorizationServerAudience: Scalars['String'];
+  /** Client ID for the backend API Services app (for OBO token exchange) */
+  oktaBackendClientId: Scalars['String'];
+  /** Client secret for the backend API Services app */
+  oktaBackendClientSecret: Scalars['String'];
 };
 
 export type CreateVoiceboxAppInput = {
@@ -463,11 +478,6 @@ export type Invitation = {
   expires?: Maybe<Scalars['Datetime']>;
   id?: Maybe<Scalars['ID']>;
   organization?: Maybe<Organization>;
-  /**
-   * SSO login URL for organization invitations when the organization has SSO configured and enabled.
-   * Returns null for non-organization invitations or when the organization doesn't have SSO enabled.
-   */
-  organizationSsoLoginUrl?: Maybe<Scalars['String']>;
   organization_role?: Maybe<Scalars['String']>;
   role?: Maybe<Scalars['String']>;
   sender?: Maybe<User>;
@@ -517,7 +527,7 @@ export type Mutation = {
   addConnection?: Maybe<Connection>;
   addConnectionInvitations?: Maybe<AddInvitationsResponse>;
   addMyOrganizationConnection?: Maybe<Connection>;
-  addOrganization?: Maybe<Organization>;
+  addOrganization?: Maybe<AddOrganizationResult>;
   addOrganizationInvitations?: Maybe<AddInvitationsResponse>;
   addSSOConnection?: Maybe<SsoConnectionRedirectResponse>;
   addShare?: Maybe<Share>;
@@ -997,13 +1007,14 @@ export type Organization = {
   domain?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   /** Whether this organization can configure SSO (premium feature) */
-  isSsoAllowed: Scalars['Boolean'];
+  isSsoAllowed?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
+  owner?: Maybe<User>;
   role?: Maybe<Scalars['String']>;
   /** SSO configuration for this organization (null if not configured) */
   ssoConfig?: Maybe<OrganizationSsoConfig>;
   /** Current user's SSO identity link status for this organization */
-  ssoIdentity: OrganizationSsoIdentity;
+  ssoIdentity?: Maybe<OrganizationSsoIdentity>;
 };
 
 export type OrganizationInvitation = {
@@ -1016,11 +1027,20 @@ export type OrganizationInvitation = {
   organization_role: Scalars['String'];
 };
 
+/** Input for specifying connection access with optional Stardog roles. */
+export type OrganizationInvitationsConnectionAccessInput = {
+  connection_id: Scalars['ID'];
+  stardog_roles?: InputMaybe<Array<Scalars['String']>>;
+};
+
 /**
  * Input for creating organization invitations.
  * Organization must be a public organization.
  */
 export type OrganizationInvitationsInput = {
+  connection_access?: InputMaybe<
+    Array<OrganizationInvitationsConnectionAccessInput>
+  >;
   emails: Array<Scalars['String']>;
   organization_domain: Scalars['String'];
   organization_role: Scalars['String'];
@@ -1053,8 +1073,10 @@ export type OrganizationMicrosoftEntraSsoConfig = OrganizationSsoConfig & {
   discoveryUrl: Scalars['String'];
   hasClientSecret: Scalars['Boolean'];
   id: Scalars['ID'];
+  idpLogoutEnabled: Scalars['Boolean'];
   isEnabled: Scalars['Boolean'];
   loginUrl: Scalars['String'];
+  postLogoutRedirectUri: Scalars['String'];
   providerType: SsoProviderType;
   redirectUri: Scalars['String'];
   updatedAt: Scalars['Datetime'];
@@ -1067,11 +1089,17 @@ export type OrganizationOktaSsoConfig = OrganizationSsoConfig & {
   createdAt: Scalars['Datetime'];
   discoveryUrl: Scalars['String'];
   hasClientSecret: Scalars['Boolean'];
+  /** Whether a backend client secret is configured */
+  hasOktaBackendClientSecret: Scalars['Boolean'];
   id: Scalars['ID'];
+  idpLogoutEnabled: Scalars['Boolean'];
   isEnabled: Scalars['Boolean'];
   loginUrl: Scalars['String'];
   /** Authorization server audience for token exchange */
   oktaAuthorizationServerAudience: Scalars['String'];
+  /** Client ID for the backend API Services app (for OBO token exchange) */
+  oktaBackendClientId: Scalars['String'];
+  postLogoutRedirectUri: Scalars['String'];
   providerType: SsoProviderType;
   redirectUri: Scalars['String'];
   updatedAt: Scalars['Datetime'];
@@ -1088,10 +1116,14 @@ export type OrganizationSsoConfig = {
   /** Whether a client secret is configured (never exposes the actual secret) */
   hasClientSecret: Scalars['Boolean'];
   id: Scalars['ID'];
+  /** Whether logging out also ends the user's IDP session (RP-Initiated Logout) */
+  idpLogoutEnabled: Scalars['Boolean'];
   /** Whether SSO login is currently enabled for this organization */
   isEnabled: Scalars['Boolean'];
   /** Organization-specific login URL */
   loginUrl: Scalars['String'];
+  /** URI the IDP redirects to after ending the user's session */
+  postLogoutRedirectUri: Scalars['String'];
   providerType: SsoProviderType;
   /** Redirect URI to configure in your identity provider's redirect URI whitelist */
   redirectUri: Scalars['String'];
@@ -1109,8 +1141,6 @@ export type OrganizationSsoIdentity = {
   idpSubject?: Maybe<Scalars['String']>;
   /** Whether the current user has linked their account to this org's SSO */
   isLinked: Scalars['Boolean'];
-  /** URL to initiate SSO account linking (only if not linked and SSO is configured) */
-  linkUrl?: Maybe<Scalars['String']>;
   /** When the identity was linked (only if linked) */
   linkedAt?: Maybe<Scalars['Datetime']>;
 };
@@ -1225,6 +1255,9 @@ export type Query = {
   listApiTokens?: Maybe<Array<Maybe<ApiToken>>>;
   listConnections?: Maybe<Array<Maybe<Connection>>>;
   listConnectionsByEndpoint?: Maybe<Array<Maybe<Connection>>>;
+  listDefaultOrganizationConnectionsAccess?: Maybe<
+    Array<Maybe<ConnectionAccess>>
+  >;
   listInactiveClouds?: Maybe<Array<Maybe<StardogCloud>>>;
   listOrganizationConnectionAccess?: Maybe<Array<Maybe<ConnectionAccess>>>;
   listOrganizations?: Maybe<Array<Maybe<Organization>>>;
@@ -1388,6 +1421,11 @@ export type QueryListConnectionsByEndpointArgs = {
 };
 
 /** Root Query Type */
+export type QueryListDefaultOrganizationConnectionsAccessArgs = {
+  org_domain: Scalars['String'];
+};
+
+/** Root Query Type */
 export type QueryListInactiveCloudsArgs = {
   flavor?: InputMaybe<Scalars['String']>;
 };
@@ -1526,7 +1564,6 @@ export type Settings = {
   kerberosAuth: Scalars['Boolean'];
   oktaAuth: Scalars['Boolean'];
   openidAuth: Scalars['Boolean'];
-  passwordAuth: Scalars['Boolean'];
   pingAuth: Scalars['Boolean'];
   portal: Scalars['Boolean'];
   sharedUserAuth: Scalars['Boolean'];
@@ -1661,6 +1698,8 @@ export type UpdateOrganizationMicrosoftEntraSsoConfigInput = {
   clientSecret?: InputMaybe<Scalars['String']>;
   /** OIDC discovery endpoint URL */
   discoveryUrl?: InputMaybe<Scalars['String']>;
+  /** Whether to end the user's IDP session on logout (RP-Initiated Logout) */
+  idpLogoutEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Whether SSO login is enabled */
   isEnabled?: InputMaybe<Scalars['Boolean']>;
 };
@@ -1673,10 +1712,16 @@ export type UpdateOrganizationOktaSsoConfigInput = {
   clientSecret?: InputMaybe<Scalars['String']>;
   /** OIDC discovery endpoint URL */
   discoveryUrl?: InputMaybe<Scalars['String']>;
+  /** Whether to end the user's IDP session on logout (RP-Initiated Logout) */
+  idpLogoutEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Whether SSO login is enabled */
   isEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Authorization server audience */
   oktaAuthorizationServerAudience?: InputMaybe<Scalars['String']>;
+  /** Client ID for the backend API Services app (for OBO token exchange) */
+  oktaBackendClientId?: InputMaybe<Scalars['String']>;
+  /** Client secret for the backend API Services app (only updated if provided) */
+  oktaBackendClientSecret?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdatePartnerConnectionInput = {
@@ -1718,8 +1763,9 @@ export type User = {
   has_updated_profile?: Maybe<Scalars['Boolean']>;
   id?: Maybe<Scalars['ID']>;
   industry?: Maybe<Scalars['String']>;
-  is_authenticated: Scalars['Boolean'];
+  is_authenticated?: Maybe<Scalars['Boolean']>;
   is_blocked_email?: Maybe<Scalars['Boolean']>;
+  is_collaboration_enabled?: Maybe<Scalars['Boolean']>;
   is_databricks_user?: Maybe<Scalars['Boolean']>;
   is_designer_storage_enabled?: Maybe<Scalars['Boolean']>;
   is_ephemeral?: Maybe<Scalars['Boolean']>;
@@ -1732,6 +1778,7 @@ export type User = {
   is_verified?: Maybe<Scalars['Boolean']>;
   is_voicebox_api_access_enabled?: Maybe<Scalars['Boolean']>;
   is_voicebox_enabled?: Maybe<Scalars['Boolean']>;
+  is_voicebox_four_enabled?: Maybe<Scalars['Boolean']>;
   is_voicebox_powered_suggestions_enabled?: Maybe<Scalars['Boolean']>;
   is_voicebox_think_mode_enabled?: Maybe<Scalars['Boolean']>;
   /** @deprecated is_voicebox_three_enabled is deprecated. Use is_voicebox_think_mode_enabled instead. */
@@ -1753,6 +1800,7 @@ export type UserFeaturesInput = {
   is_static_voicebox?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_enabled?: InputMaybe<Scalars['Boolean']>;
+  is_voicebox_four_enabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UserSearchDetails = {
@@ -2049,7 +2097,7 @@ export type ProfileQuery = {
     is_databricks_user?: boolean | null;
     title?: string | null;
     use_case?: string | null;
-    is_authenticated: boolean;
+    is_authenticated?: boolean | null;
     is_ephemeral?: boolean | null;
     userflow_signature?: string | null;
     is_staff?: boolean | null;
@@ -2058,6 +2106,7 @@ export type ProfileQuery = {
     is_designer_storage_enabled?: boolean | null;
     is_voicebox_powered_suggestions_enabled?: boolean | null;
     is_voicebox_think_mode_enabled?: boolean | null;
+    is_voicebox_four_enabled?: boolean | null;
   } | null;
 };
 
@@ -2283,6 +2332,7 @@ export const ProfileDocument = `
     is_designer_storage_enabled
     is_voicebox_powered_suggestions_enabled
     is_voicebox_think_mode_enabled
+    is_voicebox_four_enabled
   }
 }
     `;

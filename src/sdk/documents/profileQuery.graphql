@@ -26,5 +26,6 @@ query profile {
     is_designer_storage_enabled
     is_voicebox_powered_suggestions_enabled
     is_voicebox_think_mode_enabled
+    is_voicebox_four_enabled
   }
 }
