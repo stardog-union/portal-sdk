@@ -2103,6 +2103,7 @@ export type ProfileQuery = {
     is_staff?: boolean | null;
     is_static_voicebox?: boolean | null;
     is_voicebox_enabled?: boolean | null;
+    is_collaboration_enabled?: boolean | null;
     is_designer_storage_enabled?: boolean | null;
     is_voicebox_powered_suggestions_enabled?: boolean | null;
     is_voicebox_think_mode_enabled?: boolean | null;
@@ -2329,6 +2330,7 @@ export const ProfileDocument = `
     is_staff
     is_static_voicebox
     is_voicebox_enabled
+    is_collaboration_enabled
     is_designer_storage_enabled
     is_voicebox_powered_suggestions_enabled
     is_voicebox_think_mode_enabled
