@@ -1585,8 +1585,10 @@ export type Share = {
 };
 
 export type ShareInput = {
-  endpoint: Scalars['String'];
+  connection_id?: InputMaybe<Scalars['String']>;
+  endpoint?: InputMaybe<Scalars['String']>;
   expires: Scalars['Int'];
+  org_domain?: InputMaybe<Scalars['String']>;
   service: Scalars['String'];
   target_path: Scalars['String'];
 };
