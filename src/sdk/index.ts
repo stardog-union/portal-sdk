@@ -1574,10 +1574,12 @@ export type Settings = {
 /** Share URL, short urls for sharing */
 export type Share = {
   __typename?: 'Share';
+  connection_id?: Maybe<Scalars['String']>;
   endpoint?: Maybe<Scalars['String']>;
   expiration?: Maybe<Scalars['Datetime']>;
   last_accessed?: Maybe<Scalars['Datetime']>;
   lookup_count?: Maybe<Scalars['Int']>;
+  org_domain?: Maybe<Scalars['String']>;
   service?: Maybe<Scalars['String']>;
   short_url?: Maybe<Scalars['String']>;
   target_path?: Maybe<Scalars['String']>;
