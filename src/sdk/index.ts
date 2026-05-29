@@ -1921,6 +1921,25 @@ export type CreateDesignerProjectMutation = {
   createDesignerProject: string;
 };
 
+export type GetConnectionByIdQueryVariables = Exact<{
+  id: Scalars['String'];
+  org_domain?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetConnectionByIdQuery = {
+  __typename?: 'Query';
+  connection?: {
+    __typename?: 'Connection';
+    token?: string | null;
+    username?: string | null;
+    endpoint: string;
+    dashboard?: string | null;
+    id: string;
+    name: string;
+    index: number;
+  } | null;
+};
+
 export type GetConnectionByIndexQueryVariables = Exact<{
   index: Scalars['Int'];
   org_domain?: InputMaybe<Scalars['String']>;
@@ -2180,6 +2199,19 @@ export const CreateDesignerProjectDocument = `
   )
 }
     `;
+export const GetConnectionByIdDocument = `
+    query getConnectionById($id: String!, $org_domain: String) {
+  connection: getConnectionById(id: $id, org_domain: $org_domain) {
+    token
+    username
+    endpoint
+    dashboard
+    id
+    name
+    index
+  }
+}
+    `;
 export const GetConnectionByIndexDocument = `
     query getConnectionByIndex($index: Int!, $org_domain: String) {
   connection: getConnectionByIndex(index: $index, org_domain: $org_domain) {
@@ -2430,6 +2462,21 @@ export function getSdk(
           ),
         'createDesignerProject',
         'mutation'
+      );
+    },
+    getConnectionById(
+      variables: GetConnectionByIdQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<GetConnectionByIdQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetConnectionByIdQuery>(
+            GetConnectionByIdDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getConnectionById',
+        'query'
       );
     },
     getConnectionByIndex(

@@ -26,6 +26,14 @@ const archiveDesignerProject = jest.fn(async () => ({
 const createDesignerProject = jest.fn(async () => ({
   createDesignerProject: 'id',
 }));
+const getConnectionById = jest.fn(async () => ({
+  connection: {
+    endpoint: 'endpoint',
+    id: 'id',
+    name: 'name',
+    index: 0,
+  },
+}));
 const getConnectionByIndex = jest.fn(async () => ({
   connection: {
     endpoint: 'endpoint',
@@ -75,6 +83,7 @@ describe('getPortalSdk', () => {
       addShare,
       archiveDesignerProject,
       createDesignerProject,
+      getConnectionById,
       getConnectionByIndex,
       getDesignerProject,
       getDesignerProjects,
@@ -221,6 +230,12 @@ describe('getPortalSdk', () => {
       const sdk = getPortalSdk();
 
       (getCurrentConnectionInfo as jest.Mock).mockReturnValue(info);
+
+      expect(await sdk?.getConnectionById('id')).not.toBeNull();
+      expect(getConnectionById).toHaveBeenCalledWith({
+        id: 'id',
+        org_domain: info?.organizationDomain,
+      });
 
       expect(await sdk?.getConnectionByIndex(0)).not.toBeNull();
       expect(getConnectionByIndex).toHaveBeenCalledWith({
