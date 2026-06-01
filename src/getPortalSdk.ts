@@ -59,6 +59,14 @@ export const getPortalSdk = () => {
       const result = await sdk.addShare({ input });
       return result.addShare || null;
     },
+    getConnectionById: async (id: string) => {
+      const urlInfo = getCurrentConnectionInfo(window);
+      const result = await sdk.getConnectionById({
+        id,
+        org_domain: urlInfo?.organizationDomain,
+      });
+      return result.connection || null;
+    },
     getConnectionByIndex: async (index: number) => {
       const urlInfo = getCurrentConnectionInfo(window);
       const result = await sdk.getConnectionByIndex({

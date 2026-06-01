@@ -1,0 +1,11 @@
+query getConnectionById($id: String!, $org_domain: String) {
+  connection: getConnectionById(id: $id, org_domain: $org_domain) {
+    token
+    username
+    endpoint
+    dashboard
+    id
+    name
+    index
+  }
+}
