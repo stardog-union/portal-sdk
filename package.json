@@ -1,6 +1,6 @@
 {
   "name": "portal-sdk",
-  "version": "10.3.0",
+  "version": "11.0.0",
   "description": "Portal SDK for front end applications",
   "main": "index.ts",
   "private": true,
