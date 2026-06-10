@@ -2,10 +2,12 @@ mutation createDesignerProject(
   $name: String!
   $content: Base64Bytes!
   $connection_id: String
+  $org_domain: String
 ) {
   createDesignerProject(
     name: $name
     content: $content
     connection_id: $connection_id
+    org_domain: $org_domain
   )
 }

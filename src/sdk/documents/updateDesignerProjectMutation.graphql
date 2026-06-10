@@ -3,11 +3,13 @@ mutation updateDesignerProject(
   $content: Base64Bytes!
   $name: String
   $connection_id: String
+  $org_domain: String
 ) {
   updateDesignerProject(
     project_id: $project_id
     content: $content
     name: $name
     connection_id: $connection_id
+    org_domain: $org_domain
   )
 }

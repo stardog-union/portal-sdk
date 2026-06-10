@@ -348,6 +348,7 @@ export type DesignerProject = {
   created_at: Scalars['Datetime'];
   id: Scalars['ID'];
   name: Scalars['String'];
+  org_domain?: Maybe<Scalars['String']>;
   owner: User;
   roles: Array<DesignerProjectRole>;
   updated_at: Scalars['Datetime'];
@@ -714,6 +715,7 @@ export type MutationCreateDesignerProjectArgs = {
   connection_id?: InputMaybe<Scalars['String']>;
   content: Scalars['Base64Bytes'];
   name: Scalars['String'];
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Mutation Type */
@@ -924,6 +926,7 @@ export type MutationUpdateDesignerProjectArgs = {
   connection_id?: InputMaybe<Scalars['String']>;
   content: Scalars['Base64Bytes'];
   name?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
   project_id: Scalars['ID'];
 };
 
@@ -1914,6 +1917,7 @@ export type CreateDesignerProjectMutationVariables = Exact<{
   name: Scalars['String'];
   content: Scalars['Base64Bytes'];
   connection_id?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 }>;
 
 export type CreateDesignerProjectMutation = {
@@ -1971,6 +1975,7 @@ export type GetDesignerProjectQuery = {
     name: string;
     content: any;
     connection_id?: string | null;
+    org_domain?: string | null;
     created_at: string;
     updated_at: string;
     owner: { __typename?: 'User'; id?: string | null; username: string };
@@ -1991,6 +1996,7 @@ export type GetDesignerProjectsQuery = {
     id: string;
     name: string;
     connection_id?: string | null;
+    org_domain?: string | null;
     created_at: string;
     updated_at: string;
     owner: { __typename?: 'User'; id?: string | null; username: string };
@@ -2171,6 +2177,7 @@ export type UpdateDesignerProjectMutationVariables = Exact<{
   content: Scalars['Base64Bytes'];
   name?: InputMaybe<Scalars['String']>;
   connection_id?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 }>;
 
 export type UpdateDesignerProjectMutation = {
@@ -2191,11 +2198,12 @@ export const ArchiveDesignerProjectDocument = `
 }
     `;
 export const CreateDesignerProjectDocument = `
-    mutation createDesignerProject($name: String!, $content: Base64Bytes!, $connection_id: String) {
+    mutation createDesignerProject($name: String!, $content: Base64Bytes!, $connection_id: String, $org_domain: String) {
   createDesignerProject(
     name: $name
     content: $content
     connection_id: $connection_id
+    org_domain: $org_domain
   )
 }
     `;
@@ -2232,6 +2240,7 @@ export const GetDesignerProjectDocument = `
     name
     content
     connection_id
+    org_domain
     created_at
     updated_at
     owner {
@@ -2254,6 +2263,7 @@ export const GetDesignerProjectsDocument = `
     id
     name
     connection_id
+    org_domain
     created_at
     updated_at
     owner {
@@ -2393,12 +2403,13 @@ export const TrackEventDocument = `
 }
     `;
 export const UpdateDesignerProjectDocument = `
-    mutation updateDesignerProject($project_id: ID!, $content: Base64Bytes!, $name: String, $connection_id: String) {
+    mutation updateDesignerProject($project_id: ID!, $content: Base64Bytes!, $name: String, $connection_id: String, $org_domain: String) {
   updateDesignerProject(
     project_id: $project_id
     content: $content
     name: $name
     connection_id: $connection_id
+    org_domain: $org_domain
   )
 }
     `;

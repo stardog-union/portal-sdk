@@ -141,11 +141,13 @@ describe('getPortalSdk', () => {
       name: 'name',
       content: 'content',
       connection_id: 'connectionId',
+      org_domain: 'orgDomain',
     };
     await sdk?.createDesignerProject(
       createDesignerProjectInput.name,
       createDesignerProjectInput.content,
-      createDesignerProjectInput.connection_id
+      createDesignerProjectInput.connection_id,
+      createDesignerProjectInput.org_domain
     );
     expect(createDesignerProject).toHaveBeenCalledWith(
       createDesignerProjectInput
@@ -209,12 +211,14 @@ describe('getPortalSdk', () => {
       content: 'content',
       name: 'name',
       connection_id: 'connectionId',
+      org_domain: 'orgDomain',
     };
     await sdk?.updateDesignerProject(
       updateDesignerProjectInput.project_id,
       updateDesignerProjectInput.content,
       updateDesignerProjectInput.name,
-      updateDesignerProjectInput.connection_id
+      updateDesignerProjectInput.connection_id,
+      updateDesignerProjectInput.org_domain
     );
     expect(updateDesignerProject).toHaveBeenCalledWith(
       updateDesignerProjectInput
