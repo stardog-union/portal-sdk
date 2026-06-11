@@ -210,6 +210,11 @@ export type Connection = {
   useConnectionSSO?: Maybe<Scalars['Boolean']>;
   useSSO?: Maybe<Scalars['Boolean']>;
   username?: Maybe<Scalars['String']>;
+  /**
+   * Whether this connection authenticates members via org SSO token exchange.
+   * Set by Stardog ops at provisioning time.
+   */
+  usesOrgSso?: Maybe<Scalars['Boolean']>;
 };
 
 /** Connection access record granting access to a user or organization */
@@ -348,6 +353,7 @@ export type DesignerProject = {
   created_at: Scalars['Datetime'];
   id: Scalars['ID'];
   name: Scalars['String'];
+  org_domain?: Maybe<Scalars['String']>;
   owner: User;
   roles: Array<DesignerProjectRole>;
   updated_at: Scalars['Datetime'];
@@ -423,17 +429,11 @@ export type EditVoiceboxCreditInput = {
   user_id: Scalars['ID'];
 };
 
-/** Aggregated usage for an endpoint (all users combined) */
-export type EndpointUsageRecord = {
-  __typename?: 'EndpointUsageRecord';
-  date?: Maybe<Scalars['String']>;
+/** Latest completed sync run timestamp for an endpoint URL */
+export type EndpointLastSynced = {
+  __typename?: 'EndpointLastSynced';
   endpoint: Scalars['String'];
-  module: Scalars['String'];
-  month?: Maybe<Scalars['Int']>;
-  quarter?: Maybe<Scalars['Int']>;
-  remarks?: Maybe<Scalars['String']>;
-  totalUnitsConsumed: Scalars['Float'];
-  year?: Maybe<Scalars['Int']>;
+  lastSynced?: Maybe<Scalars['String']>;
 };
 
 /** Example Configuration for jwt.yaml and stardog.properties */
@@ -442,6 +442,12 @@ export type ExampleConfig = {
   id: Scalars['ID'];
   jwt_config: Scalars['String'];
   properties: Scalars['String'];
+};
+
+export type GenerateVoiceboxResponseReportInput = {
+  connectionId: Scalars['ID'];
+  endDate: Scalars['Date'];
+  startDate: Scalars['Date'];
 };
 
 /** Generic response type to handle reporting success. */
@@ -714,6 +720,7 @@ export type MutationCreateDesignerProjectArgs = {
   connection_id?: InputMaybe<Scalars['String']>;
   content: Scalars['Base64Bytes'];
   name: Scalars['String'];
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Mutation Type */
@@ -901,6 +908,7 @@ export type MutationSetOrganizationConnectionVisibilityArgs = {
 /** Root Mutation Type */
 export type MutationSyncPlatformSduUsageArgs = {
   connectionId: Scalars['ID'];
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Mutation Type */
@@ -924,6 +932,7 @@ export type MutationUpdateDesignerProjectArgs = {
   connection_id?: InputMaybe<Scalars['String']>;
   content: Scalars['Base64Bytes'];
   name?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
   project_id: Scalars['ID'];
 };
 
@@ -1218,7 +1227,11 @@ export type Query = {
   canEditVoiceboxCredit?: Maybe<Scalars['Boolean']>;
   checkCloudQueue?: Maybe<QueueCounts>;
   customerSsoSettings?: Maybe<CustomerSsoSettings>;
+  generateConnectionToken?: Maybe<OAuthToken>;
+  /** @deprecated Use generateConnectionToken instead. */
   generateToken?: Maybe<OAuthToken>;
+  /** Generate an endpoint-scoped Voicebox response report for download. */
+  generateVoiceboxResponseReport: VoiceboxResponseReportDownload;
   getCloudReport?: Maybe<CloudReportData>;
   getConnectionById?: Maybe<Connection>;
   getConnectionByIndex?: Maybe<Connection>;
@@ -1228,7 +1241,7 @@ export type Query = {
   getDesignerProjectInvitations: Array<DesignerProjectInvitation>;
   /** List all Designer projects you own, as well as any projects shared with you. */
   getDesignerProjects: Array<DesignerProject>;
-  getEndpointUsage?: Maybe<Array<Maybe<EndpointUsageRecord>>>;
+  getEndpointLastSynced: Array<EndpointLastSynced>;
   getInvitation?: Maybe<Invitation>;
   getOrganization?: Maybe<Organization>;
   getOrganizationInvitations?: Maybe<Array<Maybe<OrganizationInvitation>>>;
@@ -1239,6 +1252,8 @@ export type Query = {
   getStardogCloud?: Maybe<StardogCloud>;
   getStripePrices?: Maybe<Array<Maybe<StripePrice>>>;
   getStripeSubscriptionOrder?: Maybe<ProvisionedOrder>;
+  getTotalUnitUsage?: Maybe<TotalUnitUsage>;
+  getUnitUsage?: Maybe<Array<Maybe<UnitUsageRecord>>>;
   getUser?: Maybe<User>;
   getUserArchivedClouds?: Maybe<Array<Maybe<ArchivedCloud>>>;
   getUserClouds?: Maybe<Array<Maybe<StardogCloud>>>;
@@ -1291,8 +1306,18 @@ export type QueryApiTokenCountArgs = {
 };
 
 /** Root Query Type */
+export type QueryGenerateConnectionTokenArgs = {
+  connectionId: Scalars['ID'];
+};
+
+/** Root Query Type */
 export type QueryGenerateTokenArgs = {
   endpoint: Scalars['String'];
+};
+
+/** Root Query Type */
+export type QueryGenerateVoiceboxResponseReportArgs = {
+  input: GenerateVoiceboxResponseReportInput;
 };
 
 /** Root Query Type */
@@ -1318,13 +1343,9 @@ export type QueryGetDesignerProjectArgs = {
 };
 
 /** Root Query Type */
-export type QueryGetEndpointUsageArgs = {
-  connectionId: Scalars['ID'];
-  endDate?: InputMaybe<Scalars['Date']>;
-  modules?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+export type QueryGetEndpointLastSyncedArgs = {
+  endpoints: Array<Scalars['String']>;
   org_domain?: InputMaybe<Scalars['String']>;
-  startDate?: InputMaybe<Scalars['Date']>;
-  timeGrain?: InputMaybe<TimeGrain>;
 };
 
 /** Root Query Type */
@@ -1350,6 +1371,7 @@ export type QueryGetOrganizationMembersArgs = {
 /** Root Query Type */
 export type QueryGetPlatformTrackingStatusArgs = {
   connectionId: Scalars['ID'];
+  org_domain?: InputMaybe<Scalars['String']>;
 };
 
 /** Root Query Type */
@@ -1365,6 +1387,22 @@ export type QueryGetStardogCloudArgs = {
 /** Root Query Type */
 export type QueryGetStripeSubscriptionOrderArgs = {
   cloudId: Scalars['ID'];
+};
+
+/** Root Query Type */
+export type QueryGetTotalUnitUsageArgs = {
+  connectionId?: InputMaybe<Scalars['ID']>;
+  org_domain?: InputMaybe<Scalars['String']>;
+};
+
+/** Root Query Type */
+export type QueryGetUnitUsageArgs = {
+  connectionId?: InputMaybe<Scalars['ID']>;
+  endDate?: InputMaybe<Scalars['Date']>;
+  modules?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  org_domain?: InputMaybe<Scalars['String']>;
+  startDate?: InputMaybe<Scalars['Date']>;
+  timeGrain?: InputMaybe<TimeGrain>;
 };
 
 /** Root Query Type */
@@ -1686,12 +1724,33 @@ export enum TimeGrain {
   Month = 'month',
   Quarter = 'quarter',
   Total = 'total',
+  Week = 'week',
 }
+
+/** Total units consumed for all time, optionally filtered to a single connection */
+export type TotalUnitUsage = {
+  __typename?: 'TotalUnitUsage';
+  totalUnitsConsumed: Scalars['Float'];
+};
 
 export type TrackEventInput = {
   client_type?: InputMaybe<Scalars['String']>;
   event: Scalars['String'];
   properties?: InputMaybe<Scalars['String']>;
+};
+
+/** Usage record for a specific time period, module, and endpoint */
+export type UnitUsageRecord = {
+  __typename?: 'UnitUsageRecord';
+  date?: Maybe<Scalars['String']>;
+  endpoint: Scalars['String'];
+  module: Scalars['String'];
+  month?: Maybe<Scalars['Int']>;
+  quarter?: Maybe<Scalars['Int']>;
+  remarks?: Maybe<Scalars['String']>;
+  totalUnitsConsumed: Scalars['Float'];
+  week?: Maybe<Scalars['Int']>;
+  year?: Maybe<Scalars['Int']>;
 };
 
 /** Input for updating a Microsoft Entra SSO configuration */
@@ -1773,6 +1832,13 @@ export type User = {
   is_databricks_user?: Maybe<Scalars['Boolean']>;
   is_designer_storage_enabled?: Maybe<Scalars['Boolean']>;
   is_ephemeral?: Maybe<Scalars['Boolean']>;
+  /**
+   * Whether the current session was established via a legacy customer SSO
+   * provider (a pre-organization "bring your own IdP" login). Used by the
+   * frontend to selectively surface the legacy customer SSO toggle in a
+   * personal workspace while users are migrated to organization SSO.
+   */
+  is_legacy_customer_sso?: Maybe<Scalars['Boolean']>;
   is_partner_user?: Maybe<Scalars['Boolean']>;
   is_staff?: Maybe<Scalars['Boolean']>;
   is_static_voicebox?: Maybe<Scalars['Boolean']>;
@@ -1800,6 +1866,7 @@ export type User = {
 };
 
 export type UserFeaturesInput = {
+  is_collaboration_enabled?: InputMaybe<Scalars['Boolean']>;
   is_designer_storage_enabled?: InputMaybe<Scalars['Boolean']>;
   is_static_voicebox?: InputMaybe<Scalars['Boolean']>;
   is_voicebox_api_access_enabled?: InputMaybe<Scalars['Boolean']>;
@@ -1892,6 +1959,12 @@ export type VoiceboxMessage = {
   user_message_context?: Maybe<UserVoiceboxMessageContext>;
 };
 
+export type VoiceboxResponseReportDownload = {
+  __typename?: 'VoiceboxResponseReportDownload';
+  csv: Scalars['String'];
+  filename: Scalars['String'];
+};
+
 export type AddShareMutationVariables = Exact<{
   input: ShareInput;
 }>;
@@ -1914,6 +1987,7 @@ export type CreateDesignerProjectMutationVariables = Exact<{
   name: Scalars['String'];
   content: Scalars['Base64Bytes'];
   connection_id?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 }>;
 
 export type CreateDesignerProjectMutation = {
@@ -1971,6 +2045,7 @@ export type GetDesignerProjectQuery = {
     name: string;
     content: any;
     connection_id?: string | null;
+    org_domain?: string | null;
     created_at: string;
     updated_at: string;
     owner: { __typename?: 'User'; id?: string | null; username: string };
@@ -1991,6 +2066,7 @@ export type GetDesignerProjectsQuery = {
     id: string;
     name: string;
     connection_id?: string | null;
+    org_domain?: string | null;
     created_at: string;
     updated_at: string;
     owner: { __typename?: 'User'; id?: string | null; username: string };
@@ -2171,6 +2247,7 @@ export type UpdateDesignerProjectMutationVariables = Exact<{
   content: Scalars['Base64Bytes'];
   name?: InputMaybe<Scalars['String']>;
   connection_id?: InputMaybe<Scalars['String']>;
+  org_domain?: InputMaybe<Scalars['String']>;
 }>;
 
 export type UpdateDesignerProjectMutation = {
@@ -2191,11 +2268,12 @@ export const ArchiveDesignerProjectDocument = `
 }
     `;
 export const CreateDesignerProjectDocument = `
-    mutation createDesignerProject($name: String!, $content: Base64Bytes!, $connection_id: String) {
+    mutation createDesignerProject($name: String!, $content: Base64Bytes!, $connection_id: String, $org_domain: String) {
   createDesignerProject(
     name: $name
     content: $content
     connection_id: $connection_id
+    org_domain: $org_domain
   )
 }
     `;
@@ -2232,6 +2310,7 @@ export const GetDesignerProjectDocument = `
     name
     content
     connection_id
+    org_domain
     created_at
     updated_at
     owner {
@@ -2254,6 +2333,7 @@ export const GetDesignerProjectsDocument = `
     id
     name
     connection_id
+    org_domain
     created_at
     updated_at
     owner {
@@ -2393,12 +2473,13 @@ export const TrackEventDocument = `
 }
     `;
 export const UpdateDesignerProjectDocument = `
-    mutation updateDesignerProject($project_id: ID!, $content: Base64Bytes!, $name: String, $connection_id: String) {
+    mutation updateDesignerProject($project_id: ID!, $content: Base64Bytes!, $name: String, $connection_id: String, $org_domain: String) {
   updateDesignerProject(
     project_id: $project_id
     content: $content
     name: $name
     connection_id: $connection_id
+    org_domain: $org_domain
   )
 }
     `;

@@ -4,6 +4,7 @@ query getDesignerProject($project_id: ID!) {
     name
     content
     connection_id
+    org_domain
     created_at
     updated_at
     owner {

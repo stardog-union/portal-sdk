@@ -3,6 +3,7 @@ query getDesignerProjects {
     id
     name
     connection_id
+    org_domain
     created_at
     updated_at
     owner {
