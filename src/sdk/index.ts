@@ -136,6 +136,45 @@ export type CloudCleanupInput = {
   userName?: InputMaybe<Scalars['String']>;
 };
 
+/**
+ * A single access entry on a personal cloud connection being previewed for a
+ * move into a public organization. Covers access shared in either shape:
+ * accepted user-level grants, pending connection invitations, and legacy
+ * endpoint ("cloud") invitations, merged per email.
+ */
+export type CloudConnectionMoveAccess = {
+  __typename?: 'CloudConnectionMoveAccess';
+  accepted?: Maybe<Scalars['Boolean']>;
+  email?: Maybe<Scalars['String']>;
+  is_cloud_owner?: Maybe<Scalars['Boolean']>;
+  owns_separate_connection?: Maybe<Scalars['Boolean']>;
+  stardog_roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type CloudConnectionMoveAccessInput = {
+  email: Scalars['String'];
+  organization_role: Scalars['String'];
+};
+
+/** Preview of moving a personal cloud connection into a public organization. */
+export type CloudConnectionMovePreview = {
+  __typename?: 'CloudConnectionMovePreview';
+  access?: Maybe<Array<Maybe<CloudConnectionMoveAccess>>>;
+  connection_id?: Maybe<Scalars['ID']>;
+  connection_name?: Maybe<Scalars['String']>;
+  eligible?: Maybe<Scalars['Boolean']>;
+  endpoint?: Maybe<Scalars['String']>;
+  ineligible_reason?: Maybe<Scalars['String']>;
+  other_connections?: Maybe<Array<Maybe<Scalars['String']>>>;
+  source_org_name?: Maybe<Scalars['String']>;
+};
+
+/** Whether a moved connection is usable by all org members or only the migrated users. */
+export enum CloudConnectionMoveVisibility {
+  OrgWide = 'ORG_WIDE',
+  Restricted = 'RESTRICTED',
+}
+
 /** Filters for the cloud report query */
 export type CloudFilters = {
   flavor?: InputMaybe<Scalars['String']>;
@@ -475,22 +514,43 @@ export type GrafanaDashboardSettings = {
 export type Invitation = {
   __typename?: 'Invitation';
   accepted?: Maybe<Scalars['Boolean']>;
-  connection?: Maybe<Connection>;
+  connection?: Maybe<InvitationConnection>;
   connection_roles?: Maybe<Array<Scalars['String']>>;
   created?: Maybe<Scalars['Datetime']>;
   email?: Maybe<Scalars['String']>;
   endpoint?: Maybe<Scalars['String']>;
-  existing_user?: Maybe<User>;
+  existing_user?: Maybe<InvitationUser>;
   expires?: Maybe<Scalars['Datetime']>;
   id?: Maybe<Scalars['ID']>;
-  organization?: Maybe<Organization>;
+  organization?: Maybe<InvitationOrganization>;
   organization_role?: Maybe<Scalars['String']>;
   role?: Maybe<Scalars['String']>;
-  sender?: Maybe<User>;
+  sender?: Maybe<InvitationUser>;
+};
+
+export type InvitationConnection = {
+  __typename?: 'InvitationConnection';
+  endpoint: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
 };
 
 export type InvitationFlagInput = {
   id: Scalars['ID'];
+};
+
+export type InvitationOrganization = {
+  __typename?: 'InvitationOrganization';
+  domain?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
+export type InvitationUser = {
+  __typename?: 'InvitationUser';
+  email?: Maybe<Scalars['String']>;
+  first_name?: Maybe<Scalars['String']>;
+  last_name?: Maybe<Scalars['String']>;
 };
 
 export type ItemCount = {
@@ -521,6 +581,22 @@ export type ModifyConnectionAccessResult = {
   email: Scalars['String'];
   error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type MoveCloudConnectionToOrgInput = {
+  add_current_user?: InputMaybe<Scalars['Boolean']>;
+  cloud_id: Scalars['ID'];
+  /** When true, create the org connection and its access but leave the existing personal connection(s) in place so users can swap over gradually and don't lose access. Clean up the leftovers later via the org-connection cleanup tool. */
+  keep_source?: InputMaybe<Scalars['Boolean']>;
+  selected: Array<CloudConnectionMoveAccessInput>;
+  target_org: Scalars['String'];
+  visibility: CloudConnectionMoveVisibility;
+};
+
+export type MoveCloudConnectionToOrgResponse = {
+  __typename?: 'MoveCloudConnectionToOrgResponse';
+  connection_id?: Maybe<Scalars['ID']>;
+  success?: Maybe<Scalars['Boolean']>;
 };
 
 /** Root Mutation Type */
@@ -582,6 +658,7 @@ export type Mutation = {
   getStripeSessionUrl?: Maybe<BillingSession>;
   leaveOrganization?: Maybe<GenericResponse>;
   logoutSSOConnection?: Maybe<GenericResponse>;
+  moveCloudConnectionToOrg?: Maybe<MoveCloudConnectionToOrgResponse>;
   reauthenticateSSOConnection?: Maybe<SsoConnectionRedirectResponse>;
   removeMySharedConnection?: Maybe<GenericResponse>;
   removeOrganizationMembers?: Maybe<OrganizationMembersResponse>;
@@ -589,6 +666,7 @@ export type Mutation = {
   renameDesignerProject: Scalars['ID'];
   renameMySharedConnection?: Maybe<GenericResponse>;
   resendEmail?: Maybe<GenericResponse>;
+  resolveOrphanedConnections?: Maybe<ResolveOrphanedConnectionsResponse>;
   restoreDesignerProject: Scalars['ID'];
   /** Revoke an outgoing Designer project invitation, or reject an invitation sent to you. */
   revokeDesignerProjectInvitation: Scalars['ID'];
@@ -832,6 +910,11 @@ export type MutationLogoutSsoConnectionArgs = {
 };
 
 /** Root Mutation Type */
+export type MutationMoveCloudConnectionToOrgArgs = {
+  input: MoveCloudConnectionToOrgInput;
+};
+
+/** Root Mutation Type */
 export type MutationReauthenticateSsoConnectionArgs = {
   input: ReauthenticateSsoConnectionInput;
 };
@@ -861,6 +944,11 @@ export type MutationRenameDesignerProjectArgs = {
 /** Root Mutation Type */
 export type MutationRenameMySharedConnectionArgs = {
   input: RenameMySharedConnectionInput;
+};
+
+/** Root Mutation Type */
+export type MutationResolveOrphanedConnectionsArgs = {
+  input: ResolveOrphanedConnectionsInput;
 };
 
 /** Root Mutation Type */
@@ -1010,6 +1098,23 @@ export type OktaProvider = {
   customerName: Scalars['String'];
 };
 
+/**
+ * Cleanup view for an organization connection that was created by a move:
+ * the leftover personal connections to the same endpoint, plus the org members
+ * who cannot reach the connection through the org yet.
+ */
+export type OrgConnectionCleanupPreview = {
+  __typename?: 'OrgConnectionCleanupPreview';
+  connection_id?: Maybe<Scalars['ID']>;
+  connection_name?: Maybe<Scalars['String']>;
+  endpoint?: Maybe<Scalars['String']>;
+  is_org_connection?: Maybe<Scalars['Boolean']>;
+  org_domain?: Maybe<Scalars['String']>;
+  org_members_without_access?: Maybe<Array<Maybe<Scalars['String']>>>;
+  org_name?: Maybe<Scalars['String']>;
+  orphaned?: Maybe<Array<Maybe<OrphanedCloudConnection>>>;
+};
+
 export type Organization = {
   __typename?: 'Organization';
   description?: Maybe<Scalars['String']>;
@@ -1017,6 +1122,11 @@ export type Organization = {
   id: Scalars['ID'];
   /** Whether this organization can configure SSO (premium feature) */
   isSsoAllowed?: Maybe<Scalars['Boolean']>;
+  /**
+   * When true, the member list is hidden from ordinary members and only visible
+   * to admins and owners.
+   */
+  membersHiddenFromMembers?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
   owner?: Maybe<User>;
   role?: Maybe<Scalars['String']>;
@@ -1091,6 +1201,24 @@ export type OrganizationMicrosoftEntraSsoConfig = OrganizationSsoConfig & {
   updatedAt: Scalars['Datetime'];
 };
 
+/**
+ * Result of resolving a target organization for a connection move: whether it is
+ * a valid public org plus its current members.
+ */
+export type OrganizationMoveTarget = {
+  __typename?: 'OrganizationMoveTarget';
+  members?: Maybe<Array<Maybe<OrganizationMoveTargetMember>>>;
+  name?: Maybe<Scalars['String']>;
+  valid?: Maybe<Scalars['Boolean']>;
+};
+
+/** A current member of a public organization, used by the move "check org" step. */
+export type OrganizationMoveTargetMember = {
+  __typename?: 'OrganizationMoveTargetMember';
+  email?: Maybe<Scalars['String']>;
+  role?: Maybe<Scalars['String']>;
+};
+
 /** Okta SSO configuration for an organization. */
 export type OrganizationOktaSsoConfig = OrganizationSsoConfig & {
   __typename?: 'OrganizationOktaSSOConfig';
@@ -1152,6 +1280,35 @@ export type OrganizationSsoIdentity = {
   isLinked: Scalars['Boolean'];
   /** When the identity was linked (only if linked) */
   linkedAt?: Maybe<Scalars['Datetime']>;
+};
+
+/**
+ * A leftover personal connection pointing at the same endpoint as an
+ * organization connection that has already been created for the cloud.
+ */
+export type OrphanedCloudConnection = {
+  __typename?: 'OrphanedCloudConnection';
+  connection_id?: Maybe<Scalars['ID']>;
+  connection_name?: Maybe<Scalars['String']>;
+  /** The owner can already reach the endpoint through the organization connection. */
+  has_org_access?: Maybe<Scalars['Boolean']>;
+  /** The owner is already a member of the organization. */
+  is_org_member?: Maybe<Scalars['Boolean']>;
+  owner_email?: Maybe<Scalars['String']>;
+  stardog_roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export enum OrphanedConnectionAction {
+  Leave = 'LEAVE',
+  Migrate = 'MIGRATE',
+  Remove = 'REMOVE',
+}
+
+export type OrphanedConnectionActionInput = {
+  action: OrphanedConnectionAction;
+  connection_id: Scalars['ID'];
+  /** Membership role to assign when action is MIGRATE and the owner is not yet a member (they are auto-added as an active member). Ignored for existing members. */
+  organization_role?: InputMaybe<Scalars['String']>;
 };
 
 /** To page through response. */
@@ -1232,6 +1389,7 @@ export type Query = {
   generateToken?: Maybe<OAuthToken>;
   /** Generate an endpoint-scoped Voicebox response report for download. */
   generateVoiceboxResponseReport: VoiceboxResponseReportDownload;
+  getCloudConnectionMovePreview?: Maybe<CloudConnectionMovePreview>;
   getCloudReport?: Maybe<CloudReportData>;
   getConnectionById?: Maybe<Connection>;
   getConnectionByIndex?: Maybe<Connection>;
@@ -1243,9 +1401,11 @@ export type Query = {
   getDesignerProjects: Array<DesignerProject>;
   getEndpointLastSynced: Array<EndpointLastSynced>;
   getInvitation?: Maybe<Invitation>;
+  getOrgConnectionCleanupPreview?: Maybe<OrgConnectionCleanupPreview>;
   getOrganization?: Maybe<Organization>;
   getOrganizationInvitations?: Maybe<Array<Maybe<OrganizationInvitation>>>;
   getOrganizationMembers?: Maybe<Array<Maybe<OrganizationMember>>>;
+  getOrganizationMoveTarget?: Maybe<OrganizationMoveTarget>;
   getPlatformTrackingStatus?: Maybe<PlatformTrackingStatus>;
   getSSOConnectionRegistry?: Maybe<Array<Maybe<SsoConnectionRegistration>>>;
   getShareByShortHash?: Maybe<Share>;
@@ -1308,6 +1468,7 @@ export type QueryApiTokenCountArgs = {
 /** Root Query Type */
 export type QueryGenerateConnectionTokenArgs = {
   connectionId: Scalars['ID'];
+  forceRefresh?: InputMaybe<Scalars['Boolean']>;
 };
 
 /** Root Query Type */
@@ -1318,6 +1479,11 @@ export type QueryGenerateTokenArgs = {
 /** Root Query Type */
 export type QueryGenerateVoiceboxResponseReportArgs = {
   input: GenerateVoiceboxResponseReportInput;
+};
+
+/** Root Query Type */
+export type QueryGetCloudConnectionMovePreviewArgs = {
+  cloud_id: Scalars['ID'];
 };
 
 /** Root Query Type */
@@ -1354,6 +1520,11 @@ export type QueryGetInvitationArgs = {
 };
 
 /** Root Query Type */
+export type QueryGetOrgConnectionCleanupPreviewArgs = {
+  cloud_id: Scalars['ID'];
+};
+
+/** Root Query Type */
 export type QueryGetOrganizationArgs = {
   org_domain?: InputMaybe<Scalars['String']>;
 };
@@ -1366,6 +1537,11 @@ export type QueryGetOrganizationInvitationsArgs = {
 /** Root Query Type */
 export type QueryGetOrganizationMembersArgs = {
   org_domain?: InputMaybe<Scalars['String']>;
+};
+
+/** Root Query Type */
+export type QueryGetOrganizationMoveTargetArgs = {
+  domain: Scalars['String'];
 };
 
 /** Root Query Type */
@@ -1541,6 +1717,20 @@ export type RenameMySharedConnectionInput = {
   name: Scalars['String'];
 };
 
+export type ResolveOrphanedConnectionsInput = {
+  actions: Array<OrphanedConnectionActionInput>;
+  /** The organization connection whose leftover personal connections are being cleaned up. */
+  connection_id: Scalars['ID'];
+};
+
+export type ResolveOrphanedConnectionsResponse = {
+  __typename?: 'ResolveOrphanedConnectionsResponse';
+  left?: Maybe<Scalars['Int']>;
+  migrated?: Maybe<Scalars['Int']>;
+  removed?: Maybe<Scalars['Int']>;
+  success?: Maybe<Scalars['Boolean']>;
+};
+
 export type RevokeMemberConnectionRolesInput = {
   connectionId: Scalars['ID'];
   emails: Array<Scalars['String']>;
@@ -1650,12 +1840,15 @@ export type SsoProviderInfo = {
 export type StardogCloud = {
   __typename?: 'StardogCloud';
   bi_endpoint?: Maybe<Scalars['String']>;
+  cleanup_available?: Maybe<Scalars['Boolean']>;
+  connection_in_personal_org?: Maybe<Scalars['Boolean']>;
   created?: Maybe<Scalars['String']>;
   days_to_cleanup?: Maybe<Scalars['Int']>;
   days_to_inactive?: Maybe<Scalars['Int']>;
   endpoint?: Maybe<Scalars['String']>;
   flavor?: Maybe<CloudFlavor>;
   id?: Maybe<Scalars['ID']>;
+  move_available?: Maybe<Scalars['Boolean']>;
   name?: Maybe<Scalars['String']>;
   notification_date?: Maybe<Scalars['String']>;
   owner?: Maybe<User>;
@@ -1664,6 +1857,7 @@ export type StardogCloud = {
   region?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
   updated?: Maybe<Scalars['String']>;
+  validation?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 /** Stripe Customer: If the user is a paying customer */
@@ -1716,6 +1910,7 @@ export type SystemVoiceboxMessageContext = {
   id: Scalars['ID'];
   message_type?: Maybe<Scalars['String']>;
   pending?: Maybe<Scalars['Boolean']>;
+  request_id?: Maybe<Scalars['String']>;
   success?: Maybe<Scalars['Boolean']>;
 };
 
@@ -1816,6 +2011,7 @@ export type User = {
   __typename?: 'User';
   best_describes_company?: Maybe<Scalars['String']>;
   best_describes_role?: Maybe<Scalars['String']>;
+  can_manage_orgs?: Maybe<Scalars['Boolean']>;
   can_provision_cloud?: Maybe<Scalars['Boolean']>;
   company?: Maybe<Scalars['String']>;
   date_joined?: Maybe<Scalars['String']>;
