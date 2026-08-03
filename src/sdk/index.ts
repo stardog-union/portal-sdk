@@ -2304,6 +2304,7 @@ export type GetVoiceboxConversationQuery = {
         followup_examples?: Array<string | null> | null;
         message_type?: string | null;
         pending?: boolean | null;
+        request_id?: string | null;
         success?: boolean | null;
         actions?: Array<{
           __typename?: 'VoicboxSystemMessageAction';
@@ -2573,6 +2574,7 @@ export const GetVoiceboxConversationDocument = `
         }
         message_type
         pending
+        request_id
         success
       }
     }
