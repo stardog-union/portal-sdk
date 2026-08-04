@@ -24,6 +24,7 @@ query getVoiceboxConversation($conversation_id: String!) {
         }
         message_type
         pending
+        request_id
         success
       }
     }
