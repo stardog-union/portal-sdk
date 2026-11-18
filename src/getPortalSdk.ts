@@ -2,7 +2,7 @@ import { GraphQLClient } from 'graphql-request';
 
 import { getConnectionCookie } from './cookies';
 import { getCurrentConnectionInfo } from './getCurrentConnectionInfo';
-import { ShareInput, getSdk } from './sdk';
+import { ListConnectionsQueryVariables, ShareInput, getSdk } from './sdk';
 
 export enum TrackingEventList {
   CHECKOUT_FREE = 'Checkout Free Instance',
@@ -53,6 +53,19 @@ export const getPortalSdk = () => {
 
   const client = new GraphQLClient(graphqlEndpoint);
   const sdk = getSdk(client);
+
+  const listConnections = async (variables: ListConnectionsQueryVariables) => {
+    const result = await sdk.listConnections(variables);
+    if (!result.listConnections) {
+      return null;
+    }
+    return result.listConnections.filter(
+      (
+        connection
+      ): connection is NonNullable<(typeof result.listConnections)[0]> =>
+        connection !== null
+    );
+  };
 
   return {
     addShare: async (input: ShareInput) => {
@@ -153,19 +166,13 @@ export const getPortalSdk = () => {
     },
     listConnections: async () => {
       const urlInfo = getCurrentConnectionInfo(window);
-      const result = await sdk.listConnections({
-        org_domain: urlInfo?.organizationDomain,
-      });
-      if (!result.listConnections) {
-        return null;
-      }
-      return result.listConnections.filter(
-        (
-          connection
-        ): connection is NonNullable<(typeof result.listConnections)[0]> =>
-          connection !== null
-      );
+      return listConnections({ org_domain: urlInfo?.organizationDomain });
     },
+    /**
+     * lists the user's personal connections, regardless of the current url
+     * (i.e. also when in an organization context)
+     */
+    listPersonalConnections: async () => listConnections({}),
     listOrganizations: async () => {
       const result = await sdk.listOrganizations();
       if (!result.listOrganizations) {
