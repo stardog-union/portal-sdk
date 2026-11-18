@@ -82,6 +82,11 @@ const updateDesignerProject = jest.fn(async () => ({
 
 describe('getPortalSdk', () => {
   beforeEach(() => {
+    (getConnectionCookie as jest.Mock).mockReturnValue({
+      username: 'username',
+      endpoint: 'endpoint',
+      graphqlEndpoint: 'graphqlEndpoint',
+    });
     jest.spyOn(portalSdkImport, 'getSdk').mockReturnValue({
       addShare,
       archiveDesignerProject,
