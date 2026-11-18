@@ -59,7 +59,10 @@ const getDesignerProjects = jest.fn(async () => ({ getDesignerProjects: [] }));
 const getVoiceboxConversation = jest.fn(async () => ({
   getVoiceboxConversation: null,
 }));
-const listConnections = jest.fn(async () => ({ listConnections: [null] }));
+const listConnections = jest.fn<
+  Promise<portalSdkImport.ListConnectionsQuery>,
+  [portalSdkImport.ListConnectionsQueryVariables?]
+>(async () => ({ listConnections: [null] }));
 const listOrganizations = jest.fn(async () => ({ listOrganizations: [null] }));
 const listVoiceboxConversations = jest.fn(async () => ({
   listVoiceboxConversations: null,
@@ -121,6 +124,7 @@ describe('getPortalSdk', () => {
     expect(result?.addShare).toBeInstanceOf(Function);
     expect(result?.profile).toBeInstanceOf(Function);
     expect(result?.listConnections).toBeInstanceOf(Function);
+    expect(result?.listPersonalConnections).toBeInstanceOf(Function);
   });
 
   it('calls portal-sdk functions and gets return values', async () => {
@@ -251,6 +255,60 @@ describe('getPortalSdk', () => {
       expect(listConnections).toHaveBeenCalledWith({
         org_domain: info?.organizationDomain,
       });
+    });
+
+    it('lists personal connections without the org domain', async () => {
+      const sdk = getPortalSdk();
+
+      (getCurrentConnectionInfo as jest.Mock).mockReturnValue(info);
+      listConnections.mockClear();
+
+      await sdk?.listPersonalConnections();
+      expect(listConnections).toHaveBeenCalledTimes(1);
+      // toHaveBeenCalledWith ignores undefined properties, so check the key
+      expect(listConnections.mock.calls[0]).toEqual([{}]);
+      expect(listConnections.mock.calls[0][0]).not.toHaveProperty('org_domain');
+    });
+  });
+
+  describe('listing connections from an org url', () => {
+    const connection = {
+      endpoint: 'endpoint',
+      id: 'id',
+      name: 'name',
+      index: 0,
+    };
+
+    beforeEach(() => {
+      (getCurrentConnectionInfo as jest.Mock).mockReturnValue({
+        connectionIndex: 1,
+        organizationDomain: 'orgDomain',
+      });
+      listConnections.mockClear();
+    });
+
+    it('filters null entries from personal connections', async () => {
+      listConnections.mockResolvedValueOnce({
+        listConnections: [null, connection, null],
+      });
+      expect(await getPortalSdk()?.listPersonalConnections()).toEqual([
+        connection,
+      ]);
+    });
+
+    it('returns null when there are no personal connections to list', async () => {
+      listConnections.mockResolvedValueOnce({ listConnections: null });
+      expect(await getPortalSdk()?.listPersonalConnections()).toBeNull();
+    });
+
+    it('still sends the org domain of the url for listConnections', async () => {
+      listConnections.mockResolvedValueOnce({
+        listConnections: [null, connection],
+      });
+      expect(await getPortalSdk()?.listConnections()).toEqual([connection]);
+      expect(listConnections.mock.calls).toEqual([
+        [{ org_domain: 'orgDomain' }],
+      ]);
     });
   });
 });
